@@ -186,6 +186,7 @@ jspm_packages/
 .serverless
 
 docker/
+!docker/volumes/nginx/**/*
 
 junit.**
 

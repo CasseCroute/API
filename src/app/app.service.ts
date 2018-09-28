@@ -5,5 +5,4 @@ export class AppService {
     public root(): string {
         return 'Hello World!';
     }
-
 }
