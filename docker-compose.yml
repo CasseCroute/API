@@ -2,7 +2,9 @@ version: '2'
 services:
   app:
     container_name: app
-    build: .
+    build:
+      context: .
+      dockerfile: ./docker/app/Dockerfile
     command: yarn start:dev
     volumes:
       - .:/LetsEat/API
@@ -18,13 +20,17 @@ services:
 
   postgres:
     container_name: postgres
-    image: postgres:latest
+    build:
+      context: .
+      dockerfile: ./docker/postgres/Dockerfile
     volumes:
       - ./docker/volumes/postgres:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     tty: true
     mem_limit: 50m
+    env_file:
+      - .database.env
 
   nginx:
     image: nginx:latest

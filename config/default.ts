@@ -5,18 +5,20 @@ dotenv.config();
 const env: any = process.env.NODE_ENV;
 
 const development = {
-	app: {
-		port: process.env.DEV_APP_PORT || 8080
-	},
-	database: {
-		name: process.env.DEV_DB_NAME || 'db',
-		host: process.env.DEV_DB_HOST || 'localhost',
-		port: process.env.DEV_DB_PORT || 5432,
-	}
+  app: {
+    port: process.env.DEV_APP_PORT || 8080
+  },
+  database: {
+    name: process.env.DEV_DB_NAME || 'db',
+    host: process.env.DEV_DB_HOST || 'localhost',
+    port: process.env.DEV_DB_PORT || 5432,
+    username: process.env.DEV_DB_USERNAME || 'postgres',
+    password: process.env.DEV_DB_PASSWORD || '',
+  }
 };
 
 const config: any = {
-	development,
+  development,
 };
 
 export default config[env];
