@@ -1,0 +1,38 @@
+{
+  "name": "API",
+  "version": "0.0.1",
+  "main": "src/server.ts",
+  "scripts": {
+    "start": "ts-node -r tsconfig-paths/register src/index.ts",
+    "start:dev": "NODE_ENV=development nodemon --inspect -V",
+    "start:test": "NODE_ENV=test nodemon --inspect -V"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LetsEatCo/API.git"
+  },
+  "bugs": {
+    "url": "https://github.com/LetsEatCo/API/issues"
+  },
+  "homepage": "https://github.com/LetsEatCo/API#readme",
+  "author": "Let's Eat <hello@letseat.co>",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "@nestjs/common": "^5.3.9",
+    "@nestjs/core": "^5.3.10",
+    "@nestjs/cqrs": "^5.1.1",
+    "reflect-metadata": "^0.1.12",
+    "rxjs": "^6.3.3",
+    "typescript": "^3.1.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.16.0",
+    "@types/node": "^10.11.2",
+    "nodemon": "^1.18.4",
+    "ts-node": "^7.0.1",
+    "tsconfig-paths": "^3.6.0",
+    "tslint": "^5.11.0",
+    "tslint-sonarts": "^1.8.0",
+    "tslint-xo": "^0.9.0"
+  }
+}
