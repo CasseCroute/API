@@ -187,6 +187,7 @@ jspm_packages/
 
 docker/
 !docker/volumes/nginx/**/*
+!.env.sample
 
 junit.**
 
