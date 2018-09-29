@@ -100,6 +100,44 @@ jobs:
           path: /coverage/junit
       - store_artifacts:
           path: /coverage
+
+  test-api:
+    docker:
+      - image: circleci/node:10.6
+        environment:
+          NODE_ENV: test
+      - image: circleci/postgres:10.5-postgis-ram
+        environment:
+          POSTGRES_USER: circleci
+          POSTGRES_DB: test_circleci
+
+    working_directory: ~/LetsEat/API
+
+    steps:
+      - checkout
+
+      - run:
+          name: Install packages
+          command: yarn install
+
+      - run:
+          name: Install TypeScript & Dredd
+          command: yarn global add typescript dredd
+
+      - run:
+          name: Install Dockerize
+          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+          environment:
+            DOCKERIZE_VERSION: v0.3.0
+
+      - run:
+          name: Dockerize Postgres (wait for database)
+          command: dockerize -wait tcp://localhost:5432 -timeout 1m
+
+      - run:
+          name: Test API with Dredd
+          command: yarn test:api
+
 workflows:
   version: 2
   build-and-test:
@@ -112,5 +150,8 @@ workflows:
             requires:
               - build
         - test-static:
+            requires:
+              - build
+        - test-api:
             requires:
               - build

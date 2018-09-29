@@ -6,13 +6,16 @@ WORKDIR /LetsEat/API
 
 COPY package.json /LetsEat/API
 
+COPY . /LetsEat/API
+
+# Install Apiary CLI
+RUN gem install apiaryio
+
 # Add global CLIs
-RUN yarn global add tslint typescript tsc-resolve typeorm jest
+RUN yarn global add tslint typescript tsc-resolve typeorm jest dredd
 
 # Install Yarn dependencies
 RUN yarn install
-
-COPY . /LetsEat/API
 
 EXPOSE 8080
 

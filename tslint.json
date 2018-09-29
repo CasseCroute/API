@@ -6,6 +6,7 @@
 			"no-non-null-assertion": false,
 			"no-hardcoded-credentials": false,
 			"no-identical-functions": false,
-			"variable-name": ["allow-pascal-case"]
+			"variable-name": ["allow-pascal-case"],
+			"file-name-casing": false
 		}
 }

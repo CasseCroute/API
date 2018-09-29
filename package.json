@@ -3,13 +3,16 @@
   "version": "0.0.1",
   "main": "src/server.ts",
   "scripts": {
+    "api:validate": "node -r ts-node/register/transpile-only src/shared/utils/validate-api.ts --files 'apiary.apib'",
     "start": "ts-node -r tsconfig-paths/register src/index.ts",
     "start:dev": "NODE_ENV=development nodemon --inspect -V",
     "start:test": "NODE_ENV=test nodemon --inspect -V",
-    "test": "yarn test:static && yarn test:unit",
+    "test": "yarn test:static && yarn test:unit && yarn test:api",
+    "test:api": "yarn api:validate && dredd",
+    "test:static": "tslint --project ./tsconfig.json 'src/**/*.{ts,tsx}'",
     "test:unit": "NODE_ENV=test jest --maxWorkers=1",
     "test:unit:cov": "jest --coverage",
-    "test:static": "tslint --project ./tsconfig.json 'src/**/*.{ts,tsx}'"
+    "typeorm": "node -r ts-node/register/transpile-only ./node_modules/.bin/typeorm"
   },
   "repository": {
     "type": "git",
@@ -44,6 +47,7 @@
     "@types/node": "^10.11.2",
     "@types/supertest": "^2.0.6",
     "@types/yargs": "^12.0.1",
+    "api-blueprint-validator-module": "^1.2.2",
     "jest": "^23.6.0",
     "jest-junit": "^5.1.0",
     "nodemon": "^1.18.4",
