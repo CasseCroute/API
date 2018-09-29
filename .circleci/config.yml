@@ -1,0 +1,116 @@
+version: 2
+
+jobs:
+  build:
+    docker:
+      - image: circleci/node:10.6
+      - image: circleci/postgres:10.5-postgis-ram
+
+    working_directory:  ~/LetsEat/API
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+           - v1-dependencies-{{ checksum "yarn.lock" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run:
+          name: Install packages
+          command: yarn install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+  test-static:
+    docker:
+      - image: circleci/node:10.6
+        environment:
+          NODE_ENV: test
+      - image: circleci/postgres:10.5-postgis-ram
+
+    working_directory: ~/LetsEat/API
+
+    steps:
+      - checkout
+
+      - run:
+          name: Install packages
+          command: yarn install
+
+      - run:
+          name: Install TypeScript & TSLint gloabally
+          command: yarn global add tslint typescript
+
+      - run:
+          name: Static code analysis with TypeScript + SonarQube
+          command: yarn test:static
+
+      - store_test_results:
+          path: /tmp/test-results
+      - store_artifacts:
+          path: /tmp/test-results
+          destination: test-results
+  test-unit:
+    docker:
+      - image: circleci/node:10.6
+        environment:
+          NODE_ENV: test
+      - image: circleci/postgres:10.5-postgis-ram
+
+    working_directory: ~/LetsEat/API
+
+    steps:
+      - checkout
+
+      - run:
+          name: Install packages
+          command: yarn install
+      - run:
+          name: Setup Code Climate test-reporter
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+
+      - run:
+          name: Install Jest gloabally
+          command: yarn global add jest
+
+      - run:
+          name: Code coverage unit testing with Jest
+          command: |
+            ./cc-test-reporter before-build
+             yarn test:unit:cov
+
+      - run:
+          name: Report code coverage
+          command:  |
+            ./cc-test-reporter format-coverage src/coverage/lcov.info --input-type lcov
+            ./cc-test-reporter upload-coverage
+
+          environment:
+            JEST_JUNIT_OUTPUT: "coverage/junit/js-test-results.xml"
+
+      - store_test_results:
+          path: /coverage/junit
+      - store_artifacts:
+          path: /coverage
+workflows:
+  version: 2
+  build-and-test:
+      jobs:
+        - build:
+            filters:
+              branches:
+                ignore: master
+        - test-unit:
+            requires:
+              - build
+        - test-static:
+            requires:
+              - build
