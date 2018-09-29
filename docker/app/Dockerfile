@@ -7,7 +7,7 @@ WORKDIR /LetsEat/API
 COPY package.json /LetsEat/API
 
 # Add global CLIs
-RUN yarn global add tslint typescript tsc-resolve typeorm
+RUN yarn global add tslint typescript tsc-resolve typeorm jest
 
 # Install Yarn dependencies
 RUN yarn install

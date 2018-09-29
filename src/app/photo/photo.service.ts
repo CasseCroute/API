@@ -8,19 +8,19 @@ export class PhotoService {
 	constructor(@InjectRepository(Photo) private readonly photoRepository: Repository<Photo>) {
 	}
 
-	async findAll(): Promise<Photo[]> {
+	public async findAll(): Promise<Photo[]> {
 		return this.photoRepository.find();
 	}
 
-	async createOne(): Promise<Photo> {
-		const user = this.photoRepository.create({
+	public async createOne(): Promise<Photo> {
+		const photo = this.photoRepository.create({
 			name: 'Photo',
-			description: 'helolo',
-			filename: 'okkk',
+			description: 'hello',
+			filename: 'hello.jpg',
 			views: 1,
 			isPublished: true
 		});
 
-		return this.photoRepository.save(user);
+		return this.photoRepository.save(photo);
 	}
 }
