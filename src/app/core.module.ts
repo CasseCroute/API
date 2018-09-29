@@ -13,7 +13,7 @@ import {Connection} from 'typeorm';
 	controllers: [AppController],
 	providers: [AppService, PhotoService],
 })
-export class AppModule {
+export class CoreModule {
 	constructor(private readonly connection: Connection) {
 	}
 }
