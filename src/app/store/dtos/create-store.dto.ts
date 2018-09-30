@@ -1,4 +1,4 @@
-import {IsString, IsEmail, IsNumber, IsOptional, MinLength} from 'class-validator';
+import {IsString, IsEmail, IsNumber, IsOptional, Min} from 'class-validator';
 
 export class CreateStoreDto {
 	@IsString()
@@ -8,16 +8,11 @@ export class CreateStoreDto {
 	readonly email: string;
 
 	@IsNumber()
-	@MinLength(10, {
-		message: 'Phone number is too short. Minimal length is $constraint1 characters'
-	})
+	@Min(10)
 	readonly phoneNumber: number;
 
 	@IsString()
 	readonly password: string;
-
-	@IsString()
-	readonly slug: string;
 
 	@IsString()
 	@IsOptional()

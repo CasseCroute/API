@@ -40,7 +40,7 @@
       "@auth": ["src/app/auth"],
       "@common": ["src/app/common"],
       "@photo": ["src/app/photo"],
-      "@shared/*": ["src/shared/*"],
+      "@shared": ["src/shared"],
       "@store": ["src/app/store"]
     },
     // "rootDirs": [],                        /* List of root folders whose combined content represents the structure of the project at runtime. */

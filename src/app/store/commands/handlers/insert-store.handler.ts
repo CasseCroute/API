@@ -5,6 +5,8 @@ import {Store} from '@store';
 import {getConnection} from 'typeorm';
 import {AuthService, CryptographerService} from '@auth';
 import {UnprocessableEntityException} from '@nestjs/common';
+import slugify from 'slugify';
+import {cryptoRandomString} from '@shared';
 
 @CommandHandler(InsertStoreCommand)
 export class InsertStoreHandler implements ICommandHandler<InsertStoreCommand> {
@@ -19,6 +21,7 @@ export class InsertStoreHandler implements ICommandHandler<InsertStoreCommand> {
 
 		try {
 			command.password = await CryptographerService.hashPassword(command.password);
+			command.slug = `${slugify(command.name, {replacement: '-', lower: true})}-${cryptoRandomString(10)}`;
 			const store = Store.register(command);
 			const storeSaved = this.publisher.mergeObjectContext(
 				await queryRunner.manager.save(store)

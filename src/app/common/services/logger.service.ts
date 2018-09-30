@@ -1,7 +1,7 @@
 import winston, {Logger, LoggerOptions} from 'winston';
 import * as chalk from 'chalk';
 import PrettyError from 'pretty-error';
-import {env} from '@shared/utils';
+import {env} from '@shared';
 import * as fs from 'fs';
 import {LoggerService as NestLoggerService, Optional} from '@nestjs/common';
 
