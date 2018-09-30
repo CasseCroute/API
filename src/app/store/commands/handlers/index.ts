@@ -1,3 +1,3 @@
-import {InsertStoreHandler} from './insert-store.handler';
+import {CreateStoreHandler} from './create-store.handler';
 
-export const StoreCommandHandlers = [InsertStoreHandler];
+export const StoreCommandHandlers = [CreateStoreHandler];

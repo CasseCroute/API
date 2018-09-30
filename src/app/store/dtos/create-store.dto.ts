@@ -16,5 +16,5 @@ export class CreateStoreDto {
 
 	@IsString()
 	@IsOptional()
-	readonly imgUrl?: string;
+	readonly imageUrl?: string;
 }

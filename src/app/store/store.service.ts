@@ -3,7 +3,7 @@ import {InjectRepository} from '@nestjs/typeorm';
 import {CommandBus} from '@nestjs/cqrs';
 import {Repository} from 'typeorm';
 import {Store} from './store.entity';
-import {InsertStoreCommand} from './commands/insert-store.command';
+import {CreateStoreCommand} from './commands/create-store.command';
 import {JwtPayload} from '../auth/interfaces';
 import {CreateStoreDto} from '@store';
 
@@ -17,6 +17,6 @@ export class StoreService {
 	}
 
 	public async createOne(store: CreateStoreDto): Promise<JwtPayload> {
-		return this.commandBus.execute(new InsertStoreCommand(store));
+		return this.commandBus.execute(new CreateStoreCommand(store));
 	}
 }
