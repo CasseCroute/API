@@ -1,5 +1,5 @@
 import {config} from 'dotenv';
-import {isNil} from '@shared/utils';
+import {isNil} from './isnil.util';
 
 declare const process: {
 	env: {

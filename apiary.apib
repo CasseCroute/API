@@ -76,16 +76,45 @@ Creates a new photo.
             
 + Response 200 (application/json; charset=utf-8)
 
-# Data Structures
+# Group Stores
 
-## Resource (object)
+## Store Registration [/stores/register]
+ 
+### Register a new Store [POST]
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+|-------------------------|----------------------|
+| No                      | No                   |
+
++ Request (application/json; charset=utf-8)
+    + Attributes
+        + name: `Let's Eat` (string, required) - Name of the store.
+        + email: `hello@letseat.co` (string, required) - Email of the store.
+        + phoneNumber: `0134724336` (number, required) - Phone number of the store.
+        + password: `f8e2cfacc6` (string, required) - Password of the store.
+        + imageUrl: `https://some.cdn.com/img.png` (string, optional) - Main image URL of the store.
+
++ Response 201 (application/json; charset=utf-8)
+
+## Data Structures
+
+### Resource (object)
 + id: `1` (string, fixed) - Auto-incremented resource identifier.
 + uuid: `2a64296d-0f87-4457-b9ed-cac36f20c587` (string, fixed) - Universal Unique Identifier.
 + createdAt: `2018-07-01T15:11:09.553Z` (string, optional) - ISO Date/time string. When this resource was created.
 + updatedAt: `2018-07-01T15:11:09.553Z` (string, optional) - ISO Date/time string. When this resource was last updated.
 
-## Photo (Resource)
+### Photo (Resource)
 + name: `Mountain View` (string, required) - Name of the photo.
 + description: `Stunning view from the Everest` (string, required) - Description of the photo.
 + filename: `everest.png` (string, required) - File name.
 + views: `123` (number, required) - Views count.
+
+### Store (Resource)
+ + name: `Let's Eat` (string, required) - Name of the store.
++ email: `hello@letseat.co` (string, required) - Email of the store.
++ phoneNumber: `0134724336` (number, required) - Phone number of the store.
++ password: `f8e2cfacc6` (string, required) - Password of the store.
++ imageUrl: `https://some.cdn.com/img.png` (string, optional) - Main image URL of the store.

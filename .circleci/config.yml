@@ -4,7 +4,7 @@ jobs:
   build:
     docker:
       - image: circleci/node:10.6
-      - image: circleci/postgres:10.5-postgis-ram
+      - image: circleci/postgres:10.5-alpine-postgis
 
     working_directory:  ~/LetsEat/API
 
@@ -32,7 +32,7 @@ jobs:
       - image: circleci/node:10.6
         environment:
           NODE_ENV: test
-      - image: circleci/postgres:10.5-postgis-ram
+      - image: circleci/postgres:10.5-alpine-postgis
 
     working_directory: ~/LetsEat/API
 
@@ -61,7 +61,7 @@ jobs:
       - image: circleci/node:10.6
         environment:
           NODE_ENV: test
-      - image: circleci/postgres:10.5-postgis-ram
+      - image: circleci/postgres:10.5-alpine-postgis
 
     working_directory: ~/LetsEat/API
 
@@ -106,7 +106,7 @@ jobs:
       - image: circleci/node:10.6
         environment:
           NODE_ENV: test
-      - image: circleci/postgres:10.5-postgis-ram
+      - image: circleci/postgres:10.5-alpine-postgis
         environment:
           POSTGRES_USER: circleci
           POSTGRES_DB: test_circleci
