@@ -14,7 +14,8 @@ const development = {
 		port: process.env.DEV_DB_PORT || 5432,
 		username: process.env.DEV_DB_USERNAME || 'root',
 		password: process.env.DEV_DB_PASSWORD || '',
-	}
+	},
+	jwtSecret: process.env.JWT_SECRET
 };
 
 const test = {
@@ -27,7 +28,8 @@ const test = {
 		port: process.env.TEST_DB_PORT || 5432,
 		username: process.env.TEST_DB_USERNAME || 'root',
 		password: process.env.TEST_DB_PASSWORD || '',
-	}
+	},
+	jwtSecret: process.env.JWT_SECRET
 };
 
 const config: any = {

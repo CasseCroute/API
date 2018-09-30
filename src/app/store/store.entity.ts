@@ -14,6 +14,9 @@ export class Store extends AggregateRoot {
 	name: string;
 
 	@Column({length: 256})
+	password: string;
+
+	@Column({length: 256})
 	email: string;
 
 	@Column({name: 'phone_number'})
@@ -25,16 +28,12 @@ export class Store extends AggregateRoot {
 	@Column({name: 'image_url', length: 256, nullable: true})
 	imageUrl?: string;
 
-	constructor(name: string, email: string, phoneNumber: string, slug: string, imageUrl?: string) {
+	constructor(args: Store) {
 		super();
-		this.name = name;
-		this.email = email;
-		this.phoneNumber = phoneNumber;
-		this.slug = slug;
-		this.imageUrl = imageUrl;
+		return Object.assign(this, args);
 	}
 
-	public static register(name: string, email: string, phoneNumber: string, slug: string, imageUrl: string | undefined): Store {
-		return new Store(name, email, phoneNumber, slug, imageUrl);
+	public static register(args: any): Store {
+		return new Store(args);
 	}
 }
