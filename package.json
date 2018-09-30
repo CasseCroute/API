@@ -48,6 +48,7 @@
     "@types/supertest": "^2.0.6",
     "@types/yargs": "^12.0.1",
     "api-blueprint-validator-module": "^1.2.2",
+    "husky": "^1.0.1",
     "jest": "^23.6.0",
     "jest-junit": "^5.1.0",
     "nodemon": "^1.18.4",
@@ -81,6 +82,12 @@
       "@common/*": "<rootDir>/app/common/*",
       "@photo": "<rootDir>/app//photo",
       "@shared/*": "<rootDir>/shared/*"
+    }
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "docker-compose run app yarn test",
+      "pre-push": "docker-compose run app yarn test"
     }
   }
 }
