@@ -4,6 +4,8 @@ import {INestApplication} from '@nestjs/common';
 import {StoreController} from '../store.controller';
 import {StoreService} from '../store.service';
 import * as mocks from './mocks';
+import {AuthService} from '../../auth';
+import {Store} from '../store.entity';
 
 describe('Store', () => {
 	let app: INestApplication;
@@ -11,10 +13,10 @@ describe('Store', () => {
 	beforeAll(async () => {
 		const module: TestingModule = await Test.createTestingModule({
 			controllers: [StoreController],
-			providers: [StoreService],
+			providers: [StoreService, AuthService]
 		})
-			.overrideProvider(StoreService)
-			.useValue(mocks.storeService)
+			.overrideProvider(StoreService).useValue(mocks.storeService)
+			.overrideProvider(AuthService).useValue(mocks.authService)
 			.compile();
 
 		app = module.createNestApplication();

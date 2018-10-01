@@ -4,7 +4,7 @@ import {StoreRepository} from '../../repository/store.repository';
 import {Store} from '@store';
 import {getCustomRepository, Repository} from 'typeorm';
 import {AuthService, CryptographerService} from '@auth';
-import {UnprocessableEntityException} from '@nestjs/common';
+import {BadRequestException} from '@nestjs/common';
 import slugify from 'slugify';
 import {cryptoRandomString} from '@shared';
 
@@ -28,7 +28,7 @@ export class CreateStoreHandler implements ICommandHandler<CreateStoreCommand> {
 			storeSaved.commit();
 			resolve(jwt);
 		} catch (err) {
-			resolve(Promise.reject(new UnprocessableEntityException(err.message)));
+			resolve(Promise.reject(new BadRequestException(err.message)));
 		}
 
 	}

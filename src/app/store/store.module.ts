@@ -8,6 +8,7 @@ import {CommandBus, CQRSModule, EventBus} from '@nestjs/cqrs';
 import {StoreCommandHandlers} from './commands/handlers';
 import {ModuleRef} from '@nestjs/core';
 import {AuthService} from '@auth';
+import {StoreQueryHandlers} from './queries/handlers';
 
 @Module({
 	imports: [
@@ -17,7 +18,8 @@ import {AuthService} from '@auth';
 	providers: [
 		StoreService,
 		AuthService,
-		...StoreCommandHandlers
+		...StoreCommandHandlers,
+		...StoreQueryHandlers
 	],
 	controllers: [StoreController]
 })
@@ -33,5 +35,6 @@ export class StoreModule implements OnModuleInit {
 		this.event$.setModuleRef(this.moduleRef);
 
 		this.command$.register(StoreCommandHandlers);
+		this.command$.register(StoreQueryHandlers);
 	}
 }

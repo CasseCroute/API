@@ -36,7 +36,8 @@ export const storeRepository = {
 };
 
 export const storeService = {
-	createOne: async (store: any) => Promise.resolve(storeRepository.data.push(store))
+	createOne: async (store: any) => Promise.resolve(storeRepository.data.push(store)),
+	findOneByEmail: async (data: any) => storeRepository.data.find(user => user.email === data.email)
 };
 
 export const jwtPayload = {
@@ -50,4 +51,10 @@ export const userCreateDto: CreateStoreDto = {
 	email: 'pizzahut@mail.com',
 	phoneNumber: 1234567890,
 	password: 'password'
+};
+
+export const authService = {
+	validateUser: async (payload: any) => {
+		return storeService.findOneByEmail(payload);
+	}
 };

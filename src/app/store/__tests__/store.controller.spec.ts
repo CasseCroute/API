@@ -3,6 +3,7 @@ import {StoreController, StoreService, Store} from '@store';
 import * as mocks from './mocks';
 import {getRepositoryToken} from '@nestjs/typeorm';
 import {CommandBus} from '@nestjs/cqrs';
+import {AuthService} from '@auth';
 
 describe('StoreController', () => {
 	let storeController: StoreController;
@@ -11,7 +12,7 @@ describe('StoreController', () => {
 	beforeAll(async () => {
 		const module = await Test.createTestingModule({
 			controllers: [StoreController],
-			providers: [StoreService, CommandBus,
+			providers: [StoreService, CommandBus, AuthService,
 				{
 					provide: getRepositoryToken(Store),
 					useValue: mocks.storeRepository

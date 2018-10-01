@@ -10,8 +10,10 @@ export class CryptographerService {
 	}
 
 	public static async comparePassword(candidatePassword: string, saltedPassword: string): Promise<boolean> {
-		return bcrypt.compare(candidatePassword, saltedPassword, (err, res) => {
-			return err ? false : res;
+		return new Promise<boolean>(async (resolve: any, reject: any) => {
+			await bcrypt.compare(candidatePassword, saltedPassword, (err, res) => {
+				return err ? reject(err) : resolve(res);
+			});
 		});
 	}
 }
