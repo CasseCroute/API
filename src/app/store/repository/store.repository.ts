@@ -7,17 +7,4 @@ export class StoreRepository extends Repository<Store> {
 	public async saveStore(store: Store, @TransactionManager() storeRepository: Repository<Store>) {
 		return storeRepository.save(store);
 	}
-
-	public async findOneByEmail(storeEmail: string) {
-		return this.findOne({where: {email: storeEmail}});
-	}
-
-	public async getPassword(store: Store) {
-		return this.findOne({select: ['password'], where: {id: store.id}});
-	}
-
-	@Transaction()
-	public async findOneByPassword(store: Store, @TransactionManager() storeRepository: Repository<Store>) {
-		return storeRepository.findOne(store);
-	}
 }

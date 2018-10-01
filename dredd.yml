@@ -1,9 +1,9 @@
 dry-run: null
-hookfiles: ./src/shared/hooks/*.js
+hookfiles: null
 language: nodejs
 sandbox: false
 server: yarn start:test
-server-wait: 20
+server-wait: 45
 init: false
 names: false
 only: []

@@ -23,21 +23,7 @@ describe('StoreController', () => {
 	describe('createOne()', () => {
 		it('should return a JWT', async () => {
 			jest.spyOn(storeService, 'createOne').mockImplementation(() => mocks.jwtPayload);
-			expect(await storeService.createOne(mocks.storeCreateDto)).toBe(mocks.jwtPayload);
-		});
-	});
-
-	describe('findOneByEmail()', () => {
-		it('should return a store', async () => {
-			jest.spyOn(storeService, 'findOneByEmail').mockImplementation(() => mocks.storeRepository.data[0]);
-			expect(await storeService.findOneByEmail(mocks.storeLoginDto)).toBe(mocks.storeRepository.data[0]);
-		});
-	});
-
-	describe('getPassword()', () => {
-		it('should return a password', async () => {
-			jest.spyOn(storeService, 'getPassword').mockImplementation(() => mocks.storeRepository.data[0].password);
-			expect(await storeService.getPassword(mocks.storeLoginDto)).toBe(mocks.storeRepository.data[0].password);
+			expect(await storeService.createOne(mocks.userCreateDto)).toBe(mocks.jwtPayload);
 		});
 	});
 });
