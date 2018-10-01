@@ -49,3 +49,10 @@ export const storeRegisterValidatorOptions: StoreValidatorPipeOptions = {
 	forbidUnknownValues: true,
 	forbidNonWhitelisted: true
 };
+
+export const storeLoginValidatorOptions: StoreValidatorPipeOptions = {
+	skipMissingProperties: false,
+	whitelist: true,
+	forbidUnknownValues: true,
+	forbidNonWhitelisted: true
+};

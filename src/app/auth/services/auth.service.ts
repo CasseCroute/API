@@ -6,25 +6,39 @@ import {Type} from '@common';
 import {Store} from '@store';
 import passport from 'passport';
 import config from 'config';
+import {StoreService} from '../../store/store.service';
 
 @Injectable()
-export class AuthService {
+export class AuthService<T> {
+	constructor(private readonly resourceService: StoreService) {
+	}
+
 	public static createToken<T extends Store>(resource: T): JwtPayload {
 		const payload = {uuid: resource.uuid, email: resource.email};
-		const expiresIn = '7d';
+		let expiresIn: any = '7d';
 		const accessToken = jwt.sign(payload, config.get('jwtSecret'), {expiresIn});
+		expiresIn = new Date();
+		expiresIn.setDate(expiresIn.getDate() as number + 7);
 		return {
 			iat: Date.now(),
-			exp: expiresIn,
-			jwt: accessToken,
+			exp: expiresIn.getTime(),
+			jwt: accessToken
 		};
+	}
+
+	public async validateResourceByEmail(payload: T | any): Promise<any> {
+		return this.resourceService.findOneByEmail(payload);
+	}
+
+	public async getPassword(resource: T): Promise<any> {
+		return this.resourceService.getPassword(resource);
 	}
 
 }
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-	constructor(private readonly authService: AuthService) {
+	constructor() {
 		super({
 			jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
 			secretOrKey: config.get('jwtSecret'),
