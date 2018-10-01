@@ -1,5 +1,5 @@
 import {CreateStoreDto} from '@store';
-
+import {LoginStoreDto} from '../../dtos';
 export const storeRepository = {
 	data: [
 		{
@@ -37,7 +37,12 @@ export const storeRepository = {
 
 export const storeService = {
 	createOne: async (store: any) => Promise.resolve(storeRepository.data.push(store)),
-	findOneByEmail: async (data: any) => storeRepository.data.find(user => user.email === data.email)
+	findOneByEmail: async (data: any) => {
+		return storeRepository.data.find(store => store.email === data.email);
+	},
+	getPassword: async (data: any) => {
+		return storeRepository.data.find(store => store.password === data.password);
+	}
 };
 
 export const jwtPayload = {
@@ -46,15 +51,30 @@ export const jwtPayload = {
 	jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhlbGxsb29vb2hAZ21haWwuY29tIiwiaWF0IjoxNTM4MzM5NjQ3LCJleHAiOjE1Mzg5NDQ0NDd9.lZSOkxPpXaG5MuWWYGB2J2SPwyMWDFk0QBDSzoxQjiE'
 };
 
-export const userCreateDto: CreateStoreDto = {
+export const storeCreateDto: CreateStoreDto = {
 	name: 'Pizza Hut',
 	email: 'pizzahut@mail.com',
 	phoneNumber: 1234567890,
 	password: 'password'
 };
 
+export const storeLoginDto: LoginStoreDto = {
+	email: 'hello@burgerking.com',
+	password: 'password1'
+};
+
 export const authService = {
-	validateUser: async (payload: any) => {
-		return storeService.findOneByEmail(payload);
+	validateResourceByEmail: async (payload: any) => {
+		return storeService.findOneByEmail(payload).then(res => res);
+	},
+	getPassword: async (resource: any) => {
+		return storeService.getPassword(resource);
 	}
+};
+
+export const cryptographerService = {
+	comparePassword: jest.fn()
+		.mockImplementation((candidatePassword, saltedPassword) => {
+			return candidatePassword === saltedPassword;
+		})
 };
