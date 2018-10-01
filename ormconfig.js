@@ -12,7 +12,7 @@ module.exports =
 		password: `${config.get('database.password')}`,
 		database: `${config.get('database.name')}`,
 		synchronize: true,
-		entities: ['src/**/*.entity.ts'],
+		entities: ['src/app/**/*.entity.ts'],
 		migrations: ['src/migrations/*.ts'],
 		cli: {
 			migrationsDir: 'src/migrations'

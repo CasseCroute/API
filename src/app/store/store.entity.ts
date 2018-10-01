@@ -1,7 +1,8 @@
-import {Entity, Column, PrimaryGeneratedColumn, Generated} from 'typeorm';
+import {Entity, Column, PrimaryGeneratedColumn, Generated, Unique} from 'typeorm';
 import {AggregateRoot} from '@nestjs/cqrs';
 
 @Entity()
+@Unique(['email'])
 export class Store extends AggregateRoot {
 	@PrimaryGeneratedColumn()
 	id: number;
@@ -13,7 +14,7 @@ export class Store extends AggregateRoot {
 	@Column({length: 128})
 	name: string;
 
-	@Column({length: 256})
+	@Column({length: 256, select: false})
 	password: string;
 
 	@Column({length: 256})
@@ -28,7 +29,7 @@ export class Store extends AggregateRoot {
 	@Column({name: 'image_url', length: 256, nullable: true})
 	imageUrl?: string;
 
-	constructor(args: Store) {
+	constructor(args?: Store) {
 		super();
 		return Object.assign(this, args);
 	}
