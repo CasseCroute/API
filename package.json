@@ -8,7 +8,7 @@
     "start:dev": "NODE_ENV=development nodemon --inspect -V",
     "start:test": "NODE_ENV=test nodemon --inspect -V",
     "test": "yarn test:static && yarn test:unit && yarn test:api",
-    "test:api": "yarn api:validate && dredd",
+    "test:api": "yarn api:validate && dredd --no-verify",
     "test:static": "tslint --project ./tsconfig.json 'src/**/*.{ts,tsx}'",
     "test:unit": "NODE_ENV=test jest --maxWorkers=1",
     "test:unit:cov": "jest --coverage",
@@ -93,7 +93,8 @@
       "@common": "<rootDir>/app/common",
       "@photo": "<rootDir>/app/photo",
       "@shared": "<rootDir>/shared",
-      "@store": "<rootDir>/app/store"
+      "@store": "<rootDir>/app/store",
+      "@customer": "<rootDir>/app/customer"
     }
   },
   "husky": {

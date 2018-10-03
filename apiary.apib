@@ -117,7 +117,50 @@ Allows to retrieve a valid JSON Web Token for user email.
         + password: `f8e2cfacc6` (string, required) - Password of the store.
 
 + Response 200 (application/json; charset=utf-8)
-    + Attributes ([JWT])   
+    + Attributes ([JWT])
+
+# Group Customers
+
+## Customer Registration [/customer/register]
+
+### Register a new Customer [POST]
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+|-------------------------|----------------------|
+| No                      | No                   |
+
++ Request (application/json; charset=utf-8)
+    + Attributes
+        + firstName: `Toto` (string, required) - FirstName of the store.
+        + lastName: `Titi` (string, required) - LastName of the store.
+        + email: `toto@toto.fr` (string, required) - Email of the store.
+        + phoneNumber: `178906237812` (number, required) - Phone number of the store.
+        + password: `test` (string, required) - Password of the store.
+
++ Response 201 (application/json; charset=utf-8)
+    + Attributes ([JWT])
+
+## Customer Login [/customer/login]
+
+### Retrieve a Token [POST]
+
+Allows to retrieve a valid JSON Web Token for user email.
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+|-------------------------|----------------------|
+| No                      | No                   |
+
++ Request (application/json; charset=utf-8)
+    + Attributes
+        + email: `toto@toto.fr` (string, required) - Email of the store.
+        + password: `test` (string, required) - Password of the store.
+
++ Response 200 (application/json; charset=utf-8)
+    + Attributes ([JWT])
 
 ## Data Structures
 
@@ -139,6 +182,13 @@ Allows to retrieve a valid JSON Web Token for user email.
 + phoneNumber: `0134724336` (number, required) - Phone number of the store.
 + password: `f8e2cfacc6` (string, required) - Password of the store.
 + imageUrl: `https://some.cdn.com/img.png` (string, optional) - Main image URL of the store.
+
+### Customer (Resource)
+ + firstName: `Let's Eat` (string, required) - FirstName of the store.
+ + lastName: `Let's Eat` (string, required) - LastName of the store.
++ email: `hello@letseat.co` (string, required) - Email of the store.
++ phoneNumber: `0134724336` (number, required) - Phone number of the store.
++ password: `f8e2cfacc6` (string, required) - Password of the store.
 
 ### JWT (object)
 + iat: `1538414646426` (number, required) - Issued date of the JSON Web Token in Unix timestamp format 
