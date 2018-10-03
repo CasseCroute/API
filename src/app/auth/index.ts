@@ -1,3 +1,3 @@
 export {CryptographerService} from './services/cryptographer.service';
-export {AuthService} from './services/auth.service';
+export {AuthStoreService} from './services/auth.store.service';
 export * from './interfaces';

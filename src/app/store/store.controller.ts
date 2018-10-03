@@ -1,6 +1,6 @@
 import {Body, Controller, HttpCode, NotFoundException, Post, UnauthorizedException} from '@nestjs/common';
 import {StoreService} from './store.service';
-import {AuthService, CryptographerService, JwtPayload} from '@auth';
+import {AuthStoreService, CryptographerService, JwtPayload} from '@auth';
 import {
 	storeLoginValidatorOptions, storeRegisterValidatorOptions,
 	StoreValidationPipe
@@ -10,7 +10,7 @@ import {Store} from './store.entity';
 
 @Controller('stores')
 export class StoreController {
-	constructor(private readonly storeService: StoreService, private readonly authService: AuthService<Store>) {
+	constructor(private readonly storeService: StoreService, private readonly authService: AuthStoreService<Store>) {
 	}
 
 	@Post('/register')
@@ -26,7 +26,7 @@ export class StoreController {
 				.then(async (storeFound: Store) => {
 					const storeSelect = await this.authService.getPassword(storeFound);
 					await CryptographerService.comparePassword(store.password, storeSelect.password)
-						? resolve(AuthService.createToken<Store>(storeFound))
+						? resolve(AuthStoreService.createToken<Store>(storeFound))
 						: reject(new UnauthorizedException('Invalid password'));
 				})
 				.catch(() => reject(new NotFoundException('Store doesn\'t exists')));

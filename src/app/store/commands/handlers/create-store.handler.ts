@@ -3,7 +3,7 @@ import {CreateStoreCommand} from '../create-store.command';
 import {StoreRepository} from '../../repository/store.repository';
 import {Store} from '@store';
 import {getCustomRepository, Repository} from 'typeorm';
-import {AuthService, CryptographerService} from '@auth';
+import {AuthStoreService, CryptographerService} from '@auth';
 import {BadRequestException} from '@nestjs/common';
 import slugify from 'slugify';
 import {cryptoRandomString} from '@shared';
@@ -24,7 +24,7 @@ export class CreateStoreHandler implements ICommandHandler<CreateStoreCommand> {
 				await storeRepository.saveStore(store, new Repository<Store>())
 			);
 			delete storeSaved.password;
-			const jwt = AuthService.createToken<Store>(command);
+			const jwt = AuthStoreService.createToken<Store>(command);
 			storeSaved.commit();
 			resolve(jwt);
 		} catch (err) {

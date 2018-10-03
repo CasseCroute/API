@@ -3,17 +3,16 @@ import {ExtractJwt, Strategy} from 'passport-jwt';
 import {Injectable} from '@nestjs/common';
 import {JwtPayload} from '../interfaces';
 import {Type} from '@common';
-import {Store} from '@store';
 import passport from 'passport';
 import config from 'config';
-import {StoreService} from '../../store/store.service';
+import {CustomerService} from '../../customer/customer.service';
 
 @Injectable()
-export class AuthService<T> {
-	constructor(private readonly resourceService: StoreService) {
+export class AuthCustomerService<T> {
+	constructor(private readonly resourceService: CustomerService) {
 	}
 
-	public static createToken<T extends Store>(resource: T): JwtPayload {
+	public static createToken<T extends any>(resource: T): JwtPayload {
 		const payload = {uuid: resource.uuid, email: resource.email};
 		let expiresIn: any = '7d';
 		const accessToken = jwt.sign(payload, config.get('jwtSecret'), {expiresIn});
