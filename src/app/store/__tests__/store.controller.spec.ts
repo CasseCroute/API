@@ -3,9 +3,7 @@ import {StoreController, StoreService, Store} from '@store';
 import * as mocks from './mocks';
 import {getRepositoryToken} from '@nestjs/typeorm';
 import {CommandBus} from '@nestjs/cqrs';
-import {AuthService} from '@auth';
-import {authService} from './mocks';
-import {async} from 'rxjs/internal/scheduler/async';
+import {AuthStoreService} from '@auth';
 
 describe('StoreController', () => {
 	let storeController: StoreController;
@@ -14,14 +12,14 @@ describe('StoreController', () => {
 	beforeAll(async () => {
 		const module = await Test.createTestingModule({
 			controllers: [StoreController],
-			providers: [StoreService, CommandBus, AuthService,
+			providers: [StoreService, CommandBus, AuthStoreService,
 				{
 					provide: getRepositoryToken(Store),
 					useValue: mocks.storeRepository
 				},
 			]
 		})
-			.overrideProvider(AuthService).useValue(mocks.authService)
+			.overrideProvider(AuthStoreService).useValue(mocks.authService)
 			.compile();
 
 		storeController = module.get<StoreController>(StoreController);

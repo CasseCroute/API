@@ -5,8 +5,6 @@ import {Customer} from '@customer';
 import {getCustomRepository, Repository} from 'typeorm';
 import {AuthStoreService, CryptographerService} from '@auth';
 import {BadRequestException} from '@nestjs/common';
-import slugify from 'slugify';
-import {cryptoRandomString} from '@shared';
 
 @CommandHandler(CreateCustomerCommand)
 export class CreateCustomerHandler implements ICommandHandler<CreateCustomerCommand> {
