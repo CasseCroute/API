@@ -91,6 +91,7 @@
     "moduleNameMapper": {
       "@auth": "<rootDir>/app/auth",
       "@common": "<rootDir>/app/common",
+      "@customer": "<rootDir>/app/customer",
       "@photo": "<rootDir>/app/photo",
       "@shared": "<rootDir>/shared",
       "@store": "<rootDir>/app/store"

@@ -7,7 +7,6 @@ import {StoreRepository} from './repository/store.repository';
 import {CommandBus, CQRSModule, EventBus} from '@nestjs/cqrs';
 import {StoreCommandHandlers} from './commands/handlers';
 import {ModuleRef} from '@nestjs/core';
-import {AuthService} from '@auth';
 import {StoreQueryHandlers} from './queries/handlers';
 
 @Module({
@@ -17,7 +16,6 @@ import {StoreQueryHandlers} from './queries/handlers';
 	],
 	providers: [
 		StoreService,
-		AuthService,
 		...StoreCommandHandlers,
 		...StoreQueryHandlers
 	],
