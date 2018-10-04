@@ -1,4 +1,4 @@
-import {Body, Controller, HttpCode, NotFoundException, Post, UnauthorizedException} from '@nestjs/common';
+import {Body, Controller, Get, HttpCode, NotFoundException, Post, UnauthorizedException} from '@nestjs/common';
 import {StoreService} from './store.service';
 import {AuthService, CryptographerService, JwtPayload} from '@auth';
 import {
@@ -11,6 +11,11 @@ import {Store} from './store.entity';
 @Controller('stores')
 export class StoreController {
 	constructor(private readonly storeService: StoreService) {
+	}
+
+	@Get()
+	public async get(): Promise<Store[]> {
+		return this.storeService.findAll();
 	}
 
 	@Post('/register')

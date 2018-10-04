@@ -8,6 +8,7 @@ import {JwtPayload} from '../auth/interfaces';
 import {CreateStoreDto} from '@store';
 import {GetStoreByEmailQuery} from './queries/get-store-by-email.query';
 import {GetStorePasswordQuery} from './queries/get-store-password.query';
+import {GetStoresQuery} from './queries/get-stores.query';
 
 @Injectable()
 export class StoreService {
@@ -20,6 +21,10 @@ export class StoreService {
 
 	public async createOne(store: CreateStoreDto): Promise<JwtPayload> {
 		return this.commandBus.execute(new CreateStoreCommand(store));
+	}
+
+	public async findAll(): Promise<Store[]> {
+		return this.commandBus.execute(new GetStoresQuery());
 	}
 
 	public async findOneByEmail(store: Store | any): Promise<Store> {
