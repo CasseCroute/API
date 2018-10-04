@@ -22,12 +22,40 @@ describe('Store', () => {
 		await app.init();
 	});
 
+	describe('GET /', () => {
+		it('should return a HTTP 200 status code when successful', () => {
+			return request(app.getHttpServer())
+				.get('/stores')
+				.expect(200);
+		});
+	});
+
+	describe('GET /?term=search', () => {
+		it('should return a HTTP 200 status code when successful', () => {
+			return request(app.getHttpServer())
+				.get('/stores?name=BurgerKing')
+				.expect(200);
+		});
+		it('should return a HTTP 422 status code when incorrect', () => {
+			return request(app.getHttpServer())
+				.get('/stores?incorrect=BurgerKing')
+				.expect(422);
+		});
+	});
+
 	describe('POST /register', () => {
 		it('should return a HTTP 201 status code when successful', () => {
 			return request(app.getHttpServer())
 				.post('/stores/register')
 				.send(mocks.storeCreateDto)
 				.expect(201);
+		});
+
+		it('should return a HTTP 500 status code when failed', () => {
+			return request(app.getHttpServer())
+				.post('/stores/register')
+				.send({})
+				.expect(500);
 		});
 	});
 

@@ -20,6 +20,13 @@ describe('StoreController', () => {
 		storeService = module.get<StoreService>(StoreService);
 	});
 
+	describe('findAll()', () => {
+		it('should return an array of Stores', async () => {
+			jest.spyOn(storeService, 'findAll').mockImplementation(() => mocks.storeRepository.data);
+			expect(await storeService.findAll()).toBe(mocks.storeRepository.data);
+		});
+	});
+
 	describe('createOne()', () => {
 		it('should return a JWT', async () => {
 			jest.spyOn(storeService, 'createOne').mockImplementation(() => mocks.jwtPayload);
@@ -38,6 +45,13 @@ describe('StoreController', () => {
 		it('should return a password', async () => {
 			jest.spyOn(storeService, 'getPassword').mockImplementation(() => mocks.storeRepository.data[0].password);
 			expect(await storeService.getPassword(mocks.storeLoginDto)).toBe(mocks.storeRepository.data[0].password);
+		});
+	});
+
+	describe('findByQueryParameters()', () => {
+		it('should return an array of Store when successful', async () => {
+			jest.spyOn(storeService, 'findByQueryParams').mockImplementation(() => mocks.storeRepository.data[0]);
+			expect(await storeService.findByQueryParams({name: 'BurgerKing'})).toBe(mocks.storeRepository.data[0]);
 		});
 	});
 });

@@ -4,8 +4,6 @@ import * as mocks from './mocks';
 import {getRepositoryToken} from '@nestjs/typeorm';
 import {CommandBus} from '@nestjs/cqrs';
 import {AuthService} from '@auth';
-import {authService} from './mocks';
-import {async} from 'rxjs/internal/scheduler/async';
 
 describe('StoreController', () => {
 	let storeController: StoreController;
@@ -32,6 +30,27 @@ describe('StoreController', () => {
 		it('should return a JWT', async () => {
 			jest.spyOn(storeService, 'createOne').mockImplementation(() => mocks.jwtPayload);
 			expect(await storeController.register(mocks.storeCreateDto)).toBe(mocks.jwtPayload);
+		});
+	});
+
+	describe('get()', () => {
+		it('should return an array of Store', async () => {
+			jest.spyOn(storeService, 'findAll').mockImplementation(() => mocks.storeRepository.data);
+			expect(await storeController.get(null)).toBe(mocks.storeRepository.data);
+		});
+	});
+
+	describe('getOneByUuid()', () => {
+		it('should return an array of Store', async () => {
+			jest.spyOn(storeService, 'findOneByUuid').mockImplementation(() => mocks.storeRepository.data[0].uuid);
+			expect(await storeController.getOneByUuid('9c1e887c-4a77-47ca-a572-c9286d6b7cea')).toBe(mocks.storeRepository.data[0].uuid);
+		});
+	});
+
+	describe('get(queryParams)', () => {
+		it('should return an array of Store', async () => {
+			jest.spyOn(storeService, 'findByQueryParams').mockImplementation(() => mocks.storeRepository.data);
+			expect(await storeController.get({name: 'Burger King'})).toBe(mocks.storeRepository.data);
 		});
 	});
 });

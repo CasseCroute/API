@@ -1,5 +1,6 @@
 import {CreateStoreDto} from '@store';
 import {LoginStoreDto} from '../../dtos';
+
 export const storeRepository = {
 	data: [
 		{
@@ -37,11 +38,15 @@ export const storeRepository = {
 
 export const storeService = {
 	createOne: async (store: any) => Promise.resolve(storeRepository.data.push(store)),
+	findAll: async () => Promise.resolve(storeRepository.data),
 	findOneByEmail: async (data: any) => {
 		return storeRepository.data.find(store => store.email === data.email);
 	},
 	getPassword: async (data: any) => {
 		return storeRepository.data.find(store => store.password === data.password);
+	},
+	findByQueryParams: async (query: any) => {
+		return storeRepository.data.find(store => store.name === query);
 	}
 };
 

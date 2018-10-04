@@ -1,4 +1,7 @@
-import {Body, Controller, HttpCode, NotFoundException, Post, UnauthorizedException} from '@nestjs/common';
+import {
+	Body, Controller, Get, HttpCode,
+	NotFoundException, Param, Post, UnauthorizedException
+} from '@nestjs/common';
 import {StoreService} from './store.service';
 import {AuthService, CryptographerService, JwtPayload} from '@auth';
 import {
@@ -7,10 +10,21 @@ import {
 } from './pipes/store.validation.pipe';
 import {CreateStoreDto, LoginStoreDto} from './dtos';
 import {Store} from './store.entity';
+import {Search} from '../common/decorators/search.decorator';
 
 @Controller('stores')
 export class StoreController {
 	constructor(private readonly storeService: StoreService) {
+	}
+
+	@Get()
+	public async get(@Search() queryParams): Promise<Store[] | Store> {
+		return queryParams ? this.storeService.findByQueryParams(queryParams) : this.storeService.findAll();
+	}
+
+	@Get(':uuid')
+	public async getOneByUuid(@Param('uuid') uuid: string) {
+		return this.storeService.findOneByUuid(uuid);
 	}
 
 	@Post('/register')

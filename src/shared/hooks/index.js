@@ -10,6 +10,7 @@ const client = new Client({
 	port: env.TEST_DB_PORT
 });
 
+const store = {};
 
 hooks.beforeAll((transactions, done) => {
 	client.connect()
@@ -20,6 +21,26 @@ hooks.beforeAll((transactions, done) => {
 			console.log(err);
 			return done(err)
 		});
+});
+
+
+// After Store Registration
+hooks.after('Stores > Store Registration > Register a new Store', (transaction, done) => {
+	client.query('SELECT * from store')
+		.then(res => {
+			store['uuid'] = res.rows[0].uuid;
+			done();
+		})
+		.catch(err => {
+			return done(err);
+		})
+});
+
+// Before retrieving Store by UUID
+hooks.before('Stores > Stores > Retrieve a Store', (transaction, done) => {
+	transaction.request.uri = `/stores/${store.uuid}`;
+	transaction.fullPath = `/stores/${store.uuid}`;
+	done();
 });
 
 hooks.afterAll((transactions, done) => {

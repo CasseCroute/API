@@ -4,7 +4,7 @@ import {AggregateRoot} from '@nestjs/cqrs';
 @Entity()
 @Unique(['email'])
 export class Store extends AggregateRoot {
-	@PrimaryGeneratedColumn()
+	@PrimaryGeneratedColumn({unsigned: true})
 	id: number;
 
 	@Column()
