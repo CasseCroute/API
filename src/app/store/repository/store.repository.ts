@@ -12,6 +12,10 @@ export class StoreRepository extends Repository<Store> {
 		return this.findOne({where: {email: storeEmail}});
 	}
 
+	public async findOneByUuid(storeUuid: string) {
+		return this.findOne({where: {uuid: storeUuid}});
+	}
+
 	public async getPassword(store: Store) {
 		return this.findOne({select: ['password'], where: {id: store.id}});
 	}

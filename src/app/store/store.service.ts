@@ -9,6 +9,7 @@ import {CreateStoreDto} from '@store';
 import {GetStoreByEmailQuery} from './queries/get-store-by-email.query';
 import {GetStorePasswordQuery} from './queries/get-store-password.query';
 import {GetStoresQuery} from './queries/get-stores.query';
+import {GetStoreByUuidQuery} from './queries/get-store-by-uuid.query';
 
 @Injectable()
 export class StoreService {
@@ -25,6 +26,10 @@ export class StoreService {
 
 	public async findAll(): Promise<Store[]> {
 		return this.commandBus.execute(new GetStoresQuery());
+	}
+
+	public async findOneByUuid(uuid: string): Promise<Store> {
+		return this.commandBus.execute(new GetStoreByUuidQuery(uuid));
 	}
 
 	public async findOneByEmail(store: Store | any): Promise<Store> {

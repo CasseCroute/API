@@ -1,4 +1,13 @@
-import {Body, Controller, Get, HttpCode, NotFoundException, Post, UnauthorizedException} from '@nestjs/common';
+import {
+	Body,
+	Controller,
+	Get,
+	HttpCode,
+	NotFoundException,
+	Param,
+	Post,
+	UnauthorizedException
+} from '@nestjs/common';
 import {StoreService} from './store.service';
 import {AuthService, CryptographerService, JwtPayload} from '@auth';
 import {
@@ -16,6 +25,11 @@ export class StoreController {
 	@Get()
 	public async get(): Promise<Store[]> {
 		return this.storeService.findAll();
+	}
+
+	@Get(':uuid')
+	public async getOneByUuid(@Param('uuid') uuid: string): Promise<Store | any> {
+		return this.storeService.findOneByUuid(uuid);
 	}
 
 	@Post('/register')
