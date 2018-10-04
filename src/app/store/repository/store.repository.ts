@@ -1,3 +1,4 @@
+/* tslint:disable:no-unused */
 import {EntityRepository, Repository, Transaction, TransactionManager} from 'typeorm';
 import {Store} from '@store';
 
@@ -12,8 +13,15 @@ export class StoreRepository extends Repository<Store> {
 		return this.findOne({where: {email: storeEmail}});
 	}
 
+	public async findByQueryParams(queryParams: any) {
+		const stores = await this.find({where: queryParams});
+		return stores.map(({id, ...attrs}) => attrs);
+	}
+
 	public async findOneByUuid(storeUuid: string) {
-		return this.findOne({where: {uuid: storeUuid}});
+		const store = await this.findOne({where: {uuid: storeUuid}});
+		delete store!.id;
+		return store;
 	}
 
 	public async getPassword(store: Store) {
