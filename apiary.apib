@@ -4,6 +4,16 @@ FORMAT: 1A
 
 *This API Blueprint is subject to change due to technology restrictions, performance optimizations or changing requirements.*
 
+## Filtering
+
+### Filtering
+
+This API can filter returned collections based on provided query parameters. Virtually any model field can be used as a filter (except sensible data)
+
+For example, when requesting a list of movies from the /movies endpoint, you may want to limit these to only those of drama genre. This could be accomplished with a request like `GET /movies?genre=drama`. Here, genre is a query parameter that implements a filter.
+
+Searchable list of fields are defined in data stuctures section
+
 # HTTP Methods
 
 This API uses HTTP verbs (methods) as following:
@@ -44,6 +54,7 @@ This API uses HTTP status codes to communicate with the API consumer.
 + `400 Bad Request` - Malformed request; form validation errors.
 + `401 Unauthorized` - When no or invalid authentication details are provided.
 + `403 Forbidden` - When authentication succeeded but authenticated user doesn't have access to the resource.
++ `404 Not Found` - When a non-existent resource is requested.
 
 # Group Photo
 
@@ -100,7 +111,7 @@ Creates a new photo.
     + Attributes ([JWT])
 
 ## Store Login [/stores/login]
- 
+
 ### Retrieve a Token [POST]
 
 Allows to retrieve a valid JSON Web Token.
@@ -118,6 +129,28 @@ Allows to retrieve a valid JSON Web Token.
 
 + Response 200 (application/json; charset=utf-8)
     + Attributes ([JWT])
+
+## Stores [/stores]
+
+### List all Stores  [GET]
+
+Returns a list of stores. The stores are returned in sorter order, with the most recently created stores appearing first.
+
+**Searcheable fields**
++ name
++ email
++ slug
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+|-------------------------|----------------------|
+| No                      | No                   |
+
++ Request (application/json; charset=utf-8)
+
++ Response 200 (application/json; charset=utf-8)
+    + Attributes ([Store])
 
 # Group Customers
 
@@ -180,6 +213,7 @@ Allows to retrieve a valid JSON Web Token.
 + name: `Let's Eat` (string, required) - Name of the store.
 + email: `hello@letseat.co` (string, required) - Email of the store.
 + phoneNumber: `0134724336` (number, required) - Phone number of the store.
++ slug: `lets-eat-7d6ae7c69f` (string, required) - Slug of the store.
 + password: `f8e2cfacc6` (string, required) - Password of the store.
 + imageUrl: `https://some.cdn.com/img.png` (string, optional) - Main image URL of the store.
 
