@@ -37,6 +37,7 @@ export const storeRepository = {
 
 export const storeService = {
 	createOne: async (store: any) => Promise.resolve(storeRepository.data.push(store)),
+	findAll: async () => Promise.resolve(storeRepository.data),
 	findOneByEmail: async (data: any) => {
 		return storeRepository.data.find(store => store.email === data.email);
 	},

@@ -20,6 +20,13 @@ describe('StoreController', () => {
 		storeService = module.get<StoreService>(StoreService);
 	});
 
+	describe('findAll()', () => {
+		it('should return an array of Stores', async () => {
+			jest.spyOn(storeService, 'findAll').mockImplementation(() => mocks.storeRepository.data);
+			expect(await storeService.findAll()).toBe(mocks.storeRepository.data);
+		});
+	});
+
 	describe('createOne()', () => {
 		it('should return a JWT', async () => {
 			jest.spyOn(storeService, 'createOne').mockImplementation(() => mocks.jwtPayload);

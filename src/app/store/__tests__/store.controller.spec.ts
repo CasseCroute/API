@@ -34,4 +34,11 @@ describe('StoreController', () => {
 			expect(await storeController.register(mocks.storeCreateDto)).toBe(mocks.jwtPayload);
 		});
 	});
+
+	describe('get()', () => {
+		it('should return an array of Store', async () => {
+			jest.spyOn(storeService, 'findAll').mockImplementation(() => mocks.storeRepository.data);
+			expect(await storeController.get()).toBe(mocks.storeRepository.data);
+		});
+	});
 });

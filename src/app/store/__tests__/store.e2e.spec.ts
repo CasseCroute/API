@@ -22,6 +22,14 @@ describe('Store', () => {
 		await app.init();
 	});
 
+	describe('GET /', () => {
+		it('should return a HTTP 200 status code when successful', () => {
+			return request(app.getHttpServer())
+				.get('/stores')
+				.expect(200);
+		});
+	});
+
 	describe('POST /register', () => {
 		it('should return a HTTP 201 status code when successful', () => {
 			return request(app.getHttpServer())
