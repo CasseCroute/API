@@ -39,6 +39,7 @@
     "paths": {                                /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */
       "@auth": ["src/app/auth"],
       "@common": ["src/app/common"],
+      "@customer": ["src/app/customer"],
       "@photo": ["src/app/photo"],
       "@shared": ["src/shared"],
       "@store": ["src/app/store"]

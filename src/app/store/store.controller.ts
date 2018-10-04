@@ -10,7 +10,7 @@ import {Store} from './store.entity';
 
 @Controller('stores')
 export class StoreController {
-	constructor(private readonly storeService: StoreService, private readonly authService: AuthService<Store>) {
+	constructor(private readonly storeService: StoreService) {
 	}
 
 	@Post('/register')
@@ -22,9 +22,9 @@ export class StoreController {
 	@HttpCode(200)
 	public async login(@Body(new StoreValidationPipe(storeLoginValidatorOptions)) store: LoginStoreDto): Promise<any> {
 		return new Promise<any>(async (resolve: any, reject: any) => {
-			return this.authService.validateResourceByEmail(store)
+			return this.storeService.findOneByEmail(store)
 				.then(async (storeFound: Store) => {
-					const storeSelect = await this.authService.getPassword(storeFound);
+					const storeSelect = await this.storeService.getPassword(storeFound);
 					await CryptographerService.comparePassword(store.password, storeSelect.password)
 						? resolve(AuthService.createToken<Store>(storeFound))
 						: reject(new UnauthorizedException('Invalid password'));
