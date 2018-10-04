@@ -47,4 +47,11 @@ describe('StoreController', () => {
 			expect(await storeService.getPassword(mocks.storeLoginDto)).toBe(mocks.storeRepository.data[0].password);
 		});
 	});
+
+	describe('findByQueryParameters()', () => {
+		it('should return an array of Store when successful', async () => {
+			jest.spyOn(storeService, 'findByQueryParams').mockImplementation(() => mocks.storeRepository.data[0]);
+			expect(await storeService.findByQueryParams({name: 'BurgerKing'})).toBe(mocks.storeRepository.data[0]);
+		});
+	});
 });

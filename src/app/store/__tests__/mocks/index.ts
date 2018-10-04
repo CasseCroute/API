@@ -1,5 +1,6 @@
 import {CreateStoreDto} from '@store';
 import {LoginStoreDto} from '../../dtos';
+
 export const storeRepository = {
 	data: [
 		{
@@ -43,6 +44,9 @@ export const storeService = {
 	},
 	getPassword: async (data: any) => {
 		return storeRepository.data.find(store => store.password === data.password);
+	},
+	findByQueryParams: async (query: any) => {
+		return storeRepository.data.find(store => store.name === query);
 	}
 };
 
