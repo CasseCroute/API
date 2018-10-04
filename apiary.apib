@@ -56,37 +56,6 @@ This API uses HTTP status codes to communicate with the API consumer.
 + `403 Forbidden` - When authentication succeeded but authenticated user doesn't have access to the resource.
 + `404 Not Found` - When a non-existent resource is requested.
 
-# Group Photo
-
-## Photos Resource [/photos]
- 
-### Create a new Photo [POST]
- 
-Creates a new photo.
- 
-**Endpoint information**
-
-| Requires authentication | Has restricted scope |
-|-------------------------|----------------------|
-| No                      | No                   |
-
-+ Request (application/json; charset=utf-8)
-
-+ Response 201 (application/json; charset=utf-8)
-
-### Retrieve all Photos [GET]
-
-
-**Endpoint information**
-
-| Requires authentication | Has restricted scope |
-|-------------------------|----------------------|
-| No                      | No                   |
-
-+ Request (application/json; charset=utf-8)
-            
-+ Response 200 (application/json; charset=utf-8)
-
 # Group Stores
 
 ## Store Registration [/stores/register]
@@ -222,12 +191,6 @@ Allows to retrieve a valid JSON Web Token.
 + uuid: `2a64296d-0f87-4457-b9ed-cac36f20c587` (string, fixed) - Universal Unique Identifier.
 + createdAt: `2018-07-01T15:11:09.553Z` (string, optional) - ISO Date/time string. When this resource was created.
 + updatedAt: `2018-07-01T15:11:09.553Z` (string, optional) - ISO Date/time string. When this resource was last updated.
-
-### Photo (Resource)
-+ name: `Mountain View` (string, required) - Name of the photo.
-+ description: `Stunning view from the Everest` (string, required) - Description of the photo.
-+ filename: `everest.png` (string, required) - File name.
-+ views: `123` (number, required) - Views count.
 
 ### Store (Resource)
 + name: `Let's Eat` (string, required) - Name of the store.

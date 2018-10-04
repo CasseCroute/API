@@ -40,7 +40,6 @@
       "@auth": ["src/app/auth"],
       "@common": ["src/app/common"],
       "@customer": ["src/app/customer"],
-      "@photo": ["src/app/photo"],
       "@shared": ["src/shared"],
       "@store": ["src/app/store"]
     },
