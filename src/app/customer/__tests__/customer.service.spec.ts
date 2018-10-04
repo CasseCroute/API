@@ -4,7 +4,7 @@ import * as mocks from './mocks';
 import {getRepositoryToken} from '@nestjs/typeorm';
 import {CommandBus} from '@nestjs/cqrs';
 
-describe('CustomerController', () => {
+describe('CustomerService', () => {
 	let customerService: CustomerService;
 
 	beforeAll(async () => {

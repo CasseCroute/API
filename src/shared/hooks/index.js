@@ -23,7 +23,7 @@ hooks.beforeAll((transactions, done) => {
 });
 
 hooks.afterAll((transactions, done) => {
-client.query('TRUNCATE TABLE store')
+client.query('TRUNCATE TABLE store; TRUNCATE TABLE customer;')
 	.then((res) => {
 		client.end();
 		done();

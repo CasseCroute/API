@@ -1,8 +1,11 @@
-import {IsString, IsEmail, IsNumber, IsOptional, Min} from 'class-validator';
+import {IsString, IsEmail, IsNumber, Min} from 'class-validator';
 
 export class CreateCustomerDto {
 	@IsString()
-	readonly name: string;
+	readonly firstName: string;
+
+	@IsString()
+	readonly lastName: string;
 
 	@IsEmail()
 	readonly email: string;
@@ -13,8 +16,4 @@ export class CreateCustomerDto {
 
 	@IsString()
 	readonly password: string;
-
-	@IsString()
-	@IsOptional()
-	readonly imageUrl?: string;
 }

@@ -4,8 +4,6 @@ import * as mocks from './mocks';
 import {getRepositoryToken} from '@nestjs/typeorm';
 import {CommandBus} from '@nestjs/cqrs';
 import {AuthService} from '@auth';
-import {authService} from './mocks';
-import {async} from 'rxjs/internal/scheduler/async';
 
 describe('CustomerController', () => {
 	let customerController: CustomerController;

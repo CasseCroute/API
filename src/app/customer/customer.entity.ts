@@ -12,7 +12,10 @@ export class Customer extends AggregateRoot {
 	uuid: string;
 
 	@Column({length: 128})
-	name: string;
+	firstName: string;
+
+	@Column({length: 128})
+	lastName: string;
 
 	@Column({length: 256, select: false})
 	password: string;
@@ -22,12 +25,6 @@ export class Customer extends AggregateRoot {
 
 	@Column({name: 'phone_number'})
 	phoneNumber: string;
-
-	@Column({length: 128})
-	slug: string;
-
-	@Column({name: 'image_url', length: 256, nullable: true})
-	imageUrl?: string;
 
 	constructor(args?: Customer) {
 		super();

@@ -16,7 +16,6 @@ export class CreateCustomerHandler implements ICommandHandler<CreateCustomerComm
 	async execute(command: CreateCustomerCommand, resolve: (value?) => void) {
 		const customerRepository = getCustomRepository(CustomerRepository);
 		command.password = await CryptographerService.hashPassword(command.password);
-		command.slug = `${slugify(command.name, {replacement: '-', lower: true})}-${cryptoRandomString(10)}`;
 		const customer = Customer.register(command);
 
 		try {

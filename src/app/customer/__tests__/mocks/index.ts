@@ -4,44 +4,41 @@ export const customerRepository = {
 	data: [
 		{
 			id: 1,
-			uuid: '9c1e887c-4a77-47ca-a572-c9286d6b7cea',
-			name: 'Burger King',
-			email: 'hello@burgerking.com',
+			uuid: '4d31ffbc-b731-4a31-9ff7-98caa467a3b7',
+			firstName: 'Arthur',
+			lastName: 'De La Ronde',
+			email: 'arthurdlr@mail.me',
 			phoneNumber: 1234567890,
-			password: 'password1',
-			imageUrl: null,
-			slug: 'burger-king-f8e2cfacc6'
+			password: 'password1'
 		},
 		{
 			id: 2,
-			uuid: 'bea6e9dd-fb32-4ebd-bf7e-a04f86a62e56',
-			name: 'McDonalds',
-			email: 'hello@mcdonalds.com',
+			uuid: '9ac9b672-66b9-4f48-8912-09ac70d76fde',
+			firstName: 'Urho',
+			lastName: 'Wahlman',
+			email: 'urho@wahlman.com',
 			phoneNumber: 1234567890,
-			password: 'password2',
-			imageUrl: null,
-			slug: 'mcdonalds-a822cdcre2'
+			password: 'password2'
 		},
 		{
 			id: 3,
-			uuid: '2cd4f312-22e8-4d68-8937-4415ed701f84',
-			name: 'Subway',
-			email: 'hello@subway.com',
+			uuid: '6bd8dc8e-fa99-481b-beea-2e4226f72724',
+			firstName: 'Erin',
+			lastName: 'Bishop',
+			email: 'bishop.erin@mail.com',
 			phoneNumber: 1234567890,
-			password: 'password3',
-			imageUrl: null,
-			slug: 'subway-f8e2cfacc6'
+			password: 'password3'
 		},
 	],
 };
 
 export const customerService = {
-	createOne: async (customer: any) => Promise.resolve(customerRepository.data.push(customer)),
+	createOne: async (store: any) => Promise.resolve(customerRepository.data.push(store)),
 	findOneByEmail: async (data: any) => {
-		return customerRepository.data.find(customer => customer.email === data.email);
+		return customerRepository.data.find(store => store.email === data.email);
 	},
 	getPassword: async (data: any) => {
-		return customerRepository.data.find(customer => customer.password === data.password);
+		return customerRepository.data.find(store => store.password === data.password);
 	}
 };
 
@@ -52,14 +49,15 @@ export const jwtPayload = {
 };
 
 export const customerCreateDto: CreateCustomerDto = {
-	name: 'Pizza Hut',
-	email: 'pizzahut@mail.com',
+	firstName: 'Agrican',
+	lastName: 'Deslauriers',
+	email: 'deslauriers@whatmail.com',
 	phoneNumber: 1234567890,
 	password: 'password'
 };
 
 export const customerLoginDto: LoginCustomerDto = {
-	email: 'hello@burgerking.com',
+	email: 'arthurdlr@mail.me',
 	password: 'password1'
 };
 

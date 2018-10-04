@@ -1,12 +1,11 @@
 import request from 'supertest';
 import {Test, TestingModule} from '@nestjs/testing';
 import {INestApplication} from '@nestjs/common';
-import {CustomerController} from '../customer.controller';
-import {CustomerService} from '../customer.service';
+import {CustomerController, CustomerService} from '@customer';
 import * as mocks from './mocks';
-import {AuthService, CryptographerService} from '../../auth';
+import {AuthService, CryptographerService} from '@auth';
 
-describe('Customer', () => {
+describe('CustomerE2E', () => {
 	let app: INestApplication;
 
 	beforeAll(async () => {
