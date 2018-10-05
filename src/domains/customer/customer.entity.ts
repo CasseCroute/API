@@ -1,15 +1,13 @@
-import {Entity, Column, PrimaryGeneratedColumn, Generated, Unique} from 'typeorm';
-import {AggregateRoot} from '@nestjs/cqrs';
+import {Entity, Column, Unique} from 'typeorm';
+import {Resource} from '@letseat/domains/resource/resource';
 
 @Entity()
 @Unique(['email'])
-export class Customer extends AggregateRoot {
-	@PrimaryGeneratedColumn()
-	id: number;
-
-	@Column()
-	@Generated('uuid')
-	uuid: string;
+export class Customer extends Resource {
+	constructor(args?: Customer) {
+		super();
+		return Object.assign(this, args);
+	}
 
 	@Column({length: 128})
 	firstName: string;
@@ -25,11 +23,6 @@ export class Customer extends AggregateRoot {
 
 	@Column({name: 'phone_number'})
 	phoneNumber: string;
-
-	constructor(args?: Customer) {
-		super();
-		return Object.assign(this, args);
-	}
 
 	public static register(args: any): Customer {
 		return new Customer(args);

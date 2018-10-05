@@ -7,6 +7,8 @@ import {StoreRepository} from '@letseat/infrastructure/repository/store.reposito
 import {Store} from '@letseat/domains/store/store.entity';
 import {StoreCommandHandlers} from '@letseat/application/commands/store/handlers';
 import {StoreQueryHandlers} from '@letseat/application/queries/store/handlers';
+import {JwtStrategy} from '@letseat/infrastructure/authorization/strategies/jwt.strategy';
+import {ResourceQueryHandlers} from '@letseat/application/queries/resource/handlers';
 
 @Module({
 	imports: [
@@ -14,6 +16,8 @@ import {StoreQueryHandlers} from '@letseat/application/queries/store/handlers';
 		CQRSModule
 	],
 	providers: [
+		JwtStrategy,
+		...ResourceQueryHandlers,
 		...StoreCommandHandlers,
 		...StoreQueryHandlers
 	],
@@ -32,5 +36,6 @@ export class StoreModule implements OnModuleInit {
 
 		this.command$.register(StoreCommandHandlers);
 		this.command$.register(StoreQueryHandlers);
+		this.command$.register(ResourceQueryHandlers);
 	}
 }

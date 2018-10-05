@@ -1,9 +1,10 @@
 /* tslint:disable:no-unused */
 import {EntityRepository, Repository, Transaction, TransactionManager} from 'typeorm';
 import {Store} from '@letseat/domains/store/store.entity';
+import {ResourceRepository} from '@letseat/infrastructure/repository/resource.repository';
 
 @EntityRepository(Store)
-export class StoreRepository extends Repository<Store> {
+export class StoreRepository extends Repository<Store> implements ResourceRepository{
 	@Transaction()
 	public async saveStore(store: Store, @TransactionManager() storeRepository: Repository<Store>) {
 		return storeRepository.save(store);

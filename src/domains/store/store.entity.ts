@@ -1,16 +1,9 @@
-import {Entity, Column, PrimaryGeneratedColumn, Generated, Unique} from 'typeorm';
-import {AggregateRoot} from '@nestjs/cqrs';
+import {Entity, Column, Unique} from 'typeorm';
+import {Resource} from '@letseat/domains/resource/resource';
 
 @Entity()
 @Unique(['email'])
-export class Store extends AggregateRoot {
-	@PrimaryGeneratedColumn({unsigned: true})
-	id: number;
-
-	@Column()
-	@Generated('uuid')
-	uuid: string;
-
+export class Store extends Resource {
 	@Column({length: 128})
 	name: string;
 
