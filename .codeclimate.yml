@@ -2,7 +2,14 @@ version: "2"
 checks:
   similar-code:
     config:
-      threshold: 75
-  identical-code:
-    config:
-      threshold: 75
+      threshold: 95
+exclude_patterns:
+- "config/"
+- "dist/"
+- "build/"
+- "**/node_modules/"
+- "**/__tests__/**"
+- "**/*.d.ts"
+- "**/*.spec.ts"
+- "**/logger.service.ts"
+- "**/custom.exception.filter.ts"
