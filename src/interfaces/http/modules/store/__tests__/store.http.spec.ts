@@ -7,10 +7,17 @@ import {getRepositoryToken} from '@nestjs/typeorm';
 import {AuthService, CryptographerService} from '@letseat/infrastructure/authorization';
 import {CommandBus, EventPublisher, EventBus, CQRSModule} from '@nestjs/cqrs';
 import {Store} from '@letseat/domains/store/store.entity';
+import {JwtStrategy} from '@letseat/infrastructure/authorization/strategies/jwt.strategy';
+import jwt from 'jsonwebtoken';
 
 describe('Store HTTP Requests', () => {
 	let app: INestApplication;
 	let commandBus: CommandBus;
+	const expiresIn = '7d';
+	const token = jwt.sign({
+		uuid: mocks.storeRegisteredData.uuid,
+		email: mocks.storeRegisteredData.email
+	}, 'secretKey', {expiresIn});
 
 	beforeAll(async () => {
 		const module: TestingModule = await Test.createTestingModule({
@@ -36,11 +43,13 @@ describe('Store HTTP Requests', () => {
 				register: jest.fn(),
 				execute: jest.fn()
 			})
+			.overrideProvider(JwtStrategy).useClass(mocks.JwtStrategyMock)
 			.compile();
 
 		app = module.createNestApplication();
 		commandBus = module.get<CommandBus>(CommandBus);
 		await app.init();
+		mocks.storeRepository.data.push(mocks.storeRegisteredData);
 	});
 
 	describe('GET /', () => {
@@ -61,6 +70,21 @@ describe('Store HTTP Requests', () => {
 			return request(app.getHttpServer())
 				.get('/stores?incorrect=BurgerKing')
 				.expect(422);
+		});
+	});
+
+	describe('GET /me', () => {
+		it('should return a HTTP 200 status code when successful', () => {
+			return request(app.getHttpServer())
+				.get('/stores/me')
+				.set('Authorization', `Bearer ${token}`)
+				.expect(200);
+		});
+
+		it('should return a HTTP 401 status code when no JWT is present in Authorization header', () => {
+			return request(app.getHttpServer())
+				.get('/stores/me')
+				.expect(401);
 		});
 	});
 
