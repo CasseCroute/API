@@ -1,8 +1,10 @@
 import {NestFactory} from '@nestjs/core';
-import {CoreModule} from './app/core.module';
 import config from 'config';
 import dotenv from 'dotenv';
-import {CustomExceptionFilter, LoggerService} from '@common';
+import {CoreModule} from '@letseat/interfaces/http/modules/core.module';
+import {CustomExceptionFilter} from '@letseat/domains/common/exceptions';
+import {LoggerService} from '@letseat/application/queries/common/services';
+
 const logger = new LoggerService('Server');
 
 dotenv.config();

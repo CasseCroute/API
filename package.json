@@ -89,11 +89,11 @@
       "jest-junit"
     ],
     "moduleNameMapper": {
-      "@auth": "<rootDir>/app/auth",
-      "@common": "<rootDir>/app/common",
-      "@customer": "<rootDir>/app/customer",
-      "@shared": "<rootDir>/shared",
-      "@store": "<rootDir>/app/store"
+      "@letseat/application/(.*)": "<rootDir>/application/$1",
+      "@letseat/domains/(.*)": "<rootDir>/domains/$1",
+      "@letseat/infrastructure/(.*)": "<rootDir>/infrastructure/$1",
+      "@letseat/interfaces/(.*)": "<rootDir>/interfaces/$1",
+      "@letseat/shared/utils": "<rootDir>/shared/utils"
     }
   },
   "husky": {
