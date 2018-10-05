@@ -1,6 +1,6 @@
 import {
 	Body, Controller, Get, HttpCode,
-	NotFoundException, Param, Post, UnauthorizedException
+	NotFoundException, Param, Post, Req, UnauthorizedException, UseGuards
 } from '@nestjs/common';
 import {CommandBus} from '@nestjs/cqrs';
 import {Search} from '@letseat/application/queries/common/decorators/search.decorator';
@@ -17,6 +17,7 @@ import {
 } from '@letseat/application/queries/store';
 import {CreateStoreDto, LoginStoreDto} from '@letseat/domains/store/dtos';
 import {CreateStoreCommand} from '@letseat/application/commands/store';
+import {AuthGuard} from '@letseat/infrastructure/authorization/guards';
 
 @Controller('stores')
 export class StoreController {
@@ -28,6 +29,12 @@ export class StoreController {
 		return queryParams
 			? this.commandBus.execute(new GetStoresByQueryParamsQuery(queryParams))
 			: this.commandBus.execute(new GetStoresQuery());
+	}
+
+	@Get('/me')
+	@UseGuards(AuthGuard('jwt'))
+	public async currentUser(@Req() request: any) {
+		return this.commandBus.execute(new GetStoreByUuidQuery(request.user.uuid));
 	}
 
 	@Get(':uuid')

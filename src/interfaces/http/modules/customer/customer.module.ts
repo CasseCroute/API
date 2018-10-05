@@ -7,6 +7,7 @@ import {CustomerCommandHandlers} from '@letseat/application/commands/customer/ha
 import {Customer} from '@letseat/domains/customer/customer.entity';
 import {CustomerRepository} from '@letseat/infrastructure/repository/customer.repository';
 import {CustomerQueryHandlers} from '@letseat/application/queries/customer/handlers';
+import {JwtStrategy} from '@letseat/infrastructure/authorization/strategies/jwt.strategy';
 
 @Module({
 	imports: [
@@ -14,6 +15,7 @@ import {CustomerQueryHandlers} from '@letseat/application/queries/customer/handl
 		CQRSModule
 	],
 	providers: [
+		JwtStrategy,
 		...CustomerCommandHandlers,
 		...CustomerQueryHandlers
 	],

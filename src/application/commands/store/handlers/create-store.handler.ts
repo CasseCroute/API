@@ -24,7 +24,7 @@ export class CreateStoreHandler implements ICommandHandler<CreateStoreCommand> {
 				await storeRepository.saveStore(store, new Repository<Store>())
 			);
 			delete storeSaved.password;
-			const jwt = AuthService.createToken<Store>(command);
+			const jwt = AuthService.createToken<Store>(storeSaved);
 			storeSaved.commit();
 			resolve(jwt);
 		} catch (err) {

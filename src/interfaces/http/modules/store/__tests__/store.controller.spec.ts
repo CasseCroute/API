@@ -41,6 +41,13 @@ describe('StoreController', () => {
 		});
 	});
 
+	describe('currentUser()', () => {
+		it('should return a Store when successful', async () => {
+			jest.spyOn(commandBus, 'execute').mockImplementation(() => mocks.storeRepository.data[0]);
+			expect(await storeController.currentUser({user: mocks.storeRepository.data[0]})).toBe(mocks.storeRepository.data[0]);
+		});
+	});
+
 	describe('getOneByUuid()', () => {
 		it('should return an array of Store', async () => {
 			jest.spyOn(commandBus, 'execute').mockImplementation(() => mocks.storeRepository.data[0].uuid);

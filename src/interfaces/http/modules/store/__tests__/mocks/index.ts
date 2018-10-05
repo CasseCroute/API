@@ -1,5 +1,10 @@
-import {CreateStoreDto} from '@store';
-import {LoginStoreDto} from '../../dtos';
+import {Type} from '@letseat/shared/interfaces';
+import {ExtractJwt, Strategy} from 'passport-jwt';
+import passport from 'passport';
+import {CreateStoreDto, LoginStoreDto} from '@letseat/domains/store/dtos';
+import httpMock from 'node-mocks-http';
+
+export const request = httpMock.createRequest();
 
 export const storeRepository = {
 	data: [
@@ -42,6 +47,9 @@ export const commandBus = {
 	findOneByEmail: async (data: any) => {
 		return storeRepository.data.find(store => store.email === data.email);
 	},
+	findOneByUuid: async (data: any) => {
+		return storeRepository.data.find(store => store.uuid === data.uuid);
+	},
 	getPassword: async (data: any) => {
 		return storeRepository.data.find(store => store.password === data.password);
 	},
@@ -69,11 +77,14 @@ export const storeLoginDto: LoginStoreDto = {
 };
 
 export const authService = {
+	validateResourceByUuid: async (payload: any) => {
+		return commandBus.findOneByUuid(payload).then(res => res);
+	},
 	validateResourceByEmail: async (payload: any) => {
-		return storeService.findOneByEmail(payload).then(res => res);
+		return commandBus.findOneByEmail(payload).then(res => res);
 	},
 	getPassword: async (resource: any) => {
-		return storeService.getPassword(resource);
+		return commandBus.getPassword(resource);
 	}
 };
 
@@ -83,3 +94,52 @@ export const cryptographerService = {
 			return candidatePassword === saltedPassword;
 		})
 };
+
+export const storeRegisteredData: any = {
+	id: 10,
+	uuid: 'eff42826-9808-4001-a358-6e214bd4a68b',
+	createdAt: '2018-10-05T10:07:19.139Z',
+	updatedAt: '2018-10-05T10:07:19.139Z',
+	name: 'Hey',
+	email: 'alassane@mail.com',
+	phoneNumber: 123456000000078900,
+	slug: 'hey-5c3a6bd065',
+	imageUrl: null
+};
+
+export class JwtStrategyMock extends PassportStrategy(Strategy) {
+	constructor() {
+		super({
+			jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+			secretOrKey: 'secretKey',
+		}, async (payload: any, next: any) => this.verify(payload, next));
+		passport.use('jwt', this as any);
+	}
+
+	public async verify(payload: any, done: Function) {
+		const user = await authService.validateResourceByUuid(payload);
+		if (!user) {
+			return done(true, user);
+		}
+		done(null, payload);
+	}
+}
+
+export function PassportStrategy<T extends Type = any>(passportStrategy: T, name?: string | undefined): {
+	new (...args: any[]): T;
+} {
+	abstract class MixinStrategy extends passportStrategy {
+		abstract validate(...args: any[]): any;
+
+		constructor(...args: any[]) {
+			super(...args, (...params: any[]) => this.validate(...params));
+			if (name) {
+				passport.use(name, this as any);
+			} else {
+				passport.use(this as any);
+			}
+		}
+	}
+
+	return MixinStrategy;
+}
