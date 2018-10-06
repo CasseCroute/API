@@ -8,7 +8,7 @@ import {CommandBus, EventPublisher, EventBus, CQRSModule} from '@nestjs/cqrs';
 import {AuthService, CryptographerService} from '@letseat/infrastructure/authorization';
 import {Customer} from '@letseat/domains/customer/customer.entity';
 import {GetCustomerByEmailQuery} from '@letseat/application/queries/customer';
-import {Store} from '../../../../../domains/store/store.entity';
+import {JwtStrategy} from '@letseat/infrastructure/authorization/strategies/jwt.strategy';
 
 describe('Customer HTTP Requests', () => {
 	let app: INestApplication;
@@ -38,7 +38,7 @@ describe('Customer HTTP Requests', () => {
 				register: jest.fn(),
 				execute: jest.fn()
 			})
-			.overrideProvider(GetCustomerByEmailQuery).useValue(GetCustomerByEmailQuery)
+			.overrideProvider(JwtStrategy).useClass(mocks.JwtStrategyMock)
 			.compile();
 
 		app = module.createNestApplication();
@@ -52,6 +52,21 @@ describe('Customer HTTP Requests', () => {
 				.post('/customers/register')
 				.send(mocks.customerCreateDto)
 				.expect(201);
+		});
+	});
+
+	describe('GET /me', () => {
+		it('should return a HTTP 200 status code when successful', () => {
+			return request(app.getHttpServer())
+				.get('/customers/me')
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.expect(200);
+		});
+
+		it('should return a HTTP 401 status code when no JWT is present in Authorization header', () => {
+			return request(app.getHttpServer())
+				.get('/customers/me')
+				.expect(401);
 		});
 	});
 
