@@ -1,8 +1,9 @@
-import {Type} from '@letseat/shared/interfaces';
-import {ExtractJwt, Strategy} from 'passport-jwt';
-import passport from 'passport';
-import {CreateStoreDto, LoginStoreDto} from '@letseat/domains/store/dtos';
+import {CreateStoreDto} from '@letseat/domains/store/dtos';
 import httpMock from 'node-mocks-http';
+import jwt from 'jsonwebtoken';
+import {PassportStrategy} from '@letseat/infrastructure/authorization/strategies/jwt.strategy';
+import passport from 'passport';
+import {ExtractJwt, Strategy} from 'passport-jwt';
 
 export const request = httpMock.createRequest();
 
@@ -71,7 +72,7 @@ export const storeCreateDto: CreateStoreDto = {
 	password: 'password'
 };
 
-export const storeLoginDto: LoginStoreDto = {
+export const storeLoginDto: any = {
 	email: 'hello@burgerking.com',
 	password: 'password1'
 };
@@ -95,18 +96,6 @@ export const cryptographerService = {
 		})
 };
 
-export const storeRegisteredData: any = {
-	id: 10,
-	uuid: 'eff42826-9808-4001-a358-6e214bd4a68b',
-	createdAt: '2018-10-05T10:07:19.139Z',
-	updatedAt: '2018-10-05T10:07:19.139Z',
-	name: 'Hey',
-	email: 'alassane@mail.com',
-	phoneNumber: 123456000000078900,
-	slug: 'hey-5c3a6bd065',
-	imageUrl: null
-};
-
 export class JwtStrategyMock extends PassportStrategy(Strategy) {
 	constructor() {
 		super({
@@ -125,21 +114,9 @@ export class JwtStrategyMock extends PassportStrategy(Strategy) {
 	}
 }
 
-export function PassportStrategy<T extends Type = any>(passportStrategy: T, name?: string | undefined): {
-	new (...args: any[]): T;
-} {
-	abstract class MixinStrategy extends passportStrategy {
-		abstract validate(...args: any[]): any;
+const expiresIn = '7d';
 
-		constructor(...args: any[]) {
-			super(...args, (...params: any[]) => this.validate(...params));
-			if (name) {
-				passport.use(name, this as any);
-			} else {
-				passport.use(this as any);
-			}
-		}
-	}
-
-	return MixinStrategy;
-}
+export const token = jwt.sign({
+	uuid: storeRepository.data[0].uuid,
+	email: storeRepository.data[0].email,
+}, 'secretKey', {expiresIn});

@@ -1,17 +1,14 @@
 import {getConnection} from 'typeorm';
-import {Store} from '@letseat/domains/store/store.entity';
 import {Injectable} from '@nestjs/common';
 
 @Injectable()
 export class ResourceRepository {
-	public async findOneByUuid(resourceUuid: string) {
-		const resource = await getConnection()
+	public async findOneByUuid(uuid: string, entity: any) {
+		return getConnection()
 			.createQueryBuilder()
-			.select('store')
-			.from(Store, 'store')
-			.where('store.uuid = :uuid', {uuid: resourceUuid})
+			.select(entity)
+			.from(entity, entity)
+			.where(`${entity}.uuid = :uuid`, {uuid})
 			.getOne();
-		delete resource!.id;
-		return resource;
 	}
 }

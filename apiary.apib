@@ -162,7 +162,7 @@ Returns a list of stores. The stores are returned in sorter order, with the most
 + Response 200 (application/json; charset=utf-8)
     + Attributes ([Store])
 
-## Stores [/stores/{uuid}]
+## Store [/stores/{uuid}]
 
 + Parameters
     + uuid: `890df35b-3e94-4c68-9553-42976cfd5612` (string) - UUID of the store.
@@ -224,6 +224,28 @@ Allows to retrieve a valid JSON Web Token.
 
 + Response 200 (application/json; charset=utf-8)
     + Attributes ([JWT])
+
+## Current Customer Profile [/customers/me]
+
+Current store MUST be identified by JWT provided in request header.
+
+### Retrieve Profile of the current Customer [GET]
+
+Retrieves the profile of the current store.
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+| ----------------------- | -------------------- |
+| Yes                     | No                   |
+
++ Request (application/json; charset=utf-8)
+    + Headers
+
+            Authorization: Bearer <JWT>
+
++ Response 200 (application/json; charset=utf-8)
+  + Attributes ([Store])
 
 ## Data Structures
 

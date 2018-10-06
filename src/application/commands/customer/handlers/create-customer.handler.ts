@@ -21,7 +21,7 @@ export class CreateCustomerHandler implements ICommandHandler<CreateCustomerComm
 				await customerRepository.saveCustomer(customer, new Repository<Customer>())
 			);
 			delete customerSaved.password;
-			const jwt = AuthService.createToken<Customer>(command);
+			const jwt = AuthService.createToken<Customer>(customerSaved);
 			customerSaved.commit();
 			resolve(jwt);
 		} catch (err) {
