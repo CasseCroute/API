@@ -15,7 +15,13 @@ const development = {
 		username: process.env.DEV_DB_USERNAME || 'root',
 		password: process.env.DEV_DB_PASSWORD || '',
 	},
-	jwtSecret: process.env.JWT_SECRET
+	jwtSecret: process.env.JWT_SECRET,
+	apiKeyHeader: process.env.LETS_EAT_API_KEY_HEADER,
+	redis: {
+		host: process.env.REDIS_HOST || 'localhost',
+		port: process.env.REDIS_PORT || 6379,
+		apiKeyHashMap: process.env.REDIS_API_KEY_HASHMAP || ''
+	}
 };
 
 const test = {
@@ -29,7 +35,13 @@ const test = {
 		username: process.env.TEST_DB_USERNAME || 'root',
 		password: process.env.TEST_DB_PASSWORD || '',
 	},
-	jwtSecret: process.env.JWT_SECRET
+	jwtSecret: process.env.JWT_SECRET,
+	apiKeyHeader: process.env.LETS_EAT_API_KEY_HEADER,
+	redis: {
+		host: process.env.REDIS_HOST || 'localhost',
+		port: process.env.REDIS_PORT || 6379,
+		apiKeyHashMap: process.env.REDIS_API_KEY_HASHMAP || ''
+	}
 };
 
 const config: any = {

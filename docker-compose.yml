@@ -16,6 +16,7 @@ services:
       - "8080:8080"
     links:
       - postgres
+      - redis
     tty: true
     mem_limit: 300m
 
@@ -47,3 +48,23 @@ services:
     volumes_from:
       - app
     restart: always
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./docker/volumes/redis:/data
+    env_file:
+      - .env
+
+  redis-cli:
+    image: redis:latest
+    container_name: redis-cli
+    depends_on:
+    - redis
+    network_mode: host
+    command: redis-cli HSET ${REDIS_API_KEY_HASHMAP} ${LETS_EAT_API_KEY} ""
+    env_file:
+      - .env

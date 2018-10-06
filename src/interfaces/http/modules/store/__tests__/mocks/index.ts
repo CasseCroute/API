@@ -1,7 +1,7 @@
 import {CreateStoreDto} from '@letseat/domains/store/dtos';
 import httpMock from 'node-mocks-http';
 import jwt from 'jsonwebtoken';
-import {PassportStrategy} from '@letseat/infrastructure/authorization/strategies/jwt.strategy';
+import {PassportStrategy} from '@letseat/infrastructure/authorization/strategies/passport.strategy';
 import passport from 'passport';
 import {ExtractJwt, Strategy} from 'passport-jwt';
 

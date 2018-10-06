@@ -2,7 +2,7 @@ import {CreateCustomerDto} from '@letseat/domains/customer/dtos';
 import jwt from 'jsonwebtoken';
 import {ExtractJwt, Strategy} from 'passport-jwt';
 import passport from 'passport';
-import {PassportStrategy} from '@letseat/infrastructure/authorization/strategies/jwt.strategy';
+import {PassportStrategy} from '@letseat/infrastructure/authorization/strategies/passport.strategy';
 
 export const customerRepository = {
 	data: [
