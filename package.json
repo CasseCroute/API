@@ -25,7 +25,7 @@
   "author": "Let's Eat <hello@letseat.co>",
   "license": "GPL-3.0",
   "dependencies": {
-    "@nestjs/common": "^5.3.9",
+    "@nestjs/common": "^5.3.11",
     "@nestjs/core": "^5.3.10",
     "@nestjs/cqrs": "^5.1.1",
     "@nestjs/microservices": "^5.3.11",
