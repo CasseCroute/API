@@ -63,7 +63,7 @@
     "api-blueprint-validator-module": "^1.2.2",
     "husky": "^1.0.1",
     "jest": "^23.6.0",
-    "jest-junit": "^5.1.0",
+    "jest-junit": "^5.2.0",
     "node-mocks-http": "^1.7.0",
     "nodemon": "^1.18.4",
     "supertest": "^3.3.0",
