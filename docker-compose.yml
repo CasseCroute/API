@@ -16,6 +16,7 @@ services:
       - "8080:8080"
     links:
       - postgres
+      - redis
     tty: true
     mem_limit: 300m
 
@@ -47,3 +48,13 @@ services:
     volumes_from:
       - app
     restart: always
+
+  redis:
+    image: redis:4.0.11-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./docker/redis:/data
+    env_file:
+    - .env
