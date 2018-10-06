@@ -1,14 +1,20 @@
+defaults: &defaults
+  docker:
+    - image: circleci/node:10.6
+      environment:
+        NODE_ENV: test
+    - image: circleci/postgres:10.5-alpine-postgis
+      environment:
+        POSTGRES_USER: circleci
+        POSTGRES_DB: test_circleci
+    - image: circleci/redis:latest
+  working_directory:  ~/letseat/api
+
 version: 2
 
 jobs:
   build:
-    docker:
-      - image: circleci/node:10.6
-      - image: circleci/postgres:10.5-alpine-postgis
-      - image: circleci/redis:latest
-
-    working_directory:  ~/LetsEat/API
-
+    <<: *defaults
     steps:
       - checkout
 
@@ -30,14 +36,7 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
   test-static:
-    docker:
-      - image: circleci/node:10.6
-        environment:
-          NODE_ENV: test
-      - image: circleci/postgres:10.5-alpine-postgis
-      - image: circleci/redis:latest
-
-    working_directory: ~/LetsEat/API
+    <<: *defaults
 
     steps:
       - checkout
@@ -61,14 +60,7 @@ jobs:
           destination: test-results
 
   test-unit:
-    docker:
-      - image: circleci/node:10.6
-        environment:
-          NODE_ENV: test
-      - image: circleci/postgres:10.5-alpine-postgis
-      - image: circleci/redis:latest
-
-    working_directory: ~/LetsEat/API
+    <<: *defaults
 
     steps:
       - checkout
@@ -107,17 +99,7 @@ jobs:
           path: /coverage
 
   test-api:
-    docker:
-      - image: circleci/node:10.6
-        environment:
-          NODE_ENV: test
-      - image: circleci/postgres:10.5-alpine-postgis
-        environment:
-          POSTGRES_USER: circleci
-          POSTGRES_DB: test_circleci
-      - image: circleci/redis:latest
-
-    working_directory: ~/LetsEat/API
+    <<: *defaults
 
     steps:
       - checkout
