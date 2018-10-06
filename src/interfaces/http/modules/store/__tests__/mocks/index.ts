@@ -1,7 +1,7 @@
 import {Type} from '@letseat/shared/interfaces';
 import {ExtractJwt, Strategy} from 'passport-jwt';
 import passport from 'passport';
-import {CreateStoreDto, LoginStoreDto} from '@letseat/domains/store/dtos';
+import {CreateStoreDto} from '@letseat/domains/store/dtos';
 import httpMock from 'node-mocks-http';
 
 export const request = httpMock.createRequest();
@@ -71,7 +71,7 @@ export const storeCreateDto: CreateStoreDto = {
 	password: 'password'
 };
 
-export const storeLoginDto: LoginStoreDto = {
+export const storeLoginDto: any = {
 	email: 'hello@burgerking.com',
 	password: 'password1'
 };

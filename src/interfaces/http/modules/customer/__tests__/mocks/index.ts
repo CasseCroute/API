@@ -1,4 +1,4 @@
-import {CreateCustomerDto, LoginCustomerDto} from '@letseat/domains/customer/dtos';
+import {CreateCustomerDto} from '@letseat/domains/customer/dtos';
 
 export const customerRepository = {
 	data: [
@@ -56,7 +56,7 @@ export const customerCreateDto: CreateCustomerDto = {
 	password: 'password'
 };
 
-export const customerLoginDto: LoginCustomerDto = {
+export const customerLoginDto: any = {
 	email: 'arthurdlr@mail.me',
 	password: 'password1'
 };

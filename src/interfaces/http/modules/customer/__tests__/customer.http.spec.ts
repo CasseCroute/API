@@ -8,6 +8,7 @@ import {CommandBus, EventPublisher, EventBus, CQRSModule} from '@nestjs/cqrs';
 import {AuthService, CryptographerService} from '@letseat/infrastructure/authorization';
 import {Customer} from '@letseat/domains/customer/customer.entity';
 import {GetCustomerByEmailQuery} from '@letseat/application/queries/customer';
+import {Store} from '../../../../../domains/store/store.entity';
 
 describe('Customer HTTP Requests', () => {
 	let app: INestApplication;
@@ -61,7 +62,7 @@ describe('Customer HTTP Requests', () => {
 				.mockImplementation(mocks.cryptographerService.comparePassword);
 			return request(app.getHttpServer())
 				.post('/customers/login')
-				.send(mocks.customerLoginDto)
+				.send(mocks.customerLoginDto as Customer)
 				.expect(200);
 		});
 	});

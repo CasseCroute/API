@@ -111,7 +111,7 @@ describe('Store HTTP Requests', () => {
 				.mockImplementation(mocks.cryptographerService.comparePassword);
 			return request(app.getHttpServer())
 				.post('/stores/login')
-				.send(mocks.storeLoginDto)
+				.send(mocks.storeLoginDto as Store)
 				.expect(200);
 		});
 	});

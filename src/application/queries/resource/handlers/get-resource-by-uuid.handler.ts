@@ -14,7 +14,7 @@ export class GetResourceByUuidHandler implements ICommandHandler<GetResourceByUu
 		const repository = new ResourceRepository();
 		try {
 			const storeFound = this.publisher.mergeObjectContext(
-				await repository.findOneByUuid(resource.uuid) as AggregateRoot
+				await repository.findOneByUuid(resource.uuid, command.entity) as AggregateRoot
 			);
 			resolve(storeFound);
 		} catch (err) {
