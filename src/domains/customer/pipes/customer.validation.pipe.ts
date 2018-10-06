@@ -56,3 +56,10 @@ export const customerLoginValidatorOptions: CustomerValidatorPipeOptions = {
 	forbidUnknownValues: true,
 	forbidNonWhitelisted: true
 };
+
+export const customerUpdateValidatorOptions: CustomerValidatorPipeOptions = {
+	skipMissingProperties: true,
+	forbidUnknownValues: true,
+	forbidNonWhitelisted: true,
+	whitelist: true
+};

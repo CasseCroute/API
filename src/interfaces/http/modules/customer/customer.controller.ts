@@ -1,29 +1,22 @@
 import {
-	Body,
-	Controller,
-	Get,
-	HttpCode,
-	NotFoundException,
-	Post, Req,
-	UnauthorizedException,
-	UseGuards
+	Body, Controller, Get, HttpCode, NotFoundException, Patch, Post, Req,
+	UnauthorizedException, UseGuards
 } from '@nestjs/common';
 import {CommandBus} from '@nestjs/cqrs';
 import {
-	CustomerValidationPipe,
-	customerLoginValidatorOptions,
-	customerRegisterValidatorOptions
+	CustomerValidationPipe, customerLoginValidatorOptions,
+	customerRegisterValidatorOptions, customerUpdateValidatorOptions
 } from '@letseat/domains/customer/pipes';
 import {AuthService, CryptographerService, JwtPayload} from '@letseat/infrastructure/authorization';
 import {CreateCustomerDto, LoginCustomerDto} from '@letseat/domains/customer/dtos';
-import {CreateCustomerCommand} from '@letseat/application/commands/customer';
+import {CreateCustomerCommand, UpdateCustomerCommand} from '@letseat/application/commands/customer';
 import {Customer} from '@letseat/domains/customer/customer.entity';
 import {
-	GetCustomerByEmailQuery,
-	GetCustomerByUuidQuery,
-	GetCustomerPasswordQuery
+	GetCustomerByEmailQuery, GetCustomerByUuidQuery, GetCustomerPasswordQuery
 } from '@letseat/application/queries/customer';
 import {AuthGuard} from '@letseat/infrastructure/authorization/guards';
+import {UpdateCustomerDto} from '@letseat/domains/customer/dtos/update-customer.dto';
+import {AuthEntities} from '@letseat/infrastructure/authorization/enums/auth.entites';
 
 @Controller('customers')
 export class CustomerController {
@@ -34,6 +27,19 @@ export class CustomerController {
 	@UseGuards(AuthGuard('jwt'))
 	public async currentUser(@Req() request: any) {
 		return this.commandBus.execute(new GetCustomerByUuidQuery(request.user.uuid));
+	}
+
+	@Patch('/me')
+	@HttpCode(204)
+	@UseGuards(AuthGuard('jwt'))
+	public async updateCurrentUser(
+		@Req() request: any,
+		@Body(new CustomerValidationPipe(customerUpdateValidatorOptions)) valuesToUpdate: UpdateCustomerDto) {
+		return request.user.entity === AuthEntities.Customer
+			? this.commandBus.execute(new UpdateCustomerCommand(request.user.uuid, valuesToUpdate))
+			: (() => {
+				throw new UnauthorizedException();
+			})();
 	}
 
 	@Post('/register')

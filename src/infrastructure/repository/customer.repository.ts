@@ -1,4 +1,4 @@
-import {EntityRepository, Repository, Transaction, TransactionManager} from 'typeorm';
+import {EntityRepository, getConnection, ObjectLiteral, Repository, Transaction, TransactionManager} from 'typeorm';
 import {Customer} from '@letseat/domains/customer/customer.entity';
 
 @EntityRepository(Customer)
@@ -20,6 +20,15 @@ export class CustomerRepository extends Repository<Customer> {
 		const customer = await this.findOne({where: {uuid}});
 		delete customer!.id;
 		return customer;
+	}
+
+	public async updateCustomer(uuid: string, values: ObjectLiteral) {
+		return getConnection()
+			.createQueryBuilder()
+			.update(Customer)
+			.set(values)
+			.where('uuid = :uuid', {uuid})
+			.execute();
 	}
 
 	@Transaction()
