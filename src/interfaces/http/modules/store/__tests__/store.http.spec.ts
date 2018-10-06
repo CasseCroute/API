@@ -8,16 +8,11 @@ import {AuthService, CryptographerService} from '@letseat/infrastructure/authori
 import {CommandBus, EventPublisher, EventBus, CQRSModule} from '@nestjs/cqrs';
 import {Store} from '@letseat/domains/store/store.entity';
 import {JwtStrategy} from '@letseat/infrastructure/authorization/strategies/jwt.strategy';
-import jwt from 'jsonwebtoken';
+import {GetStoreByEmailQuery} from '../../../../../application/queries/store';
 
 describe('Store HTTP Requests', () => {
 	let app: INestApplication;
 	let commandBus: CommandBus;
-	const expiresIn = '7d';
-	const token = jwt.sign({
-		uuid: mocks.storeRegisteredData.uuid,
-		email: mocks.storeRegisteredData.email
-	}, 'secretKey', {expiresIn});
 
 	beforeAll(async () => {
 		const module: TestingModule = await Test.createTestingModule({
@@ -49,7 +44,6 @@ describe('Store HTTP Requests', () => {
 		app = module.createNestApplication();
 		commandBus = module.get<CommandBus>(CommandBus);
 		await app.init();
-		mocks.storeRepository.data.push(mocks.storeRegisteredData);
 	});
 
 	describe('GET /', () => {
@@ -77,7 +71,7 @@ describe('Store HTTP Requests', () => {
 		it('should return a HTTP 200 status code when successful', () => {
 			return request(app.getHttpServer())
 				.get('/stores/me')
-				.set('Authorization', `Bearer ${token}`)
+				.set('Authorization', `Bearer ${mocks.token}`)
 				.expect(200);
 		});
 
@@ -111,7 +105,7 @@ describe('Store HTTP Requests', () => {
 				.mockImplementation(mocks.cryptographerService.comparePassword);
 			return request(app.getHttpServer())
 				.post('/stores/login')
-				.send(mocks.storeLoginDto)
+				.send(mocks.storeLoginDto as Store)
 				.expect(200);
 		});
 	});

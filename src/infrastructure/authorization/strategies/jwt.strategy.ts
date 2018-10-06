@@ -4,7 +4,6 @@ import passport from 'passport';
 import config from 'config';
 import {CommandBus} from '@nestjs/cqrs';
 import {GetResourceByUuidQuery} from '@letseat/application/queries/resource';
-import {Resource} from '@letseat/domains/resource/resource';
 import {PassportStrategy} from '@letseat/infrastructure/authorization/strategies/passport.strategy';
 
 @Injectable()
@@ -17,8 +16,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 		passport.use('jwt', this as any);
 	}
 
-	public async verify(payload: Resource, done: Function) {
-		const resource = await this.commandBus.execute(new GetResourceByUuidQuery(payload.uuid));
+	public async verify(payload: any, done: Function) {
+		const resource = await this.commandBus.execute(new GetResourceByUuidQuery(payload.uuid, payload.entity));
 		if (!resource) {
 			return done(true, resource);
 		}

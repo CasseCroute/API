@@ -1,4 +1,8 @@
-import {CreateCustomerDto, LoginCustomerDto} from '@letseat/domains/customer/dtos';
+import {CreateCustomerDto} from '@letseat/domains/customer/dtos';
+import jwt from 'jsonwebtoken';
+import {ExtractJwt, Strategy} from 'passport-jwt';
+import passport from 'passport';
+import {PassportStrategy} from '@letseat/infrastructure/authorization/strategies/passport.strategy';
 
 export const customerRepository = {
 	data: [
@@ -33,12 +37,15 @@ export const customerRepository = {
 };
 
 export const commandBus = {
-	createOne: async (store: any) => Promise.resolve(customerRepository.data.push(store)),
+	createOne: async (customer: any) => Promise.resolve(customerRepository.data.push(customer)),
 	findOneByEmail: async (data: any) => {
-		return customerRepository.data.find(store => store.email === data.email);
+		return customerRepository.data.find(customer => customer.email === data.email);
+	},
+	findOneByUuid: async (data: any) => {
+		return customerRepository.data.find(customer => customer.uuid === data.uuid);
 	},
 	getPassword: async (data: any) => {
-		return customerRepository.data.find(store => store.password === data.password);
+		return customerRepository.data.find(customer => customer.password === data.password);
 	}
 };
 
@@ -56,12 +63,15 @@ export const customerCreateDto: CreateCustomerDto = {
 	password: 'password'
 };
 
-export const customerLoginDto: LoginCustomerDto = {
+export const customerLoginDto: any = {
 	email: 'arthurdlr@mail.me',
 	password: 'password1'
 };
 
 export const authService = {
+	validateResourceByUuid: async (payload: any) => {
+		return commandBus.findOneByUuid(payload).then(res => res);
+	},
 	validateResourceByEmail: async (payload: any) => {
 		return commandBus.findOneByEmail(payload).then(res => res);
 	},
@@ -76,3 +86,28 @@ export const cryptographerService = {
 			return candidatePassword === saltedPassword;
 		})
 };
+
+export class JwtStrategyMock extends PassportStrategy(Strategy) {
+	constructor() {
+		super({
+			jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+			secretOrKey: 'secretKey',
+		}, async (payload: any, next: any) => this.verify(payload, next));
+		passport.use('jwt', this as any);
+	}
+
+	public async verify(payload: any, done: Function) {
+		const user = await authService.validateResourceByUuid(payload);
+		if (!user) {
+			return done(true, user);
+		}
+		done(null, payload);
+	}
+}
+
+const expiresIn = '7d';
+
+export const token = jwt.sign({
+	uuid: customerRepository.data[0].uuid,
+	email: customerRepository.data[0].email,
+}, 'secretKey', {expiresIn});
