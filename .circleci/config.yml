@@ -5,7 +5,7 @@ jobs:
     docker:
       - image: circleci/node:10.6
       - image: circleci/postgres:10.5-alpine-postgis
-      - image: circleci/redis:4.0.11-alpine
+      - image: circleci/redis:latest
 
     working_directory:  ~/LetsEat/API
 
@@ -28,13 +28,14 @@ jobs:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
+
   test-static:
     docker:
       - image: circleci/node:10.6
         environment:
           NODE_ENV: test
       - image: circleci/postgres:10.5-alpine-postgis
-      - image: circleci/redis:4.0.11-alpine
+      - image: circleci/redis:latest
 
     working_directory: ~/LetsEat/API
 
@@ -58,13 +59,14 @@ jobs:
       - store_artifacts:
           path: /tmp/test-results
           destination: test-results
+
   test-unit:
     docker:
       - image: circleci/node:10.6
         environment:
           NODE_ENV: test
       - image: circleci/postgres:10.5-alpine-postgis
-      - image: circleci/redis:4.0.11-alpine
+      - image: circleci/redis:latest
 
     working_directory: ~/LetsEat/API
 
@@ -113,7 +115,7 @@ jobs:
         environment:
           POSTGRES_USER: circleci
           POSTGRES_DB: test_circleci
-      - image: circleci/redis:4.0.11-alpine
+      - image: circleci/redis:latest
 
     working_directory: ~/LetsEat/API
 
@@ -123,6 +125,12 @@ jobs:
       - run:
           name: Install packages
           command: yarn install
+
+      - run:
+          name: Install Redis-CLI
+          command: |
+            sudo apt-get update && sudo apt-get install -y redis-tools
+            echo "CONFIG SET save ''" | redis-cli -x
 
       - run:
           name: Install TypeScript & Dredd
@@ -135,8 +143,16 @@ jobs:
             DOCKERIZE_VERSION: v0.3.0
 
       - run:
-          name: Dockerize Postgres (wait for database)
+          name: Dockerize Postgresql
           command: dockerize -wait tcp://localhost:5432 -timeout 1m
+
+      - run:
+          name: Dockerize Redis
+          command: dockerize -wait tcp://localhost:6379 -timeout 1m
+
+      - run:
+          name: Generate API Key
+          command: redis-cli HSET $REDIS_API_KEY_HASHMAP $LETS_EAT_API_KEY ""
 
       - run:
           name: Test API with Dredd
