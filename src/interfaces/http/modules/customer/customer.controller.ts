@@ -1,5 +1,5 @@
 import {
-	Body, Controller, Get, HttpCode, NotFoundException, Patch, Post, Req,
+	Body, Controller, Get, HttpCode, NotFoundException, Param, Patch, Post, Req,
 	UnauthorizedException, UseGuards
 } from '@nestjs/common';
 import {CommandBus} from '@nestjs/cqrs';
@@ -27,6 +27,12 @@ export class CustomerController {
 	@UseGuards(AuthGuard('jwt'))
 	public async currentUser(@Req() request: any) {
 		return this.commandBus.execute(new GetCustomerByUuidQuery(request.user.uuid));
+	}
+
+	@Get(':uuid')
+	@UseGuards(AuthGuard('headerapikey'))
+	public async getOneByUuid(@Param('uuid') uuid: string) {
+		return this.commandBus.execute(new GetCustomerByUuidQuery(uuid));
 	}
 
 	@Patch('/me')
