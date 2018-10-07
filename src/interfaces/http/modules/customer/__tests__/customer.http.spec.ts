@@ -185,7 +185,6 @@ describe('Customer HTTP Requests', () => {
 		it('should return a HTTP 204 status code when successful', () => {
 			return request(app.getHttpServer())
 				.delete('/customers/me')
-				.send({email: 'hello@mail.com'})
 				.set('Authorization', `Bearer ${mocks.token}`)
 				.expect(204);
 		});
@@ -199,7 +198,6 @@ describe('Customer HTTP Requests', () => {
 		it('should return an empty body when succesful', () => {
 			return request(app.getHttpServer())
 				.delete('/customers/me')
-				.send({email: 'hello@mail.com'})
 				.set('Authorization', `Bearer ${mocks.token}`)
 				.expect((res: any) => {
 					res.body = '';
