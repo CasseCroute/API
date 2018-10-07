@@ -8,6 +8,7 @@ import {CommandBus, EventPublisher, EventBus, CQRSModule} from '@nestjs/cqrs';
 import {AuthService, CryptographerService} from '@letseat/infrastructure/authorization';
 import {Customer} from '@letseat/domains/customer/customer.entity';
 import {JwtStrategy} from '@letseat/infrastructure/authorization/strategies/jwt.strategy';
+import {APIKeyStrategy} from '@letseat/infrastructure/authorization/strategies/api-key.strategy';
 
 describe('Customer HTTP Requests', () => {
 	let app: INestApplication;
@@ -38,6 +39,7 @@ describe('Customer HTTP Requests', () => {
 				execute: jest.fn()
 			})
 			.overrideProvider(JwtStrategy).useClass(mocks.JwtStrategyMock)
+			.overrideProvider(APIKeyStrategy).useClass(mocks.ApiKeyStrategyMock)
 			.compile();
 
 		app = module.createNestApplication();
@@ -54,6 +56,30 @@ describe('Customer HTTP Requests', () => {
 		});
 	});
 
+	describe('GET /', () => {
+		it('should return a HTTP 200 status code when successful', () => {
+			return request(app.getHttpServer())
+				.get('/customers')
+				.set('Lets-Eat-API-Key', 'apikey')
+				.expect(200);
+		});
+
+		it('should not return an empty body', () => {
+			return request(app.getHttpServer())
+				.get('/customers')
+				.set('Lets-Eat-API-Key', 'apikey')
+				.expect(res => {
+					return res.body !== null;
+				});
+		});
+
+		it('should return a HTTP 401 status code when no API key is present in the corresponding header', () => {
+			return request(app.getHttpServer())
+				.get('/customers')
+				.expect(401);
+		});
+	});
+
 	describe('GET /me', () => {
 		it('should return a HTTP 200 status code when successful', () => {
 			return request(app.getHttpServer())
@@ -62,9 +88,57 @@ describe('Customer HTTP Requests', () => {
 				.expect(200);
 		});
 
+		it('should not return an empty body', () => {
+			return request(app.getHttpServer())
+				.get('/customers/me')
+				.set('Lets-Eat-API-Key', 'apikey')
+				.expect(res => {
+					return res.body !== null;
+				});
+		});
+
 		it('should return a HTTP 401 status code when no JWT is present in Authorization header', () => {
 			return request(app.getHttpServer())
 				.get('/customers/me')
+				.expect(401);
+		});
+
+		it('should return a HTTP 401 status code when no API key is incorrect', () => {
+			return request(app.getHttpServer())
+				.get('/customers/me')
+				.expect(401);
+		});
+	});
+
+	describe('GET /:uuid', () => {
+		it('should return a HTTP 200 status code when successful', () => {
+			jest.spyOn(commandBus, 'execute')
+				.mockImplementation(() => mocks.commandBus.findOneByUuid(mocks.customerRepository.data[0]));
+			return request(app.getHttpServer())
+				.get(`/customers/${mocks.customerRepository.data[0].uuid}`)
+				.set('Lets-Eat-API-Key', 'apikey')
+				.expect(200);
+		});
+
+		it('should not return an empty body', () => {
+			return request(app.getHttpServer())
+				.get(`/customers/${mocks.customerRepository.data[0].uuid}`)
+				.set('Lets-Eat-API-Key', 'apikey')
+				.expect(res => {
+					return res.body !== null;
+				});
+		});
+
+		it('should return a HTTP 401 status code when no API key is set in header', () => {
+			return request(app.getHttpServer())
+				.get(`/customers/${mocks.customerRepository.data[0].uuid}`)
+				.expect(401);
+		});
+
+		it('should return a HTTP 401 status code when no API key is incorrect', () => {
+			return request(app.getHttpServer())
+				.get(`/customers/${mocks.customerRepository.data[0].uuid}`)
+				.set('Lets-Eat-API-Key', 'fakeapikey')
 				.expect(401);
 		});
 	});

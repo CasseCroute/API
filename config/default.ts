@@ -17,6 +17,7 @@ const development = {
 	},
 	jwtSecret: process.env.JWT_SECRET,
 	apiKeyHeader: process.env.LETS_EAT_API_KEY_HEADER,
+	letsEatAPIKey: process.env.LETS_EAT_API_KEY,
 	redis: {
 		host: process.env.REDIS_HOST || 'localhost',
 		port: process.env.REDIS_PORT || 6379,
@@ -37,6 +38,7 @@ const test = {
 	},
 	jwtSecret: process.env.JWT_SECRET,
 	apiKeyHeader: process.env.LETS_EAT_API_KEY_HEADER,
+	letsEatAPIKey: process.env.LETS_EAT_API_KEY,
 	redis: {
 		host: process.env.REDIS_HOST || 'localhost',
 		port: process.env.REDIS_PORT || 6379,

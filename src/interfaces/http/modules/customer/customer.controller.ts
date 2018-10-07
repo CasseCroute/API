@@ -1,5 +1,5 @@
 import {
-	Body, Controller, Get, HttpCode, NotFoundException, Patch, Post, Req,
+	Body, Controller, Get, HttpCode, NotFoundException, Param, Patch, Post, Req,
 	UnauthorizedException, UseGuards
 } from '@nestjs/common';
 import {CommandBus} from '@nestjs/cqrs';
@@ -17,6 +17,7 @@ import {
 import {AuthGuard} from '@letseat/infrastructure/authorization/guards';
 import {UpdateCustomerDto} from '@letseat/domains/customer/dtos/update-customer.dto';
 import {AuthEntities} from '@letseat/infrastructure/authorization/enums/auth.entites';
+import {GetCustomersQuery} from '@letseat/application/queries/customer/get-customers.query';
 
 @Controller('customers')
 export class CustomerController {
@@ -27,6 +28,18 @@ export class CustomerController {
 	@UseGuards(AuthGuard('jwt'))
 	public async currentUser(@Req() request: any) {
 		return this.commandBus.execute(new GetCustomerByUuidQuery(request.user.uuid));
+	}
+
+	@Get('/')
+	@UseGuards(AuthGuard('headerapikey'))
+	public async getAll() {
+		return this.commandBus.execute(new GetCustomersQuery());
+	}
+
+	@Get(':uuid')
+	@UseGuards(AuthGuard('headerapikey'))
+	public async getOneByUuid(@Param('uuid') uuid: string) {
+		return this.commandBus.execute(new GetCustomerByUuidQuery(uuid));
 	}
 
 	@Patch('/me')

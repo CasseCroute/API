@@ -125,7 +125,9 @@ This API returns both, machine-readable error codes and human-readable error mes
         + imageUrl: `https://some.cdn.com/img.png` (string, optional) - Main image URL of the store.
 
 + Response 201 (application/json; charset=utf-8)
-    + Attributes ([JWT])
+    + Attributes (object)
+        + data (object)
+            (JWT)
 
 ## Store Login [/stores/login]
 
@@ -145,7 +147,9 @@ Allows to retrieve a valid JSON Web Token.
         + password: `f8e2cfacc6` (string, required) - Password of the store.
 
 + Response 200 (application/json; charset=utf-8)
-    + Attributes ([JWT])
+    + Attributes (object)
+        + data (object)
+            (JWT)
 
 ## Current Store Profile [/stores/me]
 
@@ -159,7 +163,7 @@ Retrieves the profile of the current store.
 
 | Requires authentication | Has restricted scope |
 | ----------------------- | -------------------- |
-| Yes                     | No                   |
+| Yes (JWT)               | No                   |
 
 + Request (application/json; charset=utf-8)
     + Headers
@@ -167,7 +171,9 @@ Retrieves the profile of the current store.
             Authorization: Bearer <JWT>
 
 + Response 200 (application/json; charset=utf-8)
-  + Attributes ([Store])
+  + Attributes (object)
+      + data (object)
+          (Store)
 
 ## Stores [/stores]
 
@@ -189,7 +195,8 @@ Returns a list of stores. The stores are returned in sorter order, with the most
 + Request (application/json; charset=utf-8)
 
 + Response 200 (application/json; charset=utf-8)
-    + Attributes ([Store])
+    + Attributes (object)
+        + data (array[Store])
 
 ## Store [/stores/{uuid}]
 
@@ -209,7 +216,9 @@ Retrieve the details of an existing Store.
 + Request (application/json; charset=utf-8)
 
 + Response 200 (application/json; charset=utf-8)
-    + Attributes ([Store])
+    + Attributes (object)
+        + data (object)
+            (Store)
 
 # Group Customers
 
@@ -232,7 +241,9 @@ Retrieve the details of an existing Store.
         + password: `RHN4uNu3` (string, required) - Password of the customer.
 
 + Response 201 (application/json; charset=utf-8)
-    + Attributes ([JWT])
+    + Attributes (object)
+        + data (object)
+            (JWT)
 
 ## Customer Login [/customers/login]
 
@@ -252,7 +263,59 @@ Allows to retrieve a valid JSON Web Token.
         + password: `RHN4uNu3` (string, required) - Password of the customer.
 
 + Response 200 (application/json; charset=utf-8)
-    + Attributes ([JWT])
+    + Attributes (object)
+            + data (object)
+                (JWT)
+
+## Customers [/customers]
+
+API key MUST be provided in corresponding header.
+
+### List all Customers [GET]
+
+Returns a list of customers. The customers are returned in sorter order, with the most recently created stores appearing first.
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+|-------------------------|----------------------|
+| Yes (API key)           | No                   |
+
+Request (application/json; charset=utf-8)
+    + Headers
+
+            Lets-Eat-API-Key: <Lets-Eat-API-Key>
+
++ Response 200 (application/json; charset=utf-8)
+    + Attributes (object)
+        + data (array[Store])
+
+## Customer [/customers/{uuid}]
+
+API key MUST be provided in corresponding header.
+
++ Parameters
+    + uuid: `890df35b-3e94-4c68-9553-42976cfd5612` (string) - UUID of the customer.
+
+### Retrieve a Customer By his UUID [GET]
+
+Retrieve the details of an existing Customer.
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+|-------------------------|----------------------|
+| Yes (API Key)           | No                   |
+
+ Request (application/json; charset=utf-8)
+    + Headers
+
+            Lets-Eat-API-Key: <Lets-Eat-API-Key>
+
++ Response 200 (application/json; charset=utf-8)
+    + Attributes (object)
+        + data (object)
+            (Customer)
 
 ## Current Customer Profile [/customers/me]
 
@@ -266,7 +329,7 @@ Retrieves the profile of the current store.
 
 | Requires authentication | Has restricted scope |
 | ----------------------- | -------------------- |
-| Yes                     | No                   |
+| Yes (JWT)               | No                   |
 
 + Request (application/json; charset=utf-8)
     + Headers
@@ -274,30 +337,29 @@ Retrieves the profile of the current store.
             Authorization: Bearer <JWT>
 
 + Response 200 (application/json; charset=utf-8)
-  + Attributes ([Store])
+    + Attributes (object)
+        + data (object)
+            (Customer)
 
 ### Update Profile of the current Customer [PATCH]
 
 Update informations of the current Customer.
 
-**Updatable fields**
-+ firstName
-+ lastName
-+ email
-+ phoneNumber
-
 **Endpoint information**
 
 | Requires authentication | Has restricted scope |
 | ----------------------- | -------------------- |
-| Yes                     | No                   |
+| Yes (JWT)               | No                   |
 
 + Request (application/json; charset=utf-8)
     + Headers
 
             Authorization: Bearer <JWT>
     + Attributes
-            + email: `jane.doe@mail.com` (string) - Email of the customer.
+       + firstName: `Joe` (string, optional) - New first name.
+       + lastName: `Poe` (string, optional) - New last name.
+       + email: `joe.poe@mail.com` (string, optional) - New email.
+       + phoneNumber: `0789211234` (number, optional) - New phone number
 
 + Response 204
 
@@ -327,4 +389,4 @@ Update informations of the current Customer.
 ### JWT (object)
 + iat: `1538414646426` (number, required) - Issued date of the JSON Web Token in Unix timestamp format 
 + exp: `1539019446426` (number, required) - Expiration date of the JSON Web Token in Unix timestamp format 
-+ jwt: `eyJhbGciOiJIUzI1...` (string, required) - JSON Web Token
++ jwt: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhNnZoQW8zRkc3dDEiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE0NzA1OTg5NzIsImV4cCI6MTQ3MDY4NTM3Mn0.ltA9zZmJKszBJuuV7pTWtY7LzLXrRUfebJDhy_jGMeM` (string, required) - JSON Web Token

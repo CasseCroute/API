@@ -23,8 +23,8 @@ hooks.beforeAll((transactions, done) => {
 
 // CUSTOMER
 const customer = {};
-// After Customer Registration
 
+// After Customer Registration
 hooks.after('Customers > Customer Registration > Register a new Customer', (transaction, done) => {
 	const response = JSON.parse(transaction.real.body);
 	customer['jwt'] = response.data.jwt;
@@ -41,6 +41,21 @@ hooks.after('Customers > Customer Registration > Register a new Customer', (tran
 // Before retrieving Customer profile
 hooks.before('Customers > Current Customer Profile > Retrieve Profile of the current Customer', (transaction, done) => {
 	transaction.request.headers.Authorization = `Bearer ${customer.jwt}`;
+	done();
+});
+
+
+// Before retrieving all Customers
+hooks.before('Customers > Customers > List all Customers', (transaction, done) => {
+	transaction.request.headers['Lets-Eat-API-Key'] = env.LETS_EAT_API_KEY;
+	done();
+});
+
+// Before retrieving Customer by its UUID
+hooks.before('Customers > Customer > Retrieve a Customer By his UUID', (transaction, done) => {
+	transaction.request.headers['Lets-Eat-API-Key'] = env.LETS_EAT_API_KEY;
+	transaction.request.uri = `/customers/${customer.uuid}`;
+	transaction.fullPath = `/customers/${customer.uuid}`;
 	done();
 });
 

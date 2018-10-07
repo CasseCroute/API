@@ -8,7 +8,6 @@ import {AuthService, CryptographerService} from '@letseat/infrastructure/authori
 import {CommandBus, EventPublisher, EventBus, CQRSModule} from '@nestjs/cqrs';
 import {Store} from '@letseat/domains/store/store.entity';
 import {JwtStrategy} from '@letseat/infrastructure/authorization/strategies/jwt.strategy';
-import {GetStoreByEmailQuery} from '../../../../../application/queries/store';
 
 describe('Store HTTP Requests', () => {
 	let app: INestApplication;
@@ -50,6 +49,16 @@ describe('Store HTTP Requests', () => {
 		it('should return a HTTP 200 status code when successful', () => {
 			return request(app.getHttpServer())
 				.get('/stores')
+				.expect(200);
+		});
+	});
+
+	describe('GET /:uuid', () => {
+		it('should return a HTTP 200 status code when successful', () => {
+			jest.spyOn(commandBus, 'execute')
+				.mockImplementation(() => mocks.commandBus.findOneByUuid(mocks.storeRepository.data[0].uuid));
+			return request(app.getHttpServer())
+				.get(`/stores/${mocks.storeRepository.data[0].uuid}`)
 				.expect(200);
 		});
 	});
