@@ -1,23 +1,22 @@
 import {PipeTransform, Injectable, ArgumentMetadata} from '@nestjs/common';
 import {plainToClass} from 'class-transformer';
 import {validate, ValidatorOptions} from 'class-validator';
-import {Store} from '../store.entity';
 import {CustomValidationError} from '@letseat/domains/common/exceptions';
 
 @Injectable()
-export class StoreValidationPipe implements PipeTransform<string, Promise<Store>> {
-	private readonly storeValidatorOptions?: StoreValidatorPipeOptions;
+export class ValidationPipe<T> implements PipeTransform<string, Promise<T>> {
+	private readonly validatorOptions?: BaseValidatorPipeOptions;
 
-	constructor(storeValidatorOptions?: StoreValidatorPipeOptions) {
-		this.storeValidatorOptions = storeValidatorOptions;
+	constructor(validatorOptions?: BaseValidatorPipeOptions) {
+		this.validatorOptions = validatorOptions;
 	}
 
-	async transform(value: any, {metatype}: ArgumentMetadata): Promise<Store> {
+	async transform(value: any, {metatype}: ArgumentMetadata): Promise<T> {
 		if (!metatype || !this.toValidate(metatype)) {
 			return value;
 		}
 		const object = plainToClass(metatype, value);
-		const errors = await validate(object, this.storeValidatorOptions);
+		const errors = await validate(object, this.validatorOptions);
 		if (errors.length > 0) {
 			throw new CustomValidationError(errors);
 		}
@@ -30,7 +29,7 @@ export class StoreValidationPipe implements PipeTransform<string, Promise<Store>
 	}
 }
 
-export interface StoreValidatorPipeOptions extends ValidatorOptions {
+export interface BaseValidatorPipeOptions extends ValidatorOptions {
 	skipMissingProperties?: boolean;
 	whitelist?: boolean;
 	forbidNonWhitelisted?: boolean;
@@ -42,17 +41,3 @@ export interface StoreValidatorPipeOptions extends ValidatorOptions {
 	};
 	forbidUnknownValues?: boolean;
 }
-
-export const storeRegisterValidatorOptions: StoreValidatorPipeOptions = {
-	skipMissingProperties: false,
-	whitelist: true,
-	forbidUnknownValues: true,
-	forbidNonWhitelisted: true
-};
-
-export const storeLoginValidatorOptions: StoreValidatorPipeOptions = {
-	skipMissingProperties: false,
-	whitelist: true,
-	forbidUnknownValues: true,
-	forbidNonWhitelisted: true
-};

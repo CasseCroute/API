@@ -1,8 +1,8 @@
 import {EventPublisher, ICommandHandler, CommandHandler, AggregateRoot} from '@nestjs/cqrs';
 import {getCustomRepository} from 'typeorm';
 import {GetStoreByEmailQuery} from '../get-store-by-email.query';
-import {StoreRepository} from '../../../../infrastructure/repository/store.repository';
-import {Store} from '../../../../domains/store/store.entity';
+import {StoreRepository} from '@letseat/infrastructure/repository/store.repository';
+import {Store} from '@letseat/domains/store/store.entity';
 
 @CommandHandler(GetStoreByEmailQuery)
 export class GetStoreByEmailHandler implements ICommandHandler<GetStoreByEmailQuery> {

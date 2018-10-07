@@ -7,7 +7,6 @@ import {Search} from '@letseat/application/queries/common/decorators/search.deco
 import {Store} from '@letseat/domains/store/store.entity';
 import {
 	storeLoginValidatorOptions, storeRegisterValidatorOptions,
-	StoreValidationPipe
 } from '@letseat/domains/store/pipes';
 import {JwtPayload, AuthService, CryptographerService} from '@letseat/infrastructure/authorization';
 import {
@@ -18,6 +17,12 @@ import {
 import {CreateStoreDto, LoginStoreDto} from '@letseat/domains/store/dtos';
 import {CreateStoreCommand} from '@letseat/application/commands/store';
 import {AuthGuard} from '@letseat/infrastructure/authorization/guards';
+import {ValidationPipe} from '@letseat/domains/common/pipes/validation.pipe';
+import {Kiosk} from '@letseat/domains/kiosk/kiosk.entity';
+import {createKioskValidatorOptions} from '@letseat/domains/kiosk/pipes';
+import {AuthEntities} from '@letseat/infrastructure/authorization/enums/auth.entites';
+import {CreateKioskCommand} from '@letseat/application/commands/store/create-kiosk.command';
+import {CreateKioskDto} from '@letseat/domains/kiosk/dtos';
 
 @Controller('stores')
 export class StoreController {
@@ -43,13 +48,13 @@ export class StoreController {
 	}
 
 	@Post('/register')
-	public async register(@Body(new StoreValidationPipe(storeRegisterValidatorOptions)) store: CreateStoreDto): Promise<JwtPayload> {
+	public async register(@Body(new ValidationPipe<Store>(storeRegisterValidatorOptions)) store: CreateStoreDto): Promise<JwtPayload> {
 		return this.commandBus.execute(new CreateStoreCommand(store));
 	}
 
 	@Post('/login')
 	@HttpCode(200)
-	public async login(@Body(new StoreValidationPipe(storeLoginValidatorOptions)) store: LoginStoreDto): Promise<any> {
+	public async login(@Body(new ValidationPipe<Store>(storeLoginValidatorOptions)) store: LoginStoreDto): Promise<any> {
 		return new Promise<any>(async (resolve: any, reject: any) => {
 			return this.commandBus.execute(new GetStoreByEmailQuery(store.email))
 				.then(async (storeFound: Store) => {
@@ -60,5 +65,23 @@ export class StoreController {
 				})
 				.catch(() => reject(new NotFoundException('Store doesn\'t exists')));
 		});
+	}
+}
+
+@Controller('stores/me/kiosks')
+export class StoreKiosksController {
+	constructor(private readonly commandBus: CommandBus) {
+	}
+
+	@Post()
+	@UseGuards(AuthGuard('jwt'))
+	public async createKiosk(
+		@Req() request: any,
+		@Body(new ValidationPipe<Kiosk>(createKioskValidatorOptions)) kiosk: CreateKioskDto): Promise<any> {
+		return request.user.entity === AuthEntities.Store
+			? this.commandBus.execute(new CreateKioskCommand(request.user.uuid, kiosk.serialNumber))
+			: (() => {
+				throw new UnauthorizedException();
+			})();
 	}
 }

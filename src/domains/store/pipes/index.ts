@@ -1,1 +1,1 @@
-export * from './store.validation.pipe';
+export * from './store-validator-pipe-options';

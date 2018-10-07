@@ -2,8 +2,8 @@ import {EventPublisher, ICommandHandler, CommandHandler} from '@nestjs/cqrs';
 import {getCustomRepository} from 'typeorm';
 import {NotFoundException} from '@nestjs/common';
 import {GetStoresByQueryParamsQuery} from '../get-stores-by-query-params.query';
-import {StoreRepository} from '../../../../infrastructure/repository/store.repository';
-import {Store} from '../../../../domains/store/store.entity';
+import {StoreRepository} from '@letseat/infrastructure/repository/store.repository';
+import {Store} from '@letseat/domains/store/store.entity';
 
 @CommandHandler(GetStoresByQueryParamsQuery)
 export class GetStoresByQueryParamsHandler implements ICommandHandler<GetStoresByQueryParamsQuery> {

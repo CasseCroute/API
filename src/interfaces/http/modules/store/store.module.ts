@@ -1,6 +1,6 @@
 import {Module, OnModuleInit} from '@nestjs/common';
 import {TypeOrmModule} from '@nestjs/typeorm';
-import {StoreController} from './store.controller';
+import {StoreController, StoreKiosksController} from './store.controller';
 import {CommandBus, CQRSModule, EventBus} from '@nestjs/cqrs';
 import {ModuleRef} from '@nestjs/core';
 import {StoreRepository} from '@letseat/infrastructure/repository/store.repository';
@@ -21,7 +21,10 @@ import {ResourceQueryHandlers} from '@letseat/application/queries/resource/handl
 		...StoreCommandHandlers,
 		...StoreQueryHandlers
 	],
-	controllers: [StoreController]
+	controllers: [
+		StoreController,
+		StoreKiosksController
+	]
 })
 export class StoreModule implements OnModuleInit {
 	constructor(

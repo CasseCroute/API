@@ -3,8 +3,7 @@ import {
 	UnauthorizedException, UseGuards
 } from '@nestjs/common';
 import {CommandBus} from '@nestjs/cqrs';
-import {
-	CustomerValidationPipe, customerLoginValidatorOptions,
+import {customerLoginValidatorOptions,
 	customerRegisterValidatorOptions, customerUpdateValidatorOptions
 } from '@letseat/domains/customer/pipes';
 import {AuthService, CryptographerService, JwtPayload} from '@letseat/infrastructure/authorization';
@@ -18,6 +17,7 @@ import {AuthGuard} from '@letseat/infrastructure/authorization/guards';
 import {UpdateCustomerDto} from '@letseat/domains/customer/dtos/update-customer.dto';
 import {AuthEntities} from '@letseat/infrastructure/authorization/enums/auth.entites';
 import {GetCustomersQuery} from '@letseat/application/queries/customer/get-customers.query';
+import {ValidationPipe} from '@letseat/domains/common/pipes/validation.pipe';
 
 @Controller('customers')
 export class CustomerController {
@@ -47,7 +47,7 @@ export class CustomerController {
 	@UseGuards(AuthGuard('jwt'))
 	public async updateCurrentUser(
 		@Req() request: any,
-		@Body(new CustomerValidationPipe(customerUpdateValidatorOptions)) valuesToUpdate: UpdateCustomerDto) {
+		@Body(new ValidationPipe<Customer>(customerUpdateValidatorOptions)) valuesToUpdate: UpdateCustomerDto) {
 		return request.user.entity === AuthEntities.Customer
 			? this.commandBus.execute(new UpdateCustomerCommand(request.user.uuid, valuesToUpdate))
 			: (() => {
@@ -56,13 +56,13 @@ export class CustomerController {
 	}
 
 	@Post('/register')
-	public async register(@Body(new CustomerValidationPipe(customerRegisterValidatorOptions)) customer: CreateCustomerDto): Promise<JwtPayload> {
+	public async register(@Body(new ValidationPipe<Customer>(customerRegisterValidatorOptions)) customer: CreateCustomerDto): Promise<JwtPayload> {
 		return this.commandBus.execute(new CreateCustomerCommand(customer));
 	}
 
 	@Post('/login')
 	@HttpCode(200)
-	public async login(@Body(new CustomerValidationPipe(customerLoginValidatorOptions)) customer: LoginCustomerDto): Promise<any> {
+	public async login(@Body(new ValidationPipe<Customer>(customerLoginValidatorOptions)) customer: LoginCustomerDto): Promise<any> {
 		return new Promise<any>(async (resolve: any, reject: any) => {
 			return this.commandBus.execute(new GetCustomerByEmailQuery(customer.email))
 				.then(async (customerFound: Customer) => {
