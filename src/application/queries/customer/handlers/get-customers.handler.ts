@@ -1,11 +1,11 @@
 /* tslint:disable:no-unused */
-import {EventPublisher, ICommandHandler, CommandHandler} from '@nestjs/cqrs';
+import {ICommandHandler, CommandHandler} from '@nestjs/cqrs';
 import {GetCustomersQuery} from '../get-customers.query';
 import {CustomerRepository} from '@letseat/infrastructure/repository/customer.repository';
 
 @CommandHandler(GetCustomersQuery)
-export class GetStoresHandler implements ICommandHandler<GetCustomersQuery> {
-	constructor(private readonly repository: CustomerRepository, private readonly publisher: EventPublisher) {
+export class GetCustomersHandler implements ICommandHandler<GetCustomersQuery> {
+	constructor(private readonly repository: CustomerRepository) {
 	}
 
 	async execute(command: GetCustomersQuery, resolve: (value?) => void) {
