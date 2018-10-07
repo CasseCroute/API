@@ -2,6 +2,7 @@
 import {EntityRepository, Repository, Transaction, TransactionManager} from 'typeorm';
 import {Store} from '@letseat/domains/store/store.entity';
 import {ResourceRepository} from '@letseat/infrastructure/repository/resource.repository';
+import {CreateKioskCommand} from '@letseat/application/commands/store/create-kiosk.command';
 
 @EntityRepository(Store)
 export class StoreRepository extends Repository<Store> implements ResourceRepository{
@@ -29,8 +30,21 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 		return this.findOne({select: ['password'], where: {id: store.id}});
 	}
 
+	/**
+	 * Adds a new Kiosk to a Store using SQL transaction
+	 */
 	@Transaction()
-	public async findOneByPassword(store: Store, @TransactionManager() storeRepository: Repository<Store>) {
-		return storeRepository.findOne(store);
+	public async createKiosk(
+		store: Store,
+		data: CreateKioskCommand | any,
+		@TransactionManager() storeRepository: Repository<Store>): Promise<any> {
+		const storeFound = await this.findOne({where: {uuid: store.uuid}, relations: ['kiosks']});
+		storeFound!.kiosks.push(data.kiosk);
+		return storeRepository.save(storeFound as Store);
+	}
+
+	@Transaction()
+	public async findOneByPassword(store: Store) {
+		return this.findOne(store);
 	}
 }

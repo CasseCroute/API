@@ -1,8 +1,8 @@
 import {ICommandHandler, CommandHandler} from '@nestjs/cqrs';
 import {getCustomRepository} from 'typeorm';
 import {GetStorePasswordQuery} from '../get-store-password.query';
-import {StoreRepository} from '../../../../infrastructure/repository/store.repository';
-import {Store} from '../../../../domains/store/store.entity';
+import {StoreRepository} from '@letseat/infrastructure/repository/store.repository';
+import {Store} from '@letseat/domains/store/store.entity';
 
 @CommandHandler(GetStorePasswordQuery)
 export class GetStorePasswordHandler implements ICommandHandler<GetStorePasswordQuery> {

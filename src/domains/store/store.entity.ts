@@ -1,9 +1,16 @@
-import {Entity, Column, Unique} from 'typeorm';
+/* tslint:disable:no-unused */
+import {Entity, Column, Unique, OneToMany} from 'typeorm';
 import {Resource} from '@letseat/domains/resource/resource';
+import {Kiosk} from '@letseat/domains/kiosk/kiosk.entity';
 
 @Entity()
 @Unique(['email'])
 export class Store extends Resource {
+	constructor(args?: Store) {
+		super();
+		return Object.assign(this, args);
+	}
+
 	@Column({length: 128})
 	name: string;
 
@@ -22,10 +29,8 @@ export class Store extends Resource {
 	@Column({name: 'image_url', length: 256, nullable: true})
 	imageUrl?: string;
 
-	constructor(args?: Store) {
-		super();
-		return Object.assign(this, args);
-	}
+	@OneToMany(type => Kiosk, kiosk => kiosk.store, {cascade: ['insert']})
+	kiosks: Kiosk[];
 
 	public static register(args: any): Store {
 		return new Store(args);

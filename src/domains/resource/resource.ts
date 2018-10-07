@@ -1,6 +1,7 @@
-import {Column, Generated, UpdateDateColumn, CreateDateColumn, PrimaryGeneratedColumn} from 'typeorm';
+import {Column, Generated, UpdateDateColumn, CreateDateColumn, PrimaryGeneratedColumn, Unique} from 'typeorm';
 import {AggregateRoot} from '@nestjs/cqrs';
 
+@Unique(['uuid'])
 export class Resource extends AggregateRoot {
 	constructor(args?: Resource) {
 		super();

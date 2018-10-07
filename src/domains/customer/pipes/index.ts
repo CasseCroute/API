@@ -1,1 +1,1 @@
-export * from './customer.validation.pipe';
+export * from './customer-validator-pipe-options';

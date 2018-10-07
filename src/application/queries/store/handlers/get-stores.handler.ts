@@ -1,7 +1,7 @@
 /* tslint:disable:no-unused */
 import {EventPublisher, ICommandHandler, CommandHandler} from '@nestjs/cqrs';
 import {GetStoresQuery} from '../get-stores.query';
-import {StoreRepository} from '../../../../infrastructure/repository/store.repository';
+import {StoreRepository} from '@letseat/infrastructure/repository/store.repository';
 
 @CommandHandler(GetStoresQuery)
 export class GetStoresHandler implements ICommandHandler<GetStoresQuery> {
