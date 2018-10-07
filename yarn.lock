@@ -74,9 +74,9 @@
     json-socket "^0.2.1"
     optional "0.1.4"
 
-"@nestjs/testing@^5.3.8":
-  version "5.3.8"
-  resolved "https://registry.yarnpkg.com/@nestjs/testing/-/testing-5.3.8.tgz#b99d453e1a0b0a6d3439442347900e39d13d138d"
+"@nestjs/testing@^5.3.11":
+  version "5.3.11"
+  resolved "https://registry.yarnpkg.com/@nestjs/testing/-/testing-5.3.11.tgz#6ff5a5dc3d550b7482d7d12266bf203f386aaddf"
   dependencies:
     deprecate "1.0.0"
     optional "0.1.4"
