@@ -20,8 +20,20 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhNnZoQW8zR
 ```
 
 ### Claims
+
+### Registered Claims
+
 + `exp` - The exp ( *expiration time* ) claim identifies the expiration time on or after which the JWT MUST NOT be accepted for processing.
 + `iat` - The iat ( *issued at* ) claim identifies the time at which the JWT was issued.
+
+### Public Claims
+
++ `uuid` - The uuid ( *Universal Unique Indentifier* ) claim identifies the uuid of resource.
++ `email` - The email claim identifies the email of resource.
+
+### Private Claims
+
++ `entity` - The entity claim identifies the type of the resource who requested the JWT.
 
 ## Filtering
 
@@ -39,6 +51,7 @@ This API uses HTTP verbs (methods) as following:
 
 + `GET` - *Read* - used to **read** (or retrieve) a representation of a resource,
 + `POST` - *Create* - used to **create** new resources. In particular, it's used to create subordinate resources.
++ `PATCH` - *Update/Modify* - used for **modify** capabilities. The PATCH request only needs to contain the changes to the resource, not the complete resource.
 
 # Media Type
 
@@ -74,6 +87,22 @@ This API uses HTTP status codes to communicate with the API consumer.
 + `401 Unauthorized` - When no or invalid authentication details are provided.
 + `403 Forbidden` - When authentication succeeded but authenticated user doesn't have access to the resource.
 + `404 Not Found` - When a non-existent resource is requested.
+
+## Error response
+
+This API returns both, machine-readable error codes and human-readable error messages in response body when an error is encountered.
+
+#### Example
+
+##### Generic Error
+
+```js
+{
+    "statusCode": 403,
+    "error": "Forbidden",
+    "message": "Your account is suspended and is not permitted to access this feature",
+}
+```
 
 # Group Stores
 
@@ -246,6 +275,31 @@ Retrieves the profile of the current store.
 
 + Response 200 (application/json; charset=utf-8)
   + Attributes ([Store])
+
+### Update Profile of the current Customer [PATCH]
+
+Update informations of the current Customer.
+
+**Updatable fields**
++ firstName
++ lastName
++ email
++ phoneNumber
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+| ----------------------- | -------------------- |
+| Yes                     | No                   |
+
++ Request (application/json; charset=utf-8)
+    + Headers
+
+            Authorization: Bearer <JWT>
+    + Attributes
+            + email: `jane.doe@mail.com` (string) - Email of the customer.
+
++ Response 204
 
 ## Data Structures
 
