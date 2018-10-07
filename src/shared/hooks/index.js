@@ -94,6 +94,12 @@ hooks.before('Stores > Current Store Profile > Retrieve Profile of the current S
 	done();
 });
 
+// Before adding a Kiosk
+hooks.before('Stores > Current Store Kiosks > Create a Kiosk', (transaction, done) => {
+	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
+	done();
+});
+
 hooks.afterAll((transactions, done) => {
 	client.query(
 		'TRUNCATE TABLE store CASCADE; ' +
