@@ -1,5 +1,5 @@
 /* tslint:disable:no-unused */
-import {EntityRepository, Repository, Transaction, TransactionManager} from 'typeorm';
+import {EntityRepository, getConnection, ObjectLiteral, Repository, Transaction, TransactionManager} from 'typeorm';
 import {Store} from '@letseat/domains/store/store.entity';
 import {ResourceRepository} from '@letseat/infrastructure/repository/resource.repository';
 import {CreateKioskCommand} from '@letseat/application/commands/store/create-kiosk.command';
@@ -46,5 +46,14 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 	@Transaction()
 	public async findOneByPassword(store: Store) {
 		return this.findOne(store);
+	}
+
+	public async updateStore(uuid: string, values: ObjectLiteral) {
+		return getConnection()
+			.createQueryBuilder()
+			.update(Store)
+			.set(values)
+			.where('uuid = :uuid', {uuid})
+			.execute();
 	}
 }
