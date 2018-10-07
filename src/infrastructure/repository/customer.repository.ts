@@ -36,7 +36,7 @@ export class CustomerRepository extends Repository<Customer> {
 		return customerRepository.findOne(customer);
 	}
 
-	public async deleteCustomerByUuid(uuid: string) {
+	public static async deleteCustomerByUuid(uuid: string) {
 		return getConnection()
 			.createQueryBuilder()
 			.delete()

@@ -9,10 +9,9 @@ import {
 } from '@letseat/domains/customer/pipes';
 import {AuthService, CryptographerService, JwtPayload} from '@letseat/infrastructure/authorization';
 import {CreateCustomerDto, LoginCustomerDto} from '@letseat/domains/customer/dtos';
-import {CreateCustomerCommand, UpdateCustomerCommand} from '@letseat/application/commands/customer';
+import {CreateCustomerCommand, UpdateCustomerCommand, DeleteCustomerByUuidCommand} from '@letseat/application/commands/customer';
 import {Customer} from '@letseat/domains/customer/customer.entity';
 import {
-	DeleteCustomerByUuidQuery,
 	GetCustomerByEmailQuery, GetCustomerByUuidQuery, GetCustomerPasswordQuery
 } from '@letseat/application/queries/customer';
 import {AuthGuard} from '@letseat/infrastructure/authorization/guards';
@@ -80,6 +79,6 @@ export class CustomerController {
 	@HttpCode(204)
 	@UseGuards(AuthGuard('jwt'))
 	public async deleteCurrentUser(@Req() request: any) {
-		return this.commandBus.execute(new DeleteCustomerByUuidQuery(request.user.uuid));
+		return this.commandBus.execute(new DeleteCustomerByUuidCommand(request.user.uuid));
 	}
 }

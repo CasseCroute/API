@@ -1,12 +1,15 @@
 import {CreateCustomerHandler} from './create-customer.handler';
 import {UpdateCustomerHandler} from './update-customer.handler';
+import {DeleteCustomerByUuidHandler} from './delete-customer-by-uuid.handler';
 
 export const CustomerCommandHandlers = [
 	CreateCustomerHandler,
-	UpdateCustomerHandler
+	UpdateCustomerHandler,
+	DeleteCustomerByUuidHandler
 ];
 
 export {
 	CreateCustomerHandler,
-	UpdateCustomerHandler
+	UpdateCustomerHandler,
+	DeleteCustomerByUuidHandler
 };
