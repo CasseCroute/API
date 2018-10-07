@@ -5,6 +5,7 @@ import {CommandBus} from '@nestjs/cqrs';
 import {AuthService} from '@letseat/infrastructure/authorization';
 import {CustomerController} from '@letseat/interfaces/http/modules/customer/customer.controller';
 import {Customer} from '@letseat/domains/customer/customer.entity';
+import {AuthEntities} from '@letseat/infrastructure/authorization/enums/auth.entites';
 
 describe('Customer Controller', () => {
 	let customerController: CustomerController;
