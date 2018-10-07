@@ -35,4 +35,13 @@ export class CustomerRepository extends Repository<Customer> {
 	public async findOneByPassword(customer: Customer, @TransactionManager() customerRepository: Repository<Customer>) {
 		return customerRepository.findOne(customer);
 	}
+
+	public async deleteCustomerByUuid(uuid: string) {
+		return getConnection()
+			.createQueryBuilder()
+			.delete()
+			.from(Customer)
+			.where('uuid = :uuid', {uuid})
+			.execute();
+	}
 }
