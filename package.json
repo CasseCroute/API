@@ -67,7 +67,7 @@
     "node-mocks-http": "^1.7.2",
     "nodemon": "^1.18.4",
     "supertest": "^3.3.0",
-    "ts-jest": "23.0.1",
+    "ts-jest": "23.10.4",
     "ts-node": "^7.0.1",
     "tsconfig-paths": "^3.6.0",
     "tslint": "^5.11.0",
