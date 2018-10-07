@@ -15,7 +15,7 @@ import {
 	GetStoresQuery
 } from '@letseat/application/queries/store';
 import {CreateStoreDto, LoginStoreDto} from '@letseat/domains/store/dtos';
-import {CreateStoreCommand, UpdateStoreCommand} from '@letseat/application/commands/store';
+import {CreateStoreCommand, UpdateStoreByUuidCommand} from '@letseat/application/commands/store';
 import {AuthGuard} from '@letseat/infrastructure/authorization/guards';
 import {ValidationPipe} from '@letseat/domains/common/pipes/validation.pipe';
 import {Kiosk} from '@letseat/domains/kiosk/kiosk.entity';
@@ -60,7 +60,7 @@ export class StoreController {
 		@Req() request: any,
 		@Body(new ValidationPipe<Store>(storeUpdateValidatorOptions)) valuesToUpdate: UpdateStoreDto) {
 		return request.user.entity === AuthEntities.Store
-			? this.commandBus.execute(new UpdateStoreCommand(request.user.uuid, valuesToUpdate))
+			? this.commandBus.execute(new UpdateStoreByUuidCommand(request.user.uuid, valuesToUpdate))
 			: (() => {
 				throw new UnauthorizedException();
 			})();

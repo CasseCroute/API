@@ -6,7 +6,7 @@ export class UpdateStoreDto {
 
 	@IsNumber()
 	@Min(10)
-	readonly phoneNumber: number;
+	readonly phoneNumber?: number;
 
 	@IsEmail()
 	readonly email?: string;
