@@ -1,5 +1,5 @@
 import {
-	Body, Controller, Get, HttpCode,
+	Body, Controller, Delete, Get, HttpCode,
 	NotFoundException, Param, Post, Req, UnauthorizedException, UseGuards
 } from '@nestjs/common';
 import {CommandBus} from '@nestjs/cqrs';
@@ -23,6 +23,8 @@ import {createKioskValidatorOptions} from '@letseat/domains/kiosk/pipes';
 import {AuthEntities} from '@letseat/infrastructure/authorization/enums/auth.entites';
 import {CreateKioskCommand} from '@letseat/application/commands/store/create-kiosk.command';
 import {CreateKioskDto} from '@letseat/domains/kiosk/dtos';
+import {DeleteCustomerByUuidCommand} from "@letseat/application/commands/customer";
+import {DeleteStoreByUuidCommand} from "@letseat/application/commands/store/delete-store-by-uuid.command";
 
 @Controller('stores')
 export class StoreController {
@@ -65,6 +67,13 @@ export class StoreController {
 				})
 				.catch(() => reject(new NotFoundException('Store doesn\'t exists')));
 		});
+	}
+
+	@Delete('/me')
+	@HttpCode(204)
+	@UseGuards(AuthGuard('jwt'))
+	public async deleteCurrentUser(@Req() request: any) {
+		return this.commandBus.execute(new DeleteStoreByUuidCommand(request.user.uuid));
 	}
 }
 

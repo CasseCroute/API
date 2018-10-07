@@ -29,7 +29,7 @@ export class Store extends Resource {
 	@Column({name: 'image_url', length: 256, nullable: true})
 	imageUrl?: string;
 
-	@OneToMany(type => Kiosk, kiosk => kiosk.store, {cascade: ['insert']})
+	@OneToMany(type => Kiosk, kiosk => kiosk.store, {cascade: ['insert'], onDelete: 'CASCADE'})
 	kiosks: Kiosk[];
 
 	public static register(args: any): Store {
