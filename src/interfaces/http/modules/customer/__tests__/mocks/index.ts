@@ -1,8 +1,10 @@
 import {CreateCustomerDto} from '@letseat/domains/customer/dtos';
 import jwt from 'jsonwebtoken';
 import {ExtractJwt, Strategy} from 'passport-jwt';
+import config from 'config';
 import passport from 'passport';
 import {PassportStrategy} from '@letseat/infrastructure/authorization/strategies/passport.strategy';
+import {HeaderAPIKeyStrategy} from 'passport-headerapikey';
 
 export const customerRepository = {
 	data: [
@@ -77,6 +79,9 @@ export const authService = {
 	},
 	getPassword: async (resource: any) => {
 		return commandBus.getPassword(resource);
+	},
+	verifyAPIKey: async (apiKey: string) => {
+		return apiKey === 'apikey';
 	}
 };
 
@@ -98,6 +103,24 @@ export class JwtStrategyMock extends PassportStrategy(Strategy) {
 
 	public async verify(payload: any, done: Function) {
 		const user = await authService.validateResourceByUuid(payload);
+		if (!user) {
+			return done(true, user);
+		}
+		done(null, payload);
+	}
+}
+
+export class ApiKeyStrategyMock extends PassportStrategy(HeaderAPIKeyStrategy) {
+	constructor() {
+		super({
+			header: config.get('apiKeyHeader'),
+			prefix: ''
+		}, false, async (payload: any, next: any) => ApiKeyStrategyMock.verify(payload, next));
+		passport.use('headerapikey', this as any);
+	}
+
+	public static async verify(payload: any, done: Function) {
+		const user = await authService.verifyAPIKey(payload);
 		if (!user) {
 			return done(true, user);
 		}
