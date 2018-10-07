@@ -61,4 +61,11 @@ describe('Customer Controller', () => {
 			expect(await customerController.currentUser({user: mocks.customerRepository.data[0]})).toBe(mocks.customerRepository.data[0]);
 		});
 	});
+
+	describe('getAll()', () => {
+		it('should return an array of Customers when successful', async () => {
+			jest.spyOn(commandBus, 'execute').mockImplementation(() => mocks.customerRepository.data);
+			expect(await customerController.getAll()).toBe(mocks.customerRepository.data);
+		});
+	});
 });
