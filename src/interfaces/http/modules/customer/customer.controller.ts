@@ -1,5 +1,5 @@
 import {
-	Body, Controller, Get, HttpCode, NotFoundException, Param, Patch, Post, Req,
+	Body, Controller, Delete, Get, HttpCode, NotFoundException, Param, Patch, Post, Req,
 	UnauthorizedException, UseGuards
 } from '@nestjs/common';
 import {CommandBus} from '@nestjs/cqrs';
@@ -8,7 +8,7 @@ import {customerLoginValidatorOptions,
 } from '@letseat/domains/customer/pipes';
 import {AuthService, CryptographerService, JwtPayload} from '@letseat/infrastructure/authorization';
 import {CreateCustomerDto, LoginCustomerDto} from '@letseat/domains/customer/dtos';
-import {CreateCustomerCommand, UpdateCustomerCommand} from '@letseat/application/commands/customer';
+import {CreateCustomerCommand, UpdateCustomerCommand, DeleteCustomerByUuidCommand} from '@letseat/application/commands/customer';
 import {Customer} from '@letseat/domains/customer/customer.entity';
 import {
 	GetCustomerByEmailQuery, GetCustomerByUuidQuery, GetCustomerPasswordQuery
@@ -73,5 +73,12 @@ export class CustomerController {
 				})
 				.catch(() => reject(new NotFoundException('Customer doesn\'t exists')));
 		});
+	}
+
+	@Delete('/me')
+	@HttpCode(204)
+	@UseGuards(AuthGuard('jwt'))
+	public async deleteCurrentUser(@Req() request: any) {
+		return this.commandBus.execute(new DeleteCustomerByUuidCommand(request.user.uuid));
 	}
 }

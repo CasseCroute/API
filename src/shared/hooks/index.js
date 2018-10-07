@@ -59,8 +59,14 @@ hooks.before('Customers > Customer > Retrieve a Customer By his UUID', (transact
 	done();
 });
 
-// Before updating Customer profile
+// Before updating current Customer profile
 hooks.before('Customers > Current Customer Profile > Update Profile of the current Customer', (transaction, done) => {
+	transaction.request.headers.Authorization = `Bearer ${customer.jwt}`;
+	done();
+});
+
+// Before current Customer deletes his account
+hooks.before('Customers > Current Customer Profile > Delete Account of the current Customer', (transaction, done) => {
 	transaction.request.headers.Authorization = `Bearer ${customer.jwt}`;
 	done();
 });
@@ -102,7 +108,7 @@ hooks.before('Stores > Current Store Kiosks > Create a Kiosk', (transaction, don
 
 hooks.afterAll((transactions, done) => {
 	client.query(
-		'TRUNCATE TABLE store CASCADE; ' +
+		'TRUNCATE TABLE store CASCADE;' +
 		'TRUNCATE TABLE customer CASCADE;' +
 		'TRUNCATE TABLE kiosk CASCADE;')
 		.then(res => {
