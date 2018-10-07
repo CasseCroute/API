@@ -175,6 +175,27 @@ Retrieves the profile of the current store.
       + data (object)
           (Store)
 
+### Update Profile of the current Store [PATCH]
+
+Update informations of the current Store.
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+| ----------------------- | -------------------- |
+| Yes (JWT)               | No                   |
+
++ Request (application/json; charset=utf-8)
+    + Headers
+
+            Authorization: Bearer <JWT>
+    + Attributes
+       + name: `Joe` (string, optional) - New first name.
+       + email: `joe.poe@mail.com` (string, optional) - New email.
+       + phoneNumber: `0789211234` (number, optional) - New phone number
+
++ Response 204
+
 ## Stores [/stores]
 
 ### List all Stores [GET]
