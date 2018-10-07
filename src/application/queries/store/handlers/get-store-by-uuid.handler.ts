@@ -3,8 +3,8 @@ import {EventPublisher, ICommandHandler, CommandHandler, AggregateRoot} from '@n
 import {getCustomRepository} from 'typeorm';
 import {GetStoreByUuidQuery} from '../get-store-by-uuid.query';
 import {NotFoundException} from '@nestjs/common';
-import {StoreRepository} from '../../../../infrastructure/repository/store.repository';
-import {Store} from '../../../../domains/store/store.entity';
+import {StoreRepository} from '@letseat/infrastructure/repository/store.repository';
+import {Store} from '@letseat/domains/store/store.entity';
 
 @CommandHandler(GetStoreByUuidQuery)
 export class GetStoreByUuidHandler implements ICommandHandler<GetStoreByUuidQuery> {
