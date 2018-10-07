@@ -175,6 +175,23 @@ Retrieves the profile of the current store.
       + data (object)
           (Store)
 
+### Delete Account of the current Store [DELETE]
+
+Delete the current Store account and all related resources.
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+| ----------------------- | -------------------- |
+| Yes (JWT)               | No                   |
+
++ Request (application/json; charset=utf-8)
+    + Headers
+
+            Authorization: Bearer <JWT>
+
++ Response 204
+
 ## Stores [/stores]
 
 ### List all Stores [GET]

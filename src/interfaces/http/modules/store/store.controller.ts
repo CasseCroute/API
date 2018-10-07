@@ -23,8 +23,7 @@ import {createKioskValidatorOptions} from '@letseat/domains/kiosk/pipes';
 import {AuthEntities} from '@letseat/infrastructure/authorization/enums/auth.entites';
 import {CreateKioskCommand} from '@letseat/application/commands/store/create-kiosk.command';
 import {CreateKioskDto} from '@letseat/domains/kiosk/dtos';
-import {DeleteCustomerByUuidCommand} from "@letseat/application/commands/customer";
-import {DeleteStoreByUuidCommand} from "@letseat/application/commands/store/delete-store-by-uuid.command";
+import {DeleteStoreByUuidCommand} from '@letseat/application/commands/store/delete-store-by-uuid.command';
 
 @Controller('stores')
 export class StoreController {
