@@ -116,7 +116,19 @@ export class JwtStrategyMock extends PassportStrategy(Strategy) {
 
 const expiresIn = '7d';
 
+export const kioskRepository = {
+	data: [
+		{
+			id: 1,
+			uuid: '9cZe887c-4277-47ca-a572-c9286d6b7cea',
+			serialNumber: '2X0NFW-E6M36H-AAFLPC-GPS81M',
+			idStore: 2
+		}
+	]
+};
+
 export const token = jwt.sign({
 	uuid: storeRepository.data[0].uuid,
 	email: storeRepository.data[0].email,
+	entity: 'Store'
 }, 'secretKey', {expiresIn});

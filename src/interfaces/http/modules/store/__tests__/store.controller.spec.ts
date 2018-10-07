@@ -5,6 +5,7 @@ import {CommandBus} from '@nestjs/cqrs';
 import {StoreController} from '@letseat/interfaces/http/modules/store/store.controller';
 import {AuthService} from '@letseat/infrastructure/authorization';
 import {Store} from '@letseat/domains/store/store.entity';
+import {StoreKiosksController} from '../store.controller';
 
 describe('StoreController', () => {
 	let storeController: StoreController;

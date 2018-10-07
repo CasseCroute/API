@@ -95,7 +95,10 @@ hooks.before('Stores > Current Store Profile > Retrieve Profile of the current S
 });
 
 hooks.afterAll((transactions, done) => {
-	client.query('TRUNCATE TABLE store; TRUNCATE TABLE customer;')
+	client.query(
+		'TRUNCATE TABLE store CASCADE; ' +
+		'TRUNCATE TABLE customer CASCADE;' +
+		'TRUNCATE TABLE kiosk CASCADE;')
 		.then(res => {
 			client.end();
 			done();
