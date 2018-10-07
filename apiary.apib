@@ -151,6 +151,30 @@ Allows to retrieve a valid JSON Web Token.
         + data (object)
             (JWT)
 
+## Current Store Update [/stores/me]
+
+Current store MUST be identified by JWT provided in request header.
+
+### Update Profile of the current Store [PATCH]
+
+Retrieves the profile of the current store.
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+| ----------------------- | -------------------- |
+| Yes (JWT)               | No                   |
+
++ Request (application/json; charset=utf-8)
+    + Headers
+
+            Authorization: Bearer <JWT>
+    + Attributes
+           + name: `Let's Eat` (string, optional) - Name of the store.
+           + email: `hello@letseat.co` (string, optional) - Email of the store.
+           + phoneNumber: `0134724336` (number, optional) - Phone number of the store.
+
++ Response 204
 ## Current Store Profile [/stores/me]
 
 Current store MUST be identified by JWT provided in request header.
@@ -219,32 +243,6 @@ Retrieve the details of an existing Store.
     + Attributes (object)
         + data (object)
             (Store)
-
-## Current Store Update [/stores/me]
-
-Current store MUST be identified by JWT provided in request header.
-
-### Update Profile of the current Store [PATCH]
-
-Retrieves the profile of the current store.
-
-**Endpoint information**
-
-| Requires authentication | Has restricted scope |
-| ----------------------- | -------------------- |
-| Yes (JWT)               | No                   |
-
-+ Request (application/json; charset=utf-8)
-    + Headers
-
-            Authorization: Bearer <JWT>
-
-    + Attributes
-           + name: `Let's Eat` (string, optional) - Name of the store.
-           + email: `hello@letseat.co` (string, optional) - Email of the store.
-           + phoneNumber: `0134724336` (number, optional) - Phone number of the store.
-
-+ Response 204
 
 ## Current Store Kiosks [/stores/me/kiosks]
 

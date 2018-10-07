@@ -151,7 +151,7 @@ describe('Store HTTP Requests', () => {
 		it('should return a HTTP 204 status code when successful', () => {
 			return request(app.getHttpServer())
 				.patch('/stores/me')
-				.send({email: 'hello@mail.com'})
+				.send({email: 'hello@burgerking.com'})
 				.set('Authorization', `Bearer ${mocks.token}`)
 				.expect(204);
 		});
