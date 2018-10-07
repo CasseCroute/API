@@ -181,6 +181,31 @@ describe('Customer HTTP Requests', () => {
 		});
 	});
 
+	describe('DELETE /me', () => {
+		it('should return a HTTP 204 status code when successful', () => {
+			return request(app.getHttpServer())
+				.delete('/customers/me')
+				.send({email: 'hello@mail.com'})
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.expect(204);
+		});
+
+		it('should return an HTTP 401 status code when no JWT is provided', () => {
+			return request(app.getHttpServer())
+				.delete('/customers/me')
+				.expect(401);
+		});
+
+		it('should return an empty body when succesful', () => {
+			return request(app.getHttpServer())
+				.delete('/customers/me')
+				.send({email: 'hello@mail.com'})
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.expect((res: any) => {
+					res.body = '';
+				});
+		});
+	});
 	afterAll(async () => {
 		await app.close();
 	});

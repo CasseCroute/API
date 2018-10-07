@@ -77,6 +77,7 @@ export class CustomerController {
 	}
 
 	@Delete('/me')
+	@HttpCode(204)
 	@UseGuards(AuthGuard('jwt'))
 	public async deleteCurrentUser(@Req() request: any) {
 		return this.commandBus.execute(new DeleteCustomerByUuidQuery(request.user.uuid));

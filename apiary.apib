@@ -363,6 +363,23 @@ Update informations of the current Customer.
 
 + Response 204
 
+### Delete Profile of the current Customer [PATCH]
+
+Delete informations of the current Customer.
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+| ----------------------- | -------------------- |
+| Yes (JWT)               | No                   |
+
++ Request (application/json; charset=utf-8)
+    + Headers
+
+            Authorization: Bearer <JWT>
+    
++ Response 204
+
 ## Data Structures
 
 ### Resource (object)
