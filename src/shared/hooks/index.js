@@ -44,6 +44,12 @@ hooks.before('Customers > Current Customer Profile > Retrieve Profile of the cur
 	done();
 });
 
+// Before updating Customer profile
+hooks.before('Customers > Current Customer Profile > Update Profile of the current Customer', (transaction, done) => {
+	transaction.request.headers.Authorization = `Bearer ${customer.jwt}`;
+	done();
+});
+
 // STORE
 const store = {};
 // After Store Registration

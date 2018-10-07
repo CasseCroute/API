@@ -110,4 +110,5 @@ const expiresIn = '7d';
 export const token = jwt.sign({
 	uuid: customerRepository.data[0].uuid,
 	email: customerRepository.data[0].email,
+	entity: 'Customer'
 }, 'secretKey', {expiresIn});
