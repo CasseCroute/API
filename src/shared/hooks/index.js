@@ -44,6 +44,13 @@ hooks.before('Customers > Current Customer Profile > Retrieve Profile of the cur
 	done();
 });
 
+
+// Before retrieving all Customers
+hooks.before('Customers > Customers > List all Customers', (transaction, done) => {
+	transaction.request.headers['Lets-Eat-API-Key'] = env.LETS_EAT_API_KEY;
+	done();
+});
+
 // Before retrieving Customer by its UUID
 hooks.before('Customers > Customer > Retrieve a Customer By his UUID', (transaction, done) => {
 	transaction.request.headers['Lets-Eat-API-Key'] = env.LETS_EAT_API_KEY;

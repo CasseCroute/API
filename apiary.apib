@@ -125,7 +125,9 @@ This API returns both, machine-readable error codes and human-readable error mes
         + imageUrl: `https://some.cdn.com/img.png` (string, optional) - Main image URL of the store.
 
 + Response 201 (application/json; charset=utf-8)
-    + Attributes ([JWT])
+    + Attributes (object)
+        + data (object)
+            (JWT)
 
 ## Store Login [/stores/login]
 
@@ -145,7 +147,9 @@ Allows to retrieve a valid JSON Web Token.
         + password: `f8e2cfacc6` (string, required) - Password of the store.
 
 + Response 200 (application/json; charset=utf-8)
-    + Attributes ([JWT])
+    + Attributes (object)
+        + data (object)
+            (JWT)
 
 ## Current Store Profile [/stores/me]
 
@@ -167,7 +171,9 @@ Retrieves the profile of the current store.
             Authorization: Bearer <JWT>
 
 + Response 200 (application/json; charset=utf-8)
-  + Attributes ([Store])
+  + Attributes (object)
+      + data (object)
+          (Store)
 
 ## Stores [/stores]
 
@@ -189,7 +195,8 @@ Returns a list of stores. The stores are returned in sorter order, with the most
 + Request (application/json; charset=utf-8)
 
 + Response 200 (application/json; charset=utf-8)
-    + Attributes ([Store])
+    + Attributes (object)
+        + data (array[Store])
 
 ## Store [/stores/{uuid}]
 
@@ -209,7 +216,9 @@ Retrieve the details of an existing Store.
 + Request (application/json; charset=utf-8)
 
 + Response 200 (application/json; charset=utf-8)
-    + Attributes ([Store])
+    + Attributes (object)
+        + data (object)
+            (Store)
 
 # Group Customers
 
@@ -257,6 +266,29 @@ Allows to retrieve a valid JSON Web Token.
     + Attributes (object)
             + data (object)
                 (JWT)
+
+## Customers [/customers]
+
+API key MUST be provided in corresponding header.
+
+### List all Customers [GET]
+
+Returns a list of customers. The customers are returned in sorter order, with the most recently created stores appearing first.
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+|-------------------------|----------------------|
+| Yes (API key)           | No                   |
+
+Request (application/json; charset=utf-8)
+    + Headers
+
+            Lets-Eat-API-Key: <Lets-Eat-API-Key>
+
++ Response 200 (application/json; charset=utf-8)
+    + Attributes (object)
+        + data (array[Store])
 
 ## Customer [/customers/{uuid}]
 
