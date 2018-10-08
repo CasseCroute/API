@@ -56,4 +56,13 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 			.where('uuid = :uuid', {uuid})
 			.execute();
 	}
+
+	public static async deleteStoreByUuid(uuid: string) {
+		return getConnection()
+			.createQueryBuilder()
+			.delete()
+			.from(Store)
+			.where('uuid = :uuid', {uuid})
+			.execute();
+	}
 }
