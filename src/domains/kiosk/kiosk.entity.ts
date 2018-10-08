@@ -14,7 +14,7 @@ export class Kiosk extends Resource {
 	@Column({name: 'serial_number', length: 32})
 	serialNumber: string;
 
-	@ManyToOne(type => Store, store => store.kiosks, {cascade: ['insert']})
+	@ManyToOne(type => Store, store => store.kiosks, {cascade: ['insert'], onDelete: 'CASCADE'})
 	@JoinColumn({name: 'id_store'})
 	store: Store;
 }

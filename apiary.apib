@@ -151,47 +151,6 @@ Allows to retrieve a valid JSON Web Token.
         + data (object)
             (JWT)
 
-## Current Store Profile [/stores/me]
-
-Current store MUST be identified by JWT provided in request header.
-
-### Retrieve Profile of the current Store [GET]
-
-Retrieves the profile of the current store.
-
-**Endpoint information**
-
-| Requires authentication | Has restricted scope |
-| ----------------------- | -------------------- |
-| Yes (JWT)               | No                   |
-
-+ Request (application/json; charset=utf-8)
-    + Headers
-
-            Authorization: Bearer <JWT>
-
-+ Response 200 (application/json; charset=utf-8)
-  + Attributes (object)
-      + data (object)
-          (Store)
-
-### Delete Account of the current Store [DELETE]
-
-Delete the current Store account and all related resources.
-
-**Endpoint information**
-
-| Requires authentication | Has restricted scope |
-| ----------------------- | -------------------- |
-| Yes (JWT)               | No                   |
-
-+ Request (application/json; charset=utf-8)
-    + Headers
-
-            Authorization: Bearer <JWT>
-
-+ Response 204
-
 ## Stores [/stores]
 
 ### List all Stores [GET]
@@ -254,6 +213,68 @@ Add a Kiosk to a store
         + serialNumber: `2X0NFW-E6M36H-AAFLPC-GPS81M` (string, required, fixed) - Unique serial number of the kiosk. It MUST be equal to 27 characters.
 
 + Response 201 (application/json; charset=utf-8)
+
+## Current Store Profile [/stores/me]
+
+Current store MUST be identified by JWT provided in request header.
+
+### Retrieve Profile of the current Store [GET]
+
+Retrieves the profile of the current store.
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+| ----------------------- | -------------------- |
+| Yes (JWT)               | No                   |
+
++ Request (application/json; charset=utf-8)
+    + Headers
+
+            Authorization: Bearer <JWT>
+
++ Response 200 (application/json; charset=utf-8)
+  + Attributes (object)
+      + data (object)
+          (Store)
+
+### Update Profile of the current Store [PATCH]
+
+Update informations of the current Store.
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+| ----------------------- | -------------------- |
+| Yes (JWT)               | No                   |
+
++ Request (application/json; charset=utf-8)
+    + Headers
+
+            Authorization: Bearer <JWT>
+    + Attributes
+       + name: `Joe` (string, optional) - New first name.
+       + email: `joe.poe@mail.com` (string, optional) - New email.
+       + phoneNumber: `0789211234` (number, optional) - New phone number
+
++ Response 204
+
+### Delete Account of the current Store [DELETE]
+
+Delete the current Store account and all related resources.
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+| ----------------------- | -------------------- |
+| Yes (JWT)               | No                   |
+
++ Request (application/json; charset=utf-8)
+    + Headers
+
+            Authorization: Bearer <JWT>
+
++ Response 204
 
 # Group Customers
 

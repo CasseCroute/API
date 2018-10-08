@@ -19,7 +19,7 @@ export class GetResourceByUuidHandler implements ICommandHandler<GetResourceByUu
 			resolve(storeFound);
 		} catch (err) {
 			err.message = 'Resource not found';
-			resolve(Promise.reject(new NotFoundException(err.message)));
+			return resolve(new NotFoundException(err.message));
 		}
 	}
 }

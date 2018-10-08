@@ -1,12 +1,12 @@
 import {
 	Body, Controller, Delete, Get, HttpCode,
-	NotFoundException, Param, Post, Req, UnauthorizedException, UseGuards
+	NotFoundException, Param, Patch, Post, Req, UnauthorizedException, UseGuards
 } from '@nestjs/common';
 import {CommandBus} from '@nestjs/cqrs';
 import {Search} from '@letseat/application/queries/common/decorators/search.decorator';
 import {Store} from '@letseat/domains/store/store.entity';
 import {
-	storeLoginValidatorOptions, storeRegisterValidatorOptions,
+	storeLoginValidatorOptions, storeRegisterValidatorOptions, storeUpdateValidatorOptions,
 } from '@letseat/domains/store/pipes';
 import {JwtPayload, AuthService, CryptographerService} from '@letseat/infrastructure/authorization';
 import {
@@ -15,7 +15,7 @@ import {
 	GetStoresQuery
 } from '@letseat/application/queries/store';
 import {CreateStoreDto, LoginStoreDto} from '@letseat/domains/store/dtos';
-import {CreateStoreCommand} from '@letseat/application/commands/store';
+import {CreateStoreCommand, UpdateStoreByUuidCommand} from '@letseat/application/commands/store';
 import {AuthGuard} from '@letseat/infrastructure/authorization/guards';
 import {ValidationPipe} from '@letseat/domains/common/pipes/validation.pipe';
 import {Kiosk} from '@letseat/domains/kiosk/kiosk.entity';
@@ -24,6 +24,7 @@ import {AuthEntities} from '@letseat/infrastructure/authorization/enums/auth.ent
 import {CreateKioskCommand} from '@letseat/application/commands/store/create-kiosk.command';
 import {CreateKioskDto} from '@letseat/domains/kiosk/dtos';
 import {DeleteStoreByUuidCommand} from '@letseat/application/commands/store/delete-store-by-uuid.command';
+import {UpdateStoreDto} from '@letseat/domains/store/dtos/update-store.dto';
 
 @Controller('stores')
 export class StoreController {
@@ -51,6 +52,19 @@ export class StoreController {
 	@Post('/register')
 	public async register(@Body(new ValidationPipe<Store>(storeRegisterValidatorOptions)) store: CreateStoreDto): Promise<JwtPayload> {
 		return this.commandBus.execute(new CreateStoreCommand(store));
+	}
+
+	@Patch('/me')
+	@HttpCode(204)
+	@UseGuards(AuthGuard('jwt'))
+	public async updateCurrentStore(
+		@Req() request: any,
+		@Body(new ValidationPipe<Store>(storeUpdateValidatorOptions)) valuesToUpdate: UpdateStoreDto) {
+		return request.user.entity === AuthEntities.Store
+			? this.commandBus.execute(new UpdateStoreByUuidCommand(request.user.uuid, valuesToUpdate))
+			: (() => {
+				throw new UnauthorizedException();
+			})();
 	}
 
 	@Post('/login')

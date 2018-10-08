@@ -171,6 +171,40 @@ describe('Store HTTP Requests', () => {
 		});
 	});
 
+	describe('PATCH /me', () => {
+		it('should return a HTTP 204 status code when successful', () => {
+			return request(app.getHttpServer())
+				.patch('/stores/me')
+				.send({email: 'hello@burgerking.com'})
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.expect(204);
+		});
+
+		it('should return an HTTP 500 status code when incorrect data is sent', () => {
+			return request(app.getHttpServer())
+				.patch('/stores/me')
+				.send({fake: 'hello@burgerking.com'})
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.expect(500);
+		});
+
+		it('should return an HTTP 401 status code when no JWT is provided', () => {
+			return request(app.getHttpServer())
+				.patch('/stores/me')
+				.expect(401);
+		});
+
+		it('should return an empty body when succesful', () => {
+			return request(app.getHttpServer())
+				.patch('/stores/me')
+				.send({email: 'hello@mail.com'})
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.expect((res: any) => {
+					res.body = '';
+				});
+		});
+	});
+
 	afterAll(async () => {
 		await app.close();
 	});
