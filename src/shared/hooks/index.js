@@ -100,6 +100,12 @@ hooks.before('Stores > Current Store Profile > Retrieve Profile of the current S
 	done();
 });
 
+// Before current Customer deletes his account
+hooks.before('Stores > Current Store Profile > Delete Account of the current Store', (transaction, done) => {
+	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
+	done();
+});
+
 // Before adding a Kiosk
 hooks.before('Stores > Current Store Kiosks > Create a Kiosk', (transaction, done) => {
 	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
