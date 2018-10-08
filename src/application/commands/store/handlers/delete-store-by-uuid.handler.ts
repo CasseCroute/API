@@ -2,14 +2,14 @@ import {ICommandHandler, CommandHandler} from '@nestjs/cqrs';
 import {DeleteStoreByUuidCommand} from '../delete-store-by-uuid.command';
 import {NotFoundException} from '@nestjs/common';
 import {StoreRepository} from '@letseat/infrastructure/repository/store.repository';
-import {Customer} from '@letseat/domains/customer/customer.entity';
+import {Store} from '@letseat/domains/store/store.entity';
 
 @CommandHandler(DeleteStoreByUuidCommand)
 export class DeleteStoreByUuidHandler implements ICommandHandler<DeleteStoreByUuidCommand> {
 	async execute(command: DeleteStoreByUuidCommand, resolve: (value?) => void) {
-		const customer = Customer.register(command);
+		const store = Store.register(command);
 		try {
-			await StoreRepository.deleteStoreByUuid(customer.uuid);
+			await StoreRepository.deleteStoreByUuid(store.uuid);
 			resolve();
 		} catch (err) {
 			err.message = 'Resource not found';
