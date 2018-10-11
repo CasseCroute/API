@@ -5,6 +5,7 @@ import {HTTPCoreModule} from '@letseat/interfaces/http/modules/http.core.module'
 import {CustomExceptionFilter} from '@letseat/domains/common/exceptions';
 import {LoggerService} from '@letseat/application/queries/common/services';
 import {Transport} from '@nestjs/microservices';
+import helmet from 'helmet';
 
 const logger = new LoggerService('Server');
 
@@ -23,6 +24,9 @@ async function bootstrap() {
 		}
 	});
 
+	app.use(helmet());
+	app.enableCors();
+
 	app.useGlobalFilters(new CustomExceptionFilter());
 
 	await app.startAllMicroservicesAsync();
@@ -36,4 +40,4 @@ async function bootstrap() {
 
 bootstrap()
 	.then(() => logger.log(`Server running at port ${config.get('app.port')}`))
-	.catch(() => logger.error('Server crashed !'));
+	.catch(err => logger.error('Server crashed !', err));
