@@ -14,23 +14,15 @@ export class CustomExceptionFilter implements ExceptionFilter {
 			status = exception.getStatus();
 		}
 		if (exception instanceof CustomValidationError) {
-			exception.errors.forEach((error: ValidationError) => {
-				Object.keys(error.constraints).forEach(
-					(key: string) => {
-						if (!errors[error.property]) {
-							errors[error.property] = [];
-						}
-						errors[error.property].push(error.constraints[key]);
-					}
-				);
-			});
+			const validationErrors = retrieveValidationErrors(exception.errors, errors);
 			response
 				.status(HttpStatus.BAD_REQUEST)
 				.json({
 					statusCode: HttpStatus.BAD_REQUEST,
 					error: 'Bad Request',
 					message: 'Validation failed',
-					data: errors});
+					data: validationErrors
+				});
 			return;
 		}
 		if (exception instanceof JsonWebTokenError) {
@@ -46,4 +38,23 @@ export class CustomExceptionFilter implements ExceptionFilter {
 		}
 		response.status(status).json(exception.message);
 	}
+}
+
+function retrieveValidationErrors(validationException: any, errors: any) {
+	validationException.forEach((error: ValidationError) => {
+		if (error.constraints) {
+			Object.keys(error.constraints).forEach(
+				(key: string) => {
+					if (!errors[error.property]) {
+						errors[error.property] = [];
+					}
+					errors[error.property].push(error.constraints[key]);
+				}
+			);
+		}
+		if (error.children.length > 0) {
+			retrieveValidationErrors(error.children, errors);
+		}
+	});
+	return errors;
 }

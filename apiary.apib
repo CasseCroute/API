@@ -107,7 +107,7 @@ This API returns both, machine-readable error codes and human-readable error mes
 # Group Stores
 
 ## Store Registration [/stores/register]
- 
+
 ### Register a new Store [POST]
 
 **Endpoint information**
@@ -120,9 +120,13 @@ This API returns both, machine-readable error codes and human-readable error mes
     + Attributes
         + name: `Let's Eat` (string, required) - Name of the store.
         + email: `hello@letseat.co` (string, required) - Email of the store.
-        + phoneNumber: `0134724336` (number, required) - Phone number of the store.
+        + phoneNumber: `0134724336` (string, required) - Phone number of the store.
         + password: `f8e2cfacc6` (string, required) - Password of the store.
-        + imageUrl: `https://some.cdn.com/img.png` (string, optional) - Main image URL of the store.
+        + address (object)
+            + street: `24, rue des Beauxchamps` (string, required) - Street name where the store is located.
+            + city: `Paris` (string, required) - City where the store belongs to.
+            + zipCode: `75016` (string, required) - Zip code of the store name where the store is located
+            + country: `France` (string, required) - Country where the store is located
 
 + Response 201 (application/json; charset=utf-8)
     + Attributes (object)
@@ -460,6 +464,6 @@ Delete the current Customer account.
 + password: `RHN4uNu3` (string, required) - Password of the customer.
 
 ### JWT (object)
-+ iat: `1538414646426` (number, required) - Issued date of the JSON Web Token in Unix timestamp format 
-+ exp: `1539019446426` (number, required) - Expiration date of the JSON Web Token in Unix timestamp format 
++ iat: `1538414646426` (number, required) - Issued date of the JSON Web Token in Unix timestamp format
++ exp: `1539019446426` (number, required) - Expiration date of the JSON Web Token in Unix timestamp format
 + jwt: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhNnZoQW8zRkc3dDEiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE0NzA1OTg5NzIsImV4cCI6MTQ3MDY4NTM3Mn0.ltA9zZmJKszBJuuV7pTWtY7LzLXrRUfebJDhy_jGMeM` (string, required) - JSON Web Token

@@ -1,4 +1,6 @@
-import {IsString, IsEmail, IsNumber, IsOptional, Min} from 'class-validator';
+import {IsString, IsEmail, ValidateNested, IsNumberString, MinLength} from 'class-validator';
+import {CreateAddressDto} from '@letseat/domains/address/dtos/create-address.dto';
+import {Type} from 'class-transformer';
 
 export class CreateStoreDto {
 	@IsString()
@@ -7,14 +9,14 @@ export class CreateStoreDto {
 	@IsEmail()
 	readonly email: string;
 
-	@IsNumber()
-	@Min(10)
-	readonly phoneNumber: number;
+	@IsNumberString()
+	@MinLength(10)
+	readonly phoneNumber: string;
 
 	@IsString()
 	readonly password: string;
 
-	@IsString()
-	@IsOptional()
-	readonly imageUrl?: string;
+	@ValidateNested()
+	@Type(() => CreateAddressDto)
+	address: CreateAddressDto;
 }
