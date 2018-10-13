@@ -68,8 +68,14 @@ export const jwtPayload = {
 export const storeCreateDto: CreateStoreDto = {
 	name: 'Pizza Hut',
 	email: 'pizzahut@mail.com',
-	phoneNumber: 1234567890,
-	password: 'password'
+	phoneNumber: '1234567890',
+	password: 'password',
+	address: {
+		street: '22, rue du Beauvais',
+		city: 'Paris',
+		zipCode: '75006',
+		country: 'France'
+	}
 };
 
 export const storeLoginDto: any = {
