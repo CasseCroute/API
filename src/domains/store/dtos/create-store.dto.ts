@@ -1,5 +1,5 @@
 import {IsString, IsEmail, ValidateNested, IsNumberString, MinLength} from 'class-validator';
-import {CreateAddressDto} from '@letseat/domains/address/dtos/create-address.dto';
+import {CreateAddressDto} from '@letseat/domains/address/dtos';
 import {Type} from 'class-transformer';
 
 export class CreateStoreDto {

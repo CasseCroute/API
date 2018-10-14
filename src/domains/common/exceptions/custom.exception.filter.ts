@@ -52,7 +52,7 @@ function retrieveValidationErrors(validationException: any, errors: any) {
 				}
 			);
 		}
-		if (error.children.length > 0) {
+		if (error.children && error.children.length > 0) {
 			retrieveValidationErrors(error.children, errors);
 		}
 	});

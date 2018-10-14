@@ -2,6 +2,7 @@
 import {EventPublisher, ICommandHandler, CommandHandler} from '@nestjs/cqrs';
 import {GetStoresQuery} from '../get-stores.query';
 import {StoreRepository} from '@letseat/infrastructure/repository/store.repository';
+import {omitDeep} from '@letseat/shared/utils';
 
 @CommandHandler(GetStoresQuery)
 export class GetStoresHandler implements ICommandHandler<GetStoresQuery> {
@@ -11,7 +12,7 @@ export class GetStoresHandler implements ICommandHandler<GetStoresQuery> {
 	async execute(command: GetStoresQuery, resolve: (value?) => void) {
 		try {
 			const storesSelect = await this.repository.find();
-			resolve(storesSelect.map(({id, ...columns}) => columns));
+			resolve(omitDeep('id', storesSelect));
 			resolve(command);
 		} catch (err) {
 			resolve(Promise.reject((err.message)));

@@ -33,7 +33,7 @@ export class Store extends Resource {
 	@OneToMany(type => Kiosk, kiosk => kiosk.store, {cascade: ['insert']})
 	kiosks: Kiosk[];
 
-	@ManyToOne(type => Address, address => address.store, {cascade: ['insert']})
+	@ManyToOne(type => Address, address => address.store, {cascade: ['insert'], eager: true})
 	@JoinColumn({name: 'id_address'})
 	address: Address;
 
