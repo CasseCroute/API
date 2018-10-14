@@ -1,11 +1,20 @@
-/* tslint:disable:no-unused */
-import {EntityRepository, getConnection, ObjectLiteral, Repository, Transaction, TransactionManager} from 'typeorm';
+/* tslint:disable */
+import {
+	EntityRepository,
+	getConnection,
+	ObjectLiteral,
+	getRepository,
+	Repository,
+	Transaction,
+	TransactionManager, getManager
+} from 'typeorm';
 import {Store} from '@letseat/domains/store/store.entity';
 import {ResourceRepository} from '@letseat/infrastructure/repository/resource.repository';
 import {CreateKioskCommand} from '@letseat/application/commands/store/create-kiosk.command';
+import {omitDeep} from '@letseat/shared/utils';
 
 @EntityRepository(Store)
-export class StoreRepository extends Repository<Store> implements ResourceRepository{
+export class StoreRepository extends Repository<Store> implements ResourceRepository {
 	@Transaction()
 	public async saveStore(store: Store, @TransactionManager() storeRepository: Repository<Store>) {
 		return storeRepository.save(store);
@@ -22,12 +31,19 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 
 	public async findOneByUuid(storeUuid: string) {
 		const store = await this.findOne({where: {uuid: storeUuid}});
-		delete store!.id;
-		return store;
+		return omitDeep('id', store);
 	}
 
 	public async getPassword(store: Store) {
 		return this.findOne({select: ['password'], where: {id: store.id}});
+	}
+
+	public async getAddress(storeUuid: string) {
+		return getManager()
+			.createQueryBuilder(Store,'store')
+			.leftJoinAndSelect('store.address', 'address')
+			.where('store.uuid = :uuid', {uuid: storeUuid})
+			.getOne();
 	}
 
 	/**
@@ -49,12 +65,7 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 	}
 
 	public async updateStore(uuid: string, values: ObjectLiteral) {
-		return getConnection()
-			.createQueryBuilder()
-			.update(Store)
-			.set(values)
-			.where('uuid = :uuid', {uuid})
-			.execute();
+		return getRepository(Store).update({uuid},{...values})
 	}
 
 	public static async deleteStoreByUuid(uuid: string) {

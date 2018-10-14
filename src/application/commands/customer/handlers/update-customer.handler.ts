@@ -18,6 +18,5 @@ export class UpdateCustomerHandler implements ICommandHandler<UpdateCustomerComm
 		} catch (err) {
 			resolve(Promise.reject(new BadRequestException(err.message)));
 		}
-
 	}
 }

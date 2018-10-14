@@ -1,12 +1,14 @@
-import {IsString, IsNumber, IsOptional, Min, IsEmail} from 'class-validator';
+import {IsString, IsOptional, IsEmail, ValidateNested, IsNumberString, MinLength} from 'class-validator';
+import {Type} from 'class-transformer';
+import {UpdateAddressDto} from '@letseat/domains/address/dtos';
 
 export class UpdateStoreDto {
 	@IsString()
 	readonly name?: string;
 
-	@IsNumber()
-	@Min(10)
-	readonly phoneNumber?: number;
+	@IsNumberString()
+	@MinLength(10)
+	readonly phoneNumber?: string;
 
 	@IsEmail()
 	readonly email?: string;
@@ -14,4 +16,8 @@ export class UpdateStoreDto {
 	@IsString()
 	@IsOptional()
 	readonly imageUrl?: string;
+
+	@ValidateNested()
+	@Type(() => UpdateAddressDto)
+	address?: UpdateAddressDto;
 }
