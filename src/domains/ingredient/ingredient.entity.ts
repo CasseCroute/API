@@ -1,10 +1,11 @@
 /* tslint:disable:no-unused */
-import {Entity, Column, Unique, ManyToOne, JoinColumn} from 'typeorm';
+import {Entity, Column, Unique, OneToMany} from 'typeorm';
 import {Resource} from '@letseat/domains/resource/resource';
+import {Stock} from '@letseat/domains/stock/stock.entity';
 
 @Unique(['name'])
 @Entity()
-export class Kiosk extends Resource {
+export class Ingredient extends Resource {
 	constructor(args?: any) {
 		super();
 		return Object.assign(this, args);
@@ -13,6 +14,7 @@ export class Kiosk extends Resource {
 	@Column({length: 128})
 	name: string;
 
-	@Column({length: 128})
-	measuring: number;
+	@OneToMany(type => Stock, stock => stock.ingredient, {cascade: ['insert']})
+	stock: Stock[];
+
 }
