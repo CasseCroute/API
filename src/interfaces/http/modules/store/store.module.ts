@@ -1,6 +1,5 @@
 import {Module, OnModuleInit} from '@nestjs/common';
 import {TypeOrmModule} from '@nestjs/typeorm';
-import {StoreController, StoreIngredientsController, StoreKiosksController} from './store.controller';
 import {CommandBus, CQRSModule, EventBus} from '@nestjs/cqrs';
 import {ModuleRef} from '@nestjs/core';
 import {StoreRepository} from '@letseat/infrastructure/repository/store.repository';
@@ -10,11 +9,11 @@ import {StoreQueryHandlers} from '@letseat/application/queries/store/handlers';
 import {JwtStrategy} from '@letseat/infrastructure/authorization/strategies/jwt.strategy';
 import {ResourceQueryHandlers} from '@letseat/application/queries/resource/handlers';
 import {IngredientCommandHandlers} from '@letseat/application/commands/ingredient/handlers';
-import {IngredientRepository} from '@letseat/infrastructure/repository/ingredient.repository';
+import {StoreContollers} from '@letseat/interfaces/http/modules/store/controllers';
 
 @Module({
 	imports: [
-		TypeOrmModule.forFeature([Store, StoreRepository, IngredientRepository]),
+		TypeOrmModule.forFeature([Store, StoreRepository]),
 		CQRSModule
 	],
 	providers: [
@@ -25,9 +24,7 @@ import {IngredientRepository} from '@letseat/infrastructure/repository/ingredien
 		...IngredientCommandHandlers
 	],
 	controllers: [
-		StoreController,
-		StoreKiosksController,
-		StoreIngredientsController
+		...StoreContollers
 	]
 })
 export class StoreModule implements OnModuleInit {

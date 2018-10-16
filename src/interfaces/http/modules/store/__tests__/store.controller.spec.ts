@@ -2,7 +2,7 @@ import {Test} from '@nestjs/testing';
 import * as mocks from './mocks';
 import {getRepositoryToken} from '@nestjs/typeorm';
 import {CommandBus} from '@nestjs/cqrs';
-import {StoreController} from '@letseat/interfaces/http/modules/store/store.controller';
+import {StoreController} from '@letseat/interfaces/http/modules/store/controllers';
 import {AuthService} from '@letseat/infrastructure/authorization';
 import {Store} from '@letseat/domains/store/store.entity';
 

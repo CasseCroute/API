@@ -1,7 +1,7 @@
 import request from 'supertest';
 import {Test, TestingModule} from '@nestjs/testing';
 import {INestApplication} from '@nestjs/common';
-import {StoreController, StoreKiosksController} from '../store.controller';
+import {StoreController} from '../controllers';
 import * as mocks from './mocks';
 import {getRepositoryToken} from '@nestjs/typeorm';
 import {AuthService, CryptographerService} from '@letseat/infrastructure/authorization';
@@ -16,8 +16,7 @@ describe('Store HTTP Requests', () => {
 	beforeAll(async () => {
 		const module: TestingModule = await Test.createTestingModule({
 			controllers: [
-				StoreController,
-				StoreKiosksController
+				StoreController
 			],
 			providers: [
 				CQRSModule,
@@ -119,31 +118,6 @@ describe('Store HTTP Requests', () => {
 				.post('/stores/login')
 				.send(mocks.storeLoginDto as Store)
 				.expect(200);
-		});
-	});
-
-	describe('POST /me/kiosks', () => {
-		it('should return a HTTP 201 status code when successful', () => {
-			return request(app.getHttpServer())
-				.post('/stores/me/kiosks')
-				.set('Authorization', `Bearer ${mocks.token}`)
-				.send({serialNumber: '2X0NFW-E6M36H-AAFLPC-GPS81M'})
-				.expect(201);
-		});
-
-		it('should return a HTTP 401 status code when no JWT is present in Authorization header', () => {
-			return request(app.getHttpServer())
-				.post('/stores/me/kiosks')
-				.send({serial: '2X0NFW-E6M36H-AAFLPC-GPS81M'})
-				.expect(401);
-		});
-
-		it('should return a HTTP 500 status code when incorrect data is sent', () => {
-			return request(app.getHttpServer())
-				.post('/stores/me/kiosks')
-				.set('Authorization', `Bearer ${mocks.token}`)
-				.send({serial: '2X0NFW-E6M36H-AAFLPC-GPS81M'})
-				.expect(500);
 		});
 	});
 
