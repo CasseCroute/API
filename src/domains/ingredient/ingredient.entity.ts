@@ -17,7 +17,7 @@ export class Ingredient extends Resource {
 	@Column()
 	quantity: number;
 
-	@ManyToOne(type => Store, store => store.kiosks, {cascade: ['insert'], onDelete: 'CASCADE'})
+	@ManyToOne(type => Store, store => store.ingredient, {cascade: ['insert'], onDelete: 'CASCADE'})
 	@JoinColumn({name: 'id_store'})
 	store: Store;
 
