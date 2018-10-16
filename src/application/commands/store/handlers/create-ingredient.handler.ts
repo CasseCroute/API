@@ -17,10 +17,10 @@ export class CreateIngredientHandler implements ICommandHandler<CreateIngredient
 		const storeRepository = getCustomRepository(StoreRepository);
 		const store = Store.register(command);
 		try {
-			const storeKioskCreated = this.publisher.mergeObjectContext(
-				await storeRepository.createKiosk(store, command, new Repository<Store>()) as AggregateRoot
+			const storeIngredientCreated = this.publisher.mergeObjectContext(
+				await storeRepository.createIngredient(store, command, new Repository<Store>()) as AggregateRoot
 			);
-			storeKioskCreated.commit();
+			storeIngredientCreated.commit();
 			resolve();
 		} catch (err) {
 			resolve(Promise.reject(new BadRequestException(err.message)));

@@ -35,7 +35,7 @@ export class Store extends Resource {
 	kiosks: Kiosk[];
 
 	@OneToMany(type => Ingredient, ingredient => ingredient.store, {cascade: ['insert']})
-	ingredient: Ingredient[];
+	ingredients: Ingredient[];
 
 	@ManyToOne(type => Address, address => address.store, {cascade: ['insert'], eager: true})
 	@JoinColumn({name: 'id_address'})

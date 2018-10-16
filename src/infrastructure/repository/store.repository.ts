@@ -12,6 +12,7 @@ import {Store} from '@letseat/domains/store/store.entity';
 import {ResourceRepository} from '@letseat/infrastructure/repository/resource.repository';
 import {CreateKioskCommand} from '@letseat/application/commands/store/create-kiosk.command';
 import {omitDeep} from '@letseat/shared/utils';
+import {CreateIngredientCommand} from "@letseat/application/commands/store/create-ingredient.command";
 
 @EntityRepository(Store)
 export class StoreRepository extends Repository<Store> implements ResourceRepository {
@@ -56,6 +57,18 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 		@TransactionManager() storeRepository: Repository<Store>): Promise<any> {
 		const storeFound = await this.findOne({where: {uuid: store.uuid}, relations: ['kiosks']});
 		storeFound!.kiosks.push(data.kiosk);
+		return storeRepository.save(storeFound as Store);
+	}
+	/**
+	 * Adds a new Ingredient to a Store using SQL transaction
+	 */
+	@Transaction()
+	public async createIngredient(
+		store: Store,
+		data: CreateIngredientCommand | any,
+		@TransactionManager() storeRepository: Repository<Store>): Promise<any> {
+		const storeFound = await this.findOne({where: {uuid: store.uuid}, relations: ['kiosks']});
+		storeFound!.ingredients.push(data.kiosk);
 		return storeRepository.save(storeFound as Store);
 	}
 
