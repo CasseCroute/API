@@ -67,8 +67,8 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 		store: Store,
 		data: CreateIngredientCommand | any,
 		@TransactionManager() storeRepository: Repository<Store>): Promise<any> {
-		const storeFound = await this.findOne({where: {uuid: store.uuid}, relations: ['kiosks']});
-		storeFound!.ingredients.push(data.kiosk);
+		const storeFound = await this.findOne({where: {uuid: store.uuid}, relations: ['ingredients']});
+		storeFound!.ingredients.push(data.ingredient);
 		return storeRepository.save(storeFound as Store);
 	}
 
