@@ -218,6 +218,25 @@ Add a Kiosk to a store
 
 + Response 201 (application/json; charset=utf-8)
 
+## Current Store Ingredients [/stores/me/ingredients]
+
+### Create an Ingredient [POST]
+
+Add an Ingredient to a store
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+|-------------------------|----------------------|
+| Yes (JWT)               | No                   |
+
++ Request (application/json; charset=utf-8)
+    + Attributes
+        + name: `toto` (string, required, fixed) - Name of the ingredient.
+        + quantity: `200` (number, required, fixed) - Quantity of the ingredient.
+
++ Response 201 (application/json; charset=utf-8)
+
 ## Current Store Profile [/stores/me]
 
 Current store MUST be identified by JWT provided in request header.
