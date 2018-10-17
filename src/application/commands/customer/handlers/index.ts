@@ -5,7 +5,7 @@ import {DeleteCustomerByUuidHandler} from './delete-customer-by-uuid.handler';
 export const CustomerCommandHandlers = [
 	CreateCustomerHandler,
 	UpdateCustomerHandler,
-	DeleteCustomerByUuidHandler
+	DeleteCustomerByUuidHandler,
 ];
 
 export {

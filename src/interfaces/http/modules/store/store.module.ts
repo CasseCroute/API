@@ -1,6 +1,5 @@
 import {Module, OnModuleInit} from '@nestjs/common';
 import {TypeOrmModule} from '@nestjs/typeorm';
-import {StoreController, StoreKiosksController} from './store.controller';
 import {CommandBus, CQRSModule, EventBus} from '@nestjs/cqrs';
 import {ModuleRef} from '@nestjs/core';
 import {StoreRepository} from '@letseat/infrastructure/repository/store.repository';
@@ -9,6 +8,8 @@ import {StoreCommandHandlers} from '@letseat/application/commands/store/handlers
 import {StoreQueryHandlers} from '@letseat/application/queries/store/handlers';
 import {JwtStrategy} from '@letseat/infrastructure/authorization/strategies/jwt.strategy';
 import {ResourceQueryHandlers} from '@letseat/application/queries/resource/handlers';
+import {IngredientCommandHandlers} from '@letseat/application/commands/ingredient/handlers';
+import {StoreContollers} from '@letseat/interfaces/http/modules/store/controllers';
 
 @Module({
 	imports: [
@@ -19,11 +20,11 @@ import {ResourceQueryHandlers} from '@letseat/application/queries/resource/handl
 		JwtStrategy,
 		...ResourceQueryHandlers,
 		...StoreCommandHandlers,
-		...StoreQueryHandlers
+		...StoreQueryHandlers,
+		...IngredientCommandHandlers
 	],
 	controllers: [
-		StoreController,
-		StoreKiosksController
+		...StoreContollers
 	]
 })
 export class StoreModule implements OnModuleInit {
@@ -38,6 +39,7 @@ export class StoreModule implements OnModuleInit {
 		this.event$.setModuleRef(this.moduleRef);
 
 		this.command$.register(StoreCommandHandlers);
+		this.command$.register(IngredientCommandHandlers);
 		this.command$.register(StoreQueryHandlers);
 		this.command$.register(ResourceQueryHandlers);
 	}

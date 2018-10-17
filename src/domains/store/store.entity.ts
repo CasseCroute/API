@@ -1,8 +1,9 @@
 /* tslint:disable:no-unused */
-import {Entity, Column, Unique, OneToMany, ManyToOne, JoinColumn} from 'typeorm';
+import {Entity, Column, Unique, OneToMany, ManyToOne, JoinColumn, OneToOne} from 'typeorm';
 import {Resource} from '@letseat/domains/resource/resource';
 import {Kiosk} from '@letseat/domains/kiosk/kiosk.entity';
 import {Address} from '@letseat/domains/address/address.entity';
+import {Ingredient} from '@letseat/domains/ingredient/ingredient.entity';
 
 @Entity()
 @Unique(['email'])
@@ -36,6 +37,9 @@ export class Store extends Resource {
 	@ManyToOne(type => Address, address => address.store, {cascade: ['insert'], eager: true})
 	@JoinColumn({name: 'id_address'})
 	address: Address;
+
+	@OneToMany(type => Ingredient, ingredient => ingredient.store, {cascade: ['insert']})
+	ingredients: Ingredient[];
 
 	public static register(args: any): Store {
 		return new Store(args);

@@ -18,11 +18,7 @@ import {CreateStoreDto, LoginStoreDto} from '@letseat/domains/store/dtos';
 import {CreateStoreCommand, UpdateStoreByUuidCommand} from '@letseat/application/commands/store';
 import {AuthGuard} from '@letseat/infrastructure/authorization/guards';
 import {ValidationPipe} from '@letseat/domains/common/pipes/validation.pipe';
-import {Kiosk} from '@letseat/domains/kiosk/kiosk.entity';
-import {createKioskValidatorOptions} from '@letseat/domains/kiosk/pipes';
 import {AuthEntities} from '@letseat/infrastructure/authorization/enums/auth.entites';
-import {CreateKioskCommand} from '@letseat/application/commands/store/create-kiosk.command';
-import {CreateKioskDto} from '@letseat/domains/kiosk/dtos';
 import {DeleteStoreByUuidCommand} from '@letseat/application/commands/store/delete-store-by-uuid.command';
 import {UpdateStoreDto} from '@letseat/domains/store/dtos/update-store.dto';
 
@@ -87,23 +83,5 @@ export class StoreController {
 	@UseGuards(AuthGuard('jwt'))
 	public async deleteCurrentUser(@Req() request: any) {
 		return this.commandBus.execute(new DeleteStoreByUuidCommand(request.user.uuid));
-	}
-}
-
-@Controller('stores/me/kiosks')
-export class StoreKiosksController {
-	constructor(private readonly commandBus: CommandBus) {
-	}
-
-	@Post()
-	@UseGuards(AuthGuard('jwt'))
-	public async createKiosk(
-		@Req() request: any,
-		@Body(new ValidationPipe<Kiosk>(createKioskValidatorOptions)) kiosk: CreateKioskDto): Promise<any> {
-		return request.user.entity === AuthEntities.Store
-			? this.commandBus.execute(new CreateKioskCommand(request.user.uuid, kiosk.serialNumber))
-			: (() => {
-				throw new UnauthorizedException();
-			})();
 	}
 }

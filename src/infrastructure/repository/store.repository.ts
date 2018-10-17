@@ -12,6 +12,7 @@ import {Store} from '@letseat/domains/store/store.entity';
 import {ResourceRepository} from '@letseat/infrastructure/repository/resource.repository';
 import {CreateKioskCommand} from '@letseat/application/commands/store/create-kiosk.command';
 import {omitDeep} from '@letseat/shared/utils';
+import {Ingredient} from '@letseat/domains/ingredient/ingredient.entity';
 
 @EntityRepository(Store)
 export class StoreRepository extends Repository<Store> implements ResourceRepository {
@@ -29,9 +30,9 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 		return stores.map(({id, ...attrs}) => attrs);
 	}
 
-	public async findOneByUuid(storeUuid: string) {
+	public async findOneByUuid(storeUuid: string, selectId: boolean = false) {
 		const store = await this.findOne({where: {uuid: storeUuid}});
-		return omitDeep('id', store);
+		return selectId ? store : omitDeep('id', store);
 	}
 
 	public async getPassword(store: Store) {
@@ -40,7 +41,7 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 
 	public async getAddress(storeUuid: string) {
 		return getManager()
-			.createQueryBuilder(Store,'store')
+			.createQueryBuilder(Store, 'store')
 			.leftJoinAndSelect('store.address', 'address')
 			.where('store.uuid = :uuid', {uuid: storeUuid})
 			.getOne();
@@ -60,12 +61,12 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 	}
 
 	@Transaction()
-	public async findOneByPassword(store: Store) {
+	public async findOneByPassword(store: Store): Promise<Store | undefined> {
 		return this.findOne(store);
 	}
 
 	public async updateStore(uuid: string, values: ObjectLiteral) {
-		return getRepository(Store).update({uuid},{...values})
+		return getRepository(Store).update({uuid}, {...values})
 	}
 
 	public static async deleteStoreByUuid(uuid: string) {
@@ -75,5 +76,15 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 			.from(Store)
 			.where('uuid = :uuid', {uuid})
 			.execute();
+	}
+
+	@Transaction()
+	public async saveIngredient(
+		storeUuid: string,
+		ingredient: Ingredient,
+		@TransactionManager() storeRepository: Repository<Store>) {
+		const store: Store = await this.findOneByUuid(storeUuid, true);
+		store.ingredients = [ingredient];
+		return storeRepository.save(store);
 	}
 }
