@@ -3,6 +3,7 @@ import {Entity, Column, Unique, OneToMany, ManyToOne, JoinColumn} from 'typeorm'
 import {Resource} from '@letseat/domains/resource/resource';
 import {Kiosk} from '@letseat/domains/kiosk/kiosk.entity';
 import {Address} from '@letseat/domains/address/address.entity';
+import {Ingredient} from '@letseat/domains/ingredient/ingredient.entity';
 
 @Entity()
 @Unique(['email'])
@@ -32,6 +33,9 @@ export class Store extends Resource {
 
 	@OneToMany(type => Kiosk, kiosk => kiosk.store, {cascade: ['insert']})
 	kiosks: Kiosk[];
+
+	@OneToMany(type => Ingredient, ingredient => ingredient.store, {cascade: ['insert']})
+	ingredients: Ingredient[];
 
 	@ManyToOne(type => Address, address => address.store, {cascade: ['insert'], eager: true})
 	@JoinColumn({name: 'id_address'})

@@ -25,6 +25,10 @@ import {CreateKioskCommand} from '@letseat/application/commands/store/create-kio
 import {CreateKioskDto} from '@letseat/domains/kiosk/dtos';
 import {DeleteStoreByUuidCommand} from '@letseat/application/commands/store/delete-store-by-uuid.command';
 import {UpdateStoreDto} from '@letseat/domains/store/dtos/update-store.dto';
+import {Ingredient} from '@letseat/domains/ingredient/ingredient.entity';
+import {createIngredientValidatorOptions} from '@letseat/domains/ingredient/pipes';
+import {CreateIngredientDto} from '@letseat/domains/ingredient/dtos';
+import {CreateIngredientCommand} from '@letseat/application/commands/store/create-ingredient.command';
 
 @Controller('stores')
 export class StoreController {
@@ -102,6 +106,24 @@ export class StoreKiosksController {
 		@Body(new ValidationPipe<Kiosk>(createKioskValidatorOptions)) kiosk: CreateKioskDto): Promise<any> {
 		return request.user.entity === AuthEntities.Store
 			? this.commandBus.execute(new CreateKioskCommand(request.user.uuid, kiosk.serialNumber))
+			: (() => {
+				throw new UnauthorizedException();
+			})();
+	}
+}
+
+@Controller('stores/me/ingredients')
+export class StoreIngredientsController {
+	constructor(private readonly commandBus: CommandBus) {
+	}
+
+	@Post()
+	@UseGuards(AuthGuard('jwt'))
+	public async createIngredient(
+		@Req() request: any,
+		@Body(new ValidationPipe<Ingredient>(createIngredientValidatorOptions)) ingredient: CreateIngredientDto): Promise<any> {
+		return request.user.entity === AuthEntities.Store
+			? this.commandBus.execute(new CreateIngredientCommand(request.user.uuid, ingredient))
 			: (() => {
 				throw new UnauthorizedException();
 			})();
