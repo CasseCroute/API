@@ -118,10 +118,18 @@ hooks.before('Stores > Current Store Profile > Update Profile of the current Sto
 	done();
 });
 
+// Before adding an Ingredient
+hooks.before('Stores > Current Store Ingredients > Create a new Ingredient', (transaction, done) => {
+	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
+	done();
+});
+
 hooks.afterAll((transactions, done) => {
 	client.query(
 		'TRUNCATE TABLE store CASCADE;' +
 		'TRUNCATE TABLE customer CASCADE;' +
+		'TRUNCATE TABLE ingredient CASCADE;' +
+		'TRUNCATE TABLE address CASCADE;' +
 		'TRUNCATE TABLE kiosk CASCADE;')
 		.then(res => {
 			client.end();

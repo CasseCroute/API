@@ -218,6 +218,29 @@ Add a Kiosk to a store
 
 + Response 201 (application/json; charset=utf-8)
 
+## Current Store Ingredients [/stores/me/ingredients]
+
+### Create a new Ingredient [POST]
+
+Allows Stores to create an ingredient.
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+|-------------------------|----------------------|
+| Yes                     | No                   |
+
++ Request (application/json; charset=utf-8)
+    + Headers
+
+            Authorization: Bearer <JWT>
+
+    + Attributes
+        + name: `Avocado` (string, required) - Name of the Ingredient
+        + quantity: `86` (number, required) - Quantity available
+
++ Response 201
+
 ## Current Store Profile [/stores/me]
 
 Current store MUST be identified by JWT provided in request header.
@@ -451,10 +474,14 @@ Delete the current Customer account.
 ### Store (Resource)
 + name: `Let's Eat` (string, required) - Name of the store.
 + email: `hello@letseat.co` (string, required) - Email of the store.
-+ phoneNumber: `0134724336` (number, required) - Phone number of the store.
++ phoneNumber: `0134724336` (string, required) - Phone number of the store.
 + slug: `lets-eat-7d6ae7c69f` (string, required) - Slug of the store.
 + password: `f8e2cfacc6` (string, required) - Password of the store.
 + imageUrl: `https://some.cdn.com/img.png` (string, optional) - Main image URL of the store.
+
+### Ingredient (Resource)
++ name: `Avocado` (string, required) - Name of the ingredient.
++ quantity: `20` (number, required) - Quantity available for the ingredient.
 
 ### Customer (Resource)
 + firstName: `John` (string, required) - First name of the customer.

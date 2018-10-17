@@ -13,7 +13,7 @@ export class Ingredient extends Resource {
 	@Column({length: 128})
 	name: string;
 
-	@ManyToOne(type => Store, store => store.ingredients)
+	@ManyToOne(type => Store, store => store.ingredients, {onDelete: 'CASCADE'})
 	@JoinColumn({name: 'id_store'})
 	store: Store;
 
