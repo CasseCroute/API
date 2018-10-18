@@ -133,18 +133,6 @@ export const kioskRepository = {
 	]
 };
 
-export const ingredientsRepository = {
-	data: [
-		{
-			id: 1,
-			uuid: 'a7859141-7d67-403c-99f5-6f10b36c7dc',
-			name: 'Tomatoes',
-			quantity: 12,
-			idStore: 1
-		}
-	]
-};
-
 export const token = jwt.sign({
 	uuid: storeRepository.data[0].uuid,
 	email: storeRepository.data[0].email,

@@ -8,9 +8,8 @@ import {AuthService} from '@letseat/infrastructure/authorization';
 import {CommandBus, EventPublisher, EventBus, CQRSModule} from '@nestjs/cqrs';
 import {Store} from '@letseat/domains/store/store.entity';
 import {JwtStrategy} from '@letseat/infrastructure/authorization/strategies/jwt.strategy';
-import {Ingredient} from '@letseat/domains/ingredient/ingredient.entity';
 
-describe('Store Ingredients HTTP Requests', () => {
+describe('Store HTTP Requests', () => {
 	let app: INestApplication;
 
 	beforeAll(async () => {
@@ -26,10 +25,6 @@ describe('Store Ingredients HTTP Requests', () => {
 				EventBus,
 				{
 					provide: getRepositoryToken(Store),
-					useValue: mocks.storeRepository,
-				},
-				{
-					provide: getRepositoryToken(Ingredient),
 					useValue: mocks.storeRepository,
 				},
 			]
@@ -71,36 +66,6 @@ describe('Store Ingredients HTTP Requests', () => {
 				.set('Authorization', `Bearer ${mocks.token}`)
 				.send({oops: 'hello'})
 				.expect(500);
-		});
-	});
-
-	describe('GET stores/me/ingredients', () => {
-		it('should return a HTTP 200 status code when successful', () => {
-			return request(app.getHttpServer())
-				.get('/stores/me/ingredients')
-				.set('Authorization', `Bearer ${mocks.token}`)
-				.expect(200);
-		});
-
-		it('should return a HTTP 401 status code when no JWT is present in Authorization header', () => {
-			return request(app.getHttpServer())
-				.get('/stores/me/ingredients')
-				.expect(401);
-		});
-	});
-
-	describe('GET stores/me/ingredients/:uuid', () => {
-		it('should return a HTTP 200 status code when successful', () => {
-			return request(app.getHttpServer())
-				.get('/stores/me/ingredients/a7859141-7d67-403c-99f5-6f10b36c7dc')
-				.set('Authorization', `Bearer ${mocks.token}`)
-				.expect(200);
-		});
-
-		it('should return a HTTP 401 status code when no JWT is present in Authorization header', () => {
-			return request(app.getHttpServer())
-				.get('/stores/me/ingredients/a7859141-7d67-403c-99f5-6f10b36c7dc')
-				.expect(401);
 		});
 	});
 
