@@ -47,6 +47,14 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 			.getOne();
 	}
 
+	public async getIngredient(storeUuid: string) {
+		return getManager()
+			.createQueryBuilder(Store, 'store')
+			.leftJoinAndSelect('store.ingredient', 'ingredient')
+			.where('store.uuid = :uuid', {uuid: storeUuid})
+			.getOne();
+	}
+
 	/**
 	 * Adds a new Kiosk to a Store using SQL transaction
 	 */
