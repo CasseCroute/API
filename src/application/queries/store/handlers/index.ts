@@ -3,13 +3,25 @@ import {GetStorePasswordHandler} from './get-store-password.handler';
 import {GetStoresHandler} from './get-stores.handler';
 import {GetStoreByUuidHandler} from './get-store-by-uuid.handler';
 import {GetStoresByQueryParamsHandler} from './get-store-by-query-params.handler';
+import {GetStoreIngredientsHandler} from './get-store-ingredients.handler';
+import {GetStoreIngredientByUuidHandler} from './get-store-ingredient-by-uuid.handler';
 
 export const StoreQueryHandlers = [
 	GetStoreByEmailHandler,
 	GetStorePasswordHandler,
 	GetStoresHandler,
 	GetStoreByUuidHandler,
-	GetStoresByQueryParamsHandler
+	GetStoresByQueryParamsHandler,
+	GetStoreIngredientsHandler,
+	GetStoreIngredientByUuidHandler
 ];
 
-export {GetStoreByEmailHandler, GetStorePasswordHandler, GetStoresHandler, GetStoreByUuidHandler, GetStoresByQueryParamsHandler};
+export {
+	GetStoreByEmailHandler,
+	GetStorePasswordHandler,
+	GetStoresHandler,
+	GetStoreByUuidHandler,
+	GetStoresByQueryParamsHandler,
+	GetStoreIngredientsHandler,
+	GetStoreIngredientByUuidHandler
+};
