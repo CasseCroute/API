@@ -4,6 +4,7 @@ import {GetStoresHandler} from './get-stores.handler';
 import {GetStoreByUuidHandler} from './get-store-by-uuid.handler';
 import {GetStoresByQueryParamsHandler} from './get-store-by-query-params.handler';
 import {GetStoreIngredientsHandler} from './get-store-ingredients.handler';
+import {GetStoreIngredientByUuidHandler} from './get-store-ingredient-by-uuid.handler';
 
 export const StoreQueryHandlers = [
 	GetStoreByEmailHandler,
@@ -11,7 +12,8 @@ export const StoreQueryHandlers = [
 	GetStoresHandler,
 	GetStoreByUuidHandler,
 	GetStoresByQueryParamsHandler,
-	GetStoreIngredientsHandler
+	GetStoreIngredientsHandler,
+	GetStoreIngredientByUuidHandler
 ];
 
 export {
@@ -20,5 +22,6 @@ export {
 	GetStoresHandler,
 	GetStoreByUuidHandler,
 	GetStoresByQueryParamsHandler,
-	GetStoreIngredientsHandler
+	GetStoreIngredientsHandler,
+	GetStoreIngredientByUuidHandler
 };
