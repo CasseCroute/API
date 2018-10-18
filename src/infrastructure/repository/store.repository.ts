@@ -6,7 +6,7 @@ import {
 	getRepository,
 	Repository,
 	Transaction,
-	TransactionManager, getManager
+	TransactionManager, getManager, getCustomRepository
 } from 'typeorm';
 import {Store} from '@letseat/domains/store/store.entity';
 import {ResourceRepository} from '@letseat/infrastructure/repository/resource.repository';
@@ -43,14 +43,6 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 		return getManager()
 			.createQueryBuilder(Store, 'store')
 			.leftJoinAndSelect('store.address', 'address')
-			.where('store.uuid = :uuid', {uuid: storeUuid})
-			.getOne();
-	}
-
-	public async getIngredient(storeUuid: string) {
-		return getManager()
-			.createQueryBuilder(Store, 'store')
-			.leftJoinAndSelect('store.ingredient', 'ingredient')
 			.where('store.uuid = :uuid', {uuid: storeUuid})
 			.getOne();
 	}

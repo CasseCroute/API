@@ -1,9 +1,12 @@
 import {CreateIngredientHandler} from './create-ingredient.handler';
+import {UpdateIngredientHandler} from './update-ingredient.handler';
 
 export const IngredientCommandHandlers = [
-	CreateIngredientHandler
+	CreateIngredientHandler,
+	UpdateIngredientHandler
 ];
 
 export {
-	CreateIngredientHandler
+	CreateIngredientHandler,
+	UpdateIngredientHandler
 };

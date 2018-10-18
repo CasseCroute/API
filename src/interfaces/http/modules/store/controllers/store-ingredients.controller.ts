@@ -1,4 +1,4 @@
-import {Body, Controller, Param, Patch, Post, Req, UnauthorizedException, UseGuards} from '@nestjs/common';
+import {Body, Controller, HttpCode, Param, Patch, Post, Req, UnauthorizedException, UseGuards} from '@nestjs/common';
 import {AuthGuard} from '@letseat/infrastructure/authorization/guards';
 import {CommandBus} from '@nestjs/cqrs';
 import {ValidationPipe} from '@letseat/domains/common/pipes/validation.pipe';
@@ -26,6 +26,7 @@ export class StoreIngredientsController {
 	}
 
 	@Patch(':uuid')
+	@HttpCode(204)
 	@UseGuards(AuthGuard('jwt'))
 	public async updateIngredient(
 		@Req() request: any,

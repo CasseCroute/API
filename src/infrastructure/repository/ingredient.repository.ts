@@ -9,7 +9,12 @@ export class IngredientRepository extends Repository<Ingredient> {
 		return omitDeep('id', customer);
 	}
 
-	public async updateIngredient(ingredient: any, values: ObjectLiteral) {
-		return getRepository(Ingredient).update(ingredient!.id, {...values});
+	public async updateIngredient(storeId: number, ingredientUuid: string, values: ObjectLiteral) {
+		return getRepository(Ingredient)
+			.createQueryBuilder('ingredient')
+			.update()
+			.set(values)
+			.where('id_store = :id and uuid = :uuid', {id: storeId, uuid: ingredientUuid})
+			.execute();
 	}
 }
