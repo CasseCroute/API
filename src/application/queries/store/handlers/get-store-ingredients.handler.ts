@@ -8,7 +8,9 @@ export class GetStoreIngredientsHandler implements ICommandHandler<GetStoreIngre
 	async execute(command: GetStoreIngredientsQuery, resolve: (value?) => void) {
 		const ingredientRepository = getCustomRepository(IngredientRepository);
 		try {
-			const ingredients = await ingredientRepository.findStoreIngredients(command.storeUuid);
+			const ingredients = command.isPublic
+				? await ingredientRepository.findStoreIngredientsPublic(command.storeUuid)
+				: await ingredientRepository.findStoreIngredients(command.storeUuid);
 			resolve(ingredients);
 		} catch (err) {
 			resolve(Promise.reject((err.message)));

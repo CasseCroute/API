@@ -6,12 +6,14 @@ import {CustomerModule} from '@letseat/interfaces/http/modules/customer/customer
 import {TimeoutInterceptor} from '@letseat/application/queries/common/interceptors/timeout.interceptor';
 import {TransformInterceptor} from '@letseat/application/queries/common/interceptors/transform.interceptor';
 import {APIKeyStrategy} from '@letseat/infrastructure/authorization/strategies/api-key.strategy';
+import {IngredientModule} from '@letseat/interfaces/http/modules/ingredient/ingredient.module';
 
 @Module({
 	imports: [
 		TypeOrmModule.forRoot(),
 		StoreModule,
 		CustomerModule,
+		IngredientModule,
 		APIKeyStrategy,
 	],
 	providers: [

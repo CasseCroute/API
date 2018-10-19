@@ -152,6 +152,20 @@ hooks.before('Stores > Current Store Ingredient > Get Ingredient by UUID', (tran
 	done();
 });
 
+// Before retrieving a store Ingredients
+hooks.before('Stores > Store Ingredients > Retrieve Store Ingredients', (transaction, done) => {
+	transaction.request.uri = `/stores/${store.uuid}/ingredients`;
+	transaction.fullPath = `/stores/${store.uuid}/ingredients`;
+	done();
+});
+
+// Before retrieving a store Ingredient by it's UUID
+hooks.before('Stores > Store Ingredients > Retrieve a Store Ingredient', (transaction, done) => {
+	transaction.request.uri = `/stores/${store.uuid}/ingredients/${ingredient.uuid}`;
+	transaction.fullPath = `/stores/${store.uuid}/ingredients/${ingredient.uuid}`;
+	done();
+});
+
 hooks.afterAll((transactions, done) => {
 	client.query(
 		'TRUNCATE TABLE store CASCADE;' +

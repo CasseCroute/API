@@ -8,8 +8,9 @@ export class GetStoreIngredientByUuidHandler implements ICommandHandler<GetStore
 	async execute(command: GetStoreIngredientByUuidQuery, resolve: (value?) => void) {
 		const ingredientRepository = getCustomRepository(IngredientRepository);
 		try {
-			const ingredient = await ingredientRepository
-				.findStoreIngredientByUuid(command.storeUuid, command.ingredientUuid);
+			const ingredient = command.isPublic
+				? await ingredientRepository.findStoreIngredientByUuidPublic(command.storeUuid, command.ingredientUuid)
+				: await ingredientRepository.findStoreIngredientByUuid(command.storeUuid, command.ingredientUuid);
 			resolve(ingredient);
 		} catch (err) {
 			resolve(Promise.reject((err.message)));

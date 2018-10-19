@@ -1,7 +1,7 @@
 import request from 'supertest';
 import {Test, TestingModule} from '@nestjs/testing';
 import {INestApplication} from '@nestjs/common';
-import {StoreIngredientsController} from '../controllers';
+import {CurrentStoreIngredientsController, StoreIngredientsController} from '../controllers';
 import * as mocks from './mocks';
 import {getRepositoryToken} from '@nestjs/typeorm';
 import {AuthService} from '@letseat/infrastructure/authorization';
@@ -16,6 +16,7 @@ describe('Store Ingredients HTTP Requests', () => {
 	beforeAll(async () => {
 		const module: TestingModule = await Test.createTestingModule({
 			controllers: [
+				CurrentStoreIngredientsController,
 				StoreIngredientsController
 			],
 			providers: [
@@ -101,6 +102,40 @@ describe('Store Ingredients HTTP Requests', () => {
 			return request(app.getHttpServer())
 				.get('/stores/me/ingredients/a7859141-7d67-403c-99f5-6f10b36c7dc')
 				.expect(401);
+		});
+	});
+
+	describe('GET stores/:storeUuid/ingredients', () => {
+		it('should return a HTTP 200 status code when successful', () => {
+			return request(app.getHttpServer())
+				.get('/stores/9c1e887c-4a77-47ca-a572-c9286d6b7cea/ingredients')
+				.expect(200);
+		});
+
+		it('should return a HTTP 401 status code when query param is not an UUID', () => {
+			return request(app.getHttpServer())
+				.get('/stores/uususu/ingredients')
+				.expect(400);
+		});
+	});
+
+	describe('GET stores/me/ingredients/:uuid', () => {
+		it('should return a HTTP 200 status code when successful', () => {
+			return request(app.getHttpServer())
+				.get('/stores/9c1e887c-4a77-47ca-a572-c9286d6b7cea/ingredients/9c1e887c-4a77-47ca-a572-c9286d6b7cea')
+				.expect(200);
+		});
+
+		it('should return a HTTP 401 status code when Store query param is not an UUID', () => {
+			return request(app.getHttpServer())
+				.get('/stores/hey/ingredients/a7859141-7d67-403c-99f5-6f10b36c7dc')
+				.expect(400);
+		});
+
+		it('should return a HTTP 401 status code when Ingredient query param is not an UUID', () => {
+			return request(app.getHttpServer())
+				.get('/stores/9c1e887c-4a77-47ca-a572-c9286d6b7cea/ingredients/hello')
+				.expect(400);
 		});
 	});
 

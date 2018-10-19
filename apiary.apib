@@ -286,6 +286,47 @@ Allows Stores to retrieve an ingredient by it's UUID.
         + data (object)
             + (Ingredient)
 
+## Store Ingredients [/stores/{storeUuid}/ingredients]
+    + Parameters
+        + storeUuid: `890df35b-3e94-4c68-9553-42976cfd5612` (string) - UUID of the Store.
+
+### Retrieve Store Ingredients [GET]
+
+Allows to retrieve Ingredients of a Store.
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+|-------------------------|----------------------|
+| No                      | No                   |
+
++ Request (application/json; charset=utf-8)
+
++ Response 200 (application/json; charset=utf-8)
+    + Attributes (object)
+        + data (array)
+            + (Ingredient)
+
+## Store Ingredient [/stores/{storeUuid}/ingredients/{ingredientUuid}]
+    + Parameters
+        + storeUuid: `890df35b-3e94-4c68-9553-42976cfd5612` (string) - UUID of the Store.
+        + ingredientUuid: `058ec1d0-3ac6-4d4f-8dae-cf08c91c8765` (string) - UUID of the Ingredient.
+
+### Retrieve a Store Ingredient [GET]
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+|-------------------------|----------------------|
+| No                      | No                   |
+
++ Request (application/json; charset=utf-8)
+
++ Response 200 (application/json; charset=utf-8)
+    + Attributes (object)
+        + data (object)
+            + (Ingredient)
+
 ## Current Store Profile [/stores/me]
 
 Current store MUST be identified by JWT provided in request header.
