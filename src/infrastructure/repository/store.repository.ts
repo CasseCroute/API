@@ -6,7 +6,7 @@ import {
 	getRepository,
 	Repository,
 	Transaction,
-	TransactionManager, getManager
+	TransactionManager, getManager, getCustomRepository
 } from 'typeorm';
 import {Store} from '@letseat/domains/store/store.entity';
 import {ResourceRepository} from '@letseat/infrastructure/repository/resource.repository';

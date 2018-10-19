@@ -124,6 +124,15 @@ hooks.before('Stores > Current Store Ingredients > Create a new Ingredient', (tr
 	done();
 });
 
+// Update an Ingredient of the current Store
+
+// Before adding an Ingredient
+hooks.before('Stores > Current Store Ingredients > Update an Ingredient of the current Store', (transaction, done) => {
+	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
+	done();
+});
+
+
 hooks.afterAll((transactions, done) => {
 	client.query(
 		'TRUNCATE TABLE store CASCADE;' +
