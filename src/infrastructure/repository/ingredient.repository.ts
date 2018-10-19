@@ -1,4 +1,4 @@
-import {EntityRepository, getRepository, ObjectLiteral, Repository} from 'typeorm';
+import {EntityRepository, getConnection, getRepository, ObjectLiteral, Repository} from 'typeorm';
 import {Ingredient} from '@letseat/domains/ingredient/ingredient.entity';
 import {omitDeep} from '@letseat/shared/utils';
 
@@ -15,6 +15,15 @@ export class IngredientRepository extends Repository<Ingredient> {
 			.update()
 			.set(values)
 			.where('id_store = :id and uuid = :uuid', {id: storeId, uuid: ingredientUuid})
+			.execute();
+	}
+
+	public async deleteIngredient(storeId: number, ingredientUuid: string) {
+		return getConnection()
+			.createQueryBuilder()
+			.delete()
+			.from(Ingredient)
+			.where('uuid = :uuid AND id_store = :id', {uuid: ingredientUuid, id: storeId})
 			.execute();
 	}
 }
