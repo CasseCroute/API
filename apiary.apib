@@ -218,7 +218,7 @@ Add a Kiosk to a store
 
 + Response 201 (application/json; charset=utf-8)
 
-## Current Store Ingredients [/stores/me/ingredients]
+## Current Store Ingredients [/stores/me/ingredients/{uuid}]
 
 ### Create a new Ingredient [POST]
 
@@ -240,6 +240,28 @@ Allows Stores to create an ingredient.
         + quantity: `86` (number, required) - Quantity available
 
 + Response 201
+
+### Update an Ingredient of the current Store [PATCH]
+
++ Parameters
+    + uuid: `890df35b-3e94-4c68-9553-42976cfd5612` (string) - UUID of the ingredient.
+Update an ingredient of the current Store.
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+| ----------------------- | -------------------- |
+| Yes (JWT)               | No                   |
+
++ Request (application/json; charset=utf-8)
+    + Headers
+
+            Authorization: Bearer <JWT>
+    + Attributes
+       + name: `salade` (string, required) - Name of the engredient.
+       + quantity: `200` (number, required) - New quantity.
+
++ Response 204
 
 ## Current Store Profile [/stores/me]
 
