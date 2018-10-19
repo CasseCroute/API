@@ -85,6 +85,22 @@ describe('Store HTTP Requests', () => {
 		});
 	});
 
+	describe('DELETE stores/me/ingredients/:uuid', () => {
+		it('should return a HTTP 204 status code when successful', () => {
+			return request(app.getHttpServer())
+				.delete('/stores/me/ingredients/' + mocks.ingredientRepository.data[0].uuid)
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.send({name: 'cucumber', quantity: 12})
+				.expect(204);
+		});
+
+		it('should return a HTTP 404 status code when no resource found', () => {
+			return request(app.getHttpServer())
+				.delete('/stores/me/ingredients' + mocks.ingredientRepository.data[0].uuid)
+				.expect(404);
+		});
+	});
+
 	afterAll(async () => {
 		await app.close();
 	});
