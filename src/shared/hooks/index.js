@@ -132,6 +132,12 @@ hooks.before('Stores > Current Store Ingredients > Update an Ingredient of the c
 	done();
 });
 
+// Before deleting an Ingredient
+hooks.before('Stores > Current Store Ingredients > Delete an Ingredient of the current Store', (transaction, done) => {
+	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
+	done();
+});
+
 
 hooks.afterAll((transactions, done) => {
 	client.query(
