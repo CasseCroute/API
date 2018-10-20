@@ -139,6 +139,22 @@ describe('Store Ingredients HTTP Requests', () => {
 		});
 	});
 
+	describe('PATCH stores/me/ingredients/:uuid', () => {
+		it('should return a HTTP 204 status code when successful', () => {
+			return request(app.getHttpServer())
+				.patch('/stores/me/ingredients/' + mocks.ingredientRepository.data[0].uuid)
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.send({name: 'cucumber', quantity: 12})
+				.expect(204);
+		});
+
+		it('should return a HTTP 404 status code when no JWT is present in Authorization header', () => {
+			return request(app.getHttpServer())
+				.patch('/stores/me/ingredients' + mocks.ingredientRepository.data[0].uuid)
+				.expect(404);
+		});
+	});
+
 	afterAll(async () => {
 		await app.close();
 	});

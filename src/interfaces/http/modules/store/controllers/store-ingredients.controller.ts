@@ -14,14 +14,14 @@ import {CommandBus} from '@nestjs/cqrs';
 import {ValidationPipe} from '@letseat/domains/common/pipes/validation.pipe';
 import {Ingredient} from '@letseat/domains/ingredient/ingredient.entity';
 import {createIngredientValidatorOptions} from '@letseat/domains/ingredient/pipes';
-import {CreateIngredientDto} from '@letseat/domains/ingredient/dtos';
+import {CreateIngredientDto, UpdateIngredientDto} from '@letseat/domains/ingredient/dtos';
 import {AuthEntities} from '@letseat/infrastructure/authorization/enums/auth.entites';
-import {CreateIngredientCommand} from '@letseat/application/commands/ingredient';
 import {
 	GetStoreIngredientByUuidQuery,
 	GetStoreIngredientsQuery,
 } from '@letseat/application/queries/store';
 import {isUuid} from '@letseat/shared/utils';
+import {CreateIngredientCommand, UpdateIngredientCommand} from '@letseat/application/commands/ingredient';
 
 @Controller('stores')
 export class StoreIngredientsController {
@@ -62,6 +62,19 @@ export class CurrentStoreIngredientsController {
 		@Body(new ValidationPipe<Ingredient>(createIngredientValidatorOptions)) ingredient: CreateIngredientDto): Promise<any> {
 		return request.user.entity === AuthEntities.Store
 			? this.commandBus.execute(new CreateIngredientCommand(request.user.uuid, ingredient))
+			: (() => {
+				throw new UnauthorizedException();
+			})();
+	}
+
+	@Patch(':uuid')
+	@HttpCode(204)
+	@UseGuards(AuthGuard('jwt'))
+	public async updateIngredient(
+		@Req() request: any,
+		@Body(new ValidationPipe<Ingredient>(createIngredientValidatorOptions)) ingredient: UpdateIngredientDto, @Param('uuid') uuid: string): Promise<any> {
+		return request.user.entity === AuthEntities.Store
+			? this.commandBus.execute(new UpdateIngredientCommand(request.user.uuid, uuid , ingredient))
 			: (() => {
 				throw new UnauthorizedException();
 			})();
