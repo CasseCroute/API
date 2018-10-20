@@ -145,6 +145,31 @@ export const ingredientRepository = {
 	]
 };
 
+export const productRepository = {
+	data: [
+		{
+			id: 1,
+			uuid: '5ea74f95-720e-4e79-8e9d-600fe2ead22a',
+			reference: 'BURG-BIG',
+			ean13: '501234567890',
+			name: 'Big Burger',
+			price: 23.12,
+			description: 'A delicious Tasty Burger',
+			idStore: 1
+		},
+		{
+			id: 2,
+			uuid: '5ea12f95-720e-4e79-8e9d-600fe2ead22a',
+			reference: 'ICE-CREAM',
+			ean13: '978020137962',
+			name: 'Strawberry Ice Cream',
+			price: 2.12,
+			description: 'Ice Cream',
+			idStore: 1
+		},
+	]
+};
+
 export const token = jwt.sign({
 	uuid: storeRepository.data[0].uuid,
 	email: storeRepository.data[0].email,

@@ -1,6 +1,5 @@
 import {IsString, IsOptional, IsNumber, ValidateNested} from 'class-validator';
 import {Type} from 'class-transformer';
-import {CreateAddressDto} from '@letseat/domains/address/dtos';
 import {CreateProductIngredientDto} from '@letseat/domains/product-ingredient/dtos';
 
 export class CreateProductDto {
