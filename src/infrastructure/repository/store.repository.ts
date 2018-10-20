@@ -13,6 +13,7 @@ import {ResourceRepository} from '@letseat/infrastructure/repository/resource.re
 import {CreateKioskCommand} from '@letseat/application/commands/store/create-kiosk.command';
 import {omitDeep} from '@letseat/shared/utils';
 import {Ingredient} from '@letseat/domains/ingredient/ingredient.entity';
+import {Product} from '@letseat/domains/product/product.entity';
 
 @EntityRepository(Store)
 export class StoreRepository extends Repository<Store> implements ResourceRepository {
@@ -85,6 +86,16 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 		@TransactionManager() storeRepository: Repository<Store>) {
 		const store = await this.findOne({where: {uuid: storeUuid}, relations: ['ingredients']});
 		store!.ingredients.push(ingredient);
+		return storeRepository.save(store as Store);
+	}
+
+	@Transaction()
+	public async saveProduct(
+		storeUuid: string,
+		product: Product,
+		@TransactionManager() storeRepository: Repository<Store>) {
+		const store = await this.findOne({where: {uuid: storeUuid}, relations: ['products']});
+		store!.products.push(product);
 		return storeRepository.save(store as Store);
 	}
 }

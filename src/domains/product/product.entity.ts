@@ -15,16 +15,16 @@ export class Product extends Resource {
 	@Column({length: 16})
 	reference: string;
 
-	@Column({length: 13})
+	@Column({length: 13, nullable: true})
 	ean13: string;
 
 	@Column({length: 128})
 	name: string;
 
-	@Column('text')
+	@Column('text', {nullable: true})
 	description: string;
 
-	@Column('decimal', {precision: 10, scale: 2})
+	@Column('decimal', {precision: 10, scale: 2, unsigned: true})
 	price: number;
 
 	@ManyToOne(type => Store, store => store.products, {cascade: ['insert'], onDelete: 'CASCADE'})
@@ -33,4 +33,9 @@ export class Product extends Resource {
 
 	@OneToMany(type => ProductIngredient, productIngredient => productIngredient.product)
 	productIngredients: ProductIngredient[];
+
+	public static register(args: any): Product {
+		return new Product(args);
+	}
+
 }
