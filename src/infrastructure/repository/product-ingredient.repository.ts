@@ -34,8 +34,10 @@ export class ProductIngredientRepository extends Repository<ProductIngredient> i
 			.findOne(Product, {where: {reference: product.reference}}) as Product;
 		product.ingredients.forEach(async (productIng) => {
 			const productIngredient = new ProductIngredient();
-			const ingredient = await getManager()
-				.findOne(Ingredient, {where: {uuid: productIngredient.uuid}}) as Ingredient;
+			const ingredient = await createQueryBuilder(Ingredient, 'ingredient')
+				.innerJoinAndSelect('ingredient.store', 'store')
+				.where('store.uuid = :uuid', {uuid: storeUuid})
+				.getOne() as Ingredient;
 			productIngredient.quantity = productIng.quantity;
 			productIngredient.product = savedProduct;
 			productIngredient.ingredient = ingredient;

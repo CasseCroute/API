@@ -120,6 +120,12 @@ hooks.before('Stores > Current Store Profile > Update Profile of the current Sto
 	done();
 });
 
+// Before adding a Product
+hooks.before('Stores > Current Store Products > Create a new Product', (transaction, done) => {
+	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
+	done();
+});
+
 // Before adding an Ingredient
 hooks.before('Stores > Current Store Ingredients > Create a new Ingredient', (transaction, done) => {
 	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
@@ -189,6 +195,8 @@ hooks.afterAll((transactions, done) => {
 		'TRUNCATE TABLE store CASCADE;' +
 		'TRUNCATE TABLE customer CASCADE;' +
 		'TRUNCATE TABLE ingredient CASCADE;' +
+		'TRUNCATE TABLE product CASCADE;' +
+		'TRUNCATE TABLE product_ingredient CASCADE;' +
 		'TRUNCATE TABLE address CASCADE;' +
 		'TRUNCATE TABLE kiosk CASCADE;')
 		.then(res => {
