@@ -361,6 +361,27 @@ Delete an ingredient of the current Store.
 
 + Response 204
 
+### Delete an Ingredient of the current Store [DELETE]
+
++ Parameters
+    + uuid: `890df35b-3e94-4c68-9553-42976cfd5612` (string) - UUID of the ingredient.
+Delete an ingredient of the current Store.
+
+Delete the current Store account and all related resources.
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+| ----------------------- | -------------------- |
+| Yes (JWT)               | No                   |
+
++ Request (application/json; charset=utf-8)
+    + Headers
+
+            Authorization: Bearer <JWT>
+
++ Response 204
+
 ## Current Store Profile [/stores/me]
 
 Current store MUST be identified by JWT provided in request header.

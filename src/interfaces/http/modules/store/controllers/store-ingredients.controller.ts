@@ -116,5 +116,4 @@ export class CurrentStoreIngredientsController {
 				throw new UnauthorizedException();
 			})();
 	}
-
 }

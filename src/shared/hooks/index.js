@@ -183,6 +183,7 @@ hooks.before('Stores > Store Ingredients > Retrieve a Store Ingredient', (transa
 	done();
 });
 
+
 hooks.afterAll((transactions, done) => {
 	client.query(
 		'TRUNCATE TABLE store CASCADE;' +
