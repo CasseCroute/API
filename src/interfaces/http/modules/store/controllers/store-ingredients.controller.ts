@@ -1,4 +1,15 @@
-import {Body, Controller, HttpCode, Param, Patch, Post, Req, UnauthorizedException, UseGuards} from '@nestjs/common';
+import {
+	Body,
+	Controller,
+	Delete,
+	HttpCode,
+	Param,
+	Patch,
+	Post,
+	Req,
+	UnauthorizedException,
+	UseGuards
+} from '@nestjs/common';
 import {AuthGuard} from '@letseat/infrastructure/authorization/guards';
 import {CommandBus} from '@nestjs/cqrs';
 import {ValidationPipe} from '@letseat/domains/common/pipes/validation.pipe';
@@ -6,7 +17,11 @@ import {Ingredient} from '@letseat/domains/ingredient/ingredient.entity';
 import {createIngredientValidatorOptions} from '@letseat/domains/ingredient/pipes';
 import {CreateIngredientDto, UpdateIngredientDto} from '@letseat/domains/ingredient/dtos';
 import {AuthEntities} from '@letseat/infrastructure/authorization/enums/auth.entites';
-import {CreateIngredientCommand, UpdateIngredientCommand} from '@letseat/application/commands/ingredient';
+import {
+	CreateIngredientCommand,
+	DeleteIngredientCommand,
+	UpdateIngredientCommand
+} from '@letseat/application/commands/ingredient';
 
 @Controller('stores/me/ingredients')
 export class StoreIngredientsController {
@@ -33,6 +48,19 @@ export class StoreIngredientsController {
 		@Body(new ValidationPipe<Ingredient>(createIngredientValidatorOptions)) ingredient: UpdateIngredientDto, @Param('uuid') uuid: string): Promise<any> {
 		return request.user.entity === AuthEntities.Store
 			? this.commandBus.execute(new UpdateIngredientCommand(request.user.uuid, uuid , ingredient))
+			: (() => {
+				throw new UnauthorizedException();
+			})();
+	}
+
+	@Delete(':uuid')
+	@HttpCode(204)
+	@UseGuards(AuthGuard('jwt'))
+	public async deleteIngredient(
+		@Req() request: any,
+		@Param('uuid') uuid: string): Promise<any> {
+		return request.user.entity === AuthEntities.Store
+			? this.commandBus.execute(new DeleteIngredientCommand(request.user.uuid, uuid))
 			: (() => {
 				throw new UnauthorizedException();
 			})();
