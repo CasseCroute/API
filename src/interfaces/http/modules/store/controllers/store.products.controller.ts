@@ -1,5 +1,6 @@
 import {
-	Body, Controller, Get, Post, Req, UnauthorizedException, UseGuards
+	BadRequestException,
+	Body, Controller, Get, Param, Post, Req, UnauthorizedException, UseGuards
 } from '@nestjs/common';
 import {CommandBus} from '@nestjs/cqrs';
 
@@ -10,7 +11,12 @@ import {createProductValidatorOptions} from '@letseat/domains/product/pipes/prod
 import {AuthEntities} from '@letseat/infrastructure/authorization/enums/auth.entites';
 import {AuthGuard} from '@letseat/infrastructure/authorization/guards';
 import {CreateProductCommand} from '@letseat/application/commands/product';
-import {GetStoreProductsQuery} from '@letseat/application/queries/store';
+import {
+	GetStoreIngredientByUuidQuery,
+	GetStoreIngredientsQuery,
+	GetStoreProductsQuery
+} from '@letseat/application/queries/store';
+import {isUuid} from '@letseat/shared/utils';
 
 @Controller('stores/me/products')
 export class CurrentStoreProductsController {
@@ -39,5 +45,20 @@ export class CurrentStoreProductsController {
 				throw new UnauthorizedException();
 			})();
 	}
+}
 
+@Controller('stores')
+export class StoreProductsController {
+	constructor(private readonly commandBus: CommandBus) {
+	}
+
+	@Get(':storeUuid/products')
+	public async getStoreProducts(
+		@Param('storeUuid') storeUuid: string) {
+		return isUuid(storeUuid)
+			? this.commandBus.execute(new GetStoreProductsQuery(storeUuid, true))
+			: (() => {
+				throw new BadRequestException();
+			})();
+	}
 }
