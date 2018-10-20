@@ -6,7 +6,7 @@ export const IngredientCommandHandlers = [
 	CreateIngredientHandler,
 	UpdateIngredientHandler,
 	DeleteIngredientHandler
-]
+];
 
 export {
 	CreateIngredientHandler,
