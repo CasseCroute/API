@@ -14,6 +14,7 @@ import {CreateKioskCommand} from '@letseat/application/commands/store/create-kio
 import {omitDeep} from '@letseat/shared/utils';
 import {Ingredient} from '@letseat/domains/ingredient/ingredient.entity';
 import {Product} from '@letseat/domains/product/product.entity';
+import {ProductIngredient} from '@letseat/domains/product-ingredient/product-ingredient.entity';
 
 @EntityRepository(Store)
 export class StoreRepository extends Repository<Store> implements ResourceRepository {
@@ -90,7 +91,7 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 	}
 
 	@Transaction()
-	public async saveProduct(
+	public async saveStoreProduct(
 		storeUuid: string,
 		product: Product,
 		@TransactionManager() storeRepository: Repository<Store>) {

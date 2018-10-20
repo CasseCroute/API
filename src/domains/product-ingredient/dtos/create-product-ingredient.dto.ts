@@ -2,8 +2,8 @@ import {IsNumber, IsUUID} from 'class-validator';
 
 export class CreateProductIngredientDto {
 	@IsUUID()
-	readonly ingredientUuid: string;
+	readonly uuid: string;
 
 	@IsNumber()
-	readonly ingredientQuantity: number;
+	readonly quantity: number;
 }

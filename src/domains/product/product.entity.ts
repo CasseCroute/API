@@ -32,7 +32,7 @@ export class Product extends Resource {
 	store: Store;
 
 	@OneToMany(type => ProductIngredient, productIngredient => productIngredient.product)
-	productIngredients: ProductIngredient[];
+	ingredients: ProductIngredient[];
 
 	public static register(args: any): Product {
 		return new Product(args);

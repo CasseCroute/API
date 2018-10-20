@@ -13,13 +13,13 @@ export class ProductIngredient extends Resource {
 	}
 
 	@Column({type: 'int', name: 'ingredient_quantity'})
-	ingredientQuantity: number;
+	quantity: number;
 
-	@ManyToOne(type => Product, product => product.productIngredients, {cascade: ['insert'], onDelete: 'CASCADE'})
+	@ManyToOne(type => Product, product => product.ingredients, {cascade: ['insert'], onDelete: 'CASCADE'})
 	@JoinColumn({name: 'id_product'})
 	product: Product;
 
-	@ManyToOne(type => Ingredient, ingredient => ingredient.productIngredients, {cascade: ['insert'], onDelete: 'CASCADE'})
+	@ManyToOne(type => Ingredient, ingredient => ingredient.products, {cascade: ['insert'], onDelete: 'CASCADE'})
 	@JoinColumn({name: 'id_ingredient'})
-	ingredient: Product;
+	ingredient: Ingredient;
 }

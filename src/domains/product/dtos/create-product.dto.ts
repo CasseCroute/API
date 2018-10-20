@@ -24,5 +24,5 @@ export class CreateProductDto {
 	@IsOptional()
 	@ValidateNested()
 	@Type(() => CreateProductIngredientDto)
-	ingredients: CreateProductIngredientDto
+	ingredients: CreateProductIngredientDto[];
 }

@@ -22,7 +22,7 @@ export class Ingredient extends Resource {
 	store: Store;
 
 	@OneToMany(type => ProductIngredient, productIngredient => productIngredient.ingredient)
-	productIngredients: ProductIngredient[];
+	products: ProductIngredient[];
 
 	public static register(args: any): Ingredient {
 		return new Ingredient(args);
