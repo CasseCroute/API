@@ -1,5 +1,5 @@
 import {
-	Body, Controller, Post, Req, UnauthorizedException, UseGuards
+	Body, Controller, Get, Post, Req, UnauthorizedException, UseGuards
 } from '@nestjs/common';
 import {CommandBus} from '@nestjs/cqrs';
 
@@ -10,6 +10,7 @@ import {createProductValidatorOptions} from '@letseat/domains/product/pipes/prod
 import {AuthEntities} from '@letseat/infrastructure/authorization/enums/auth.entites';
 import {AuthGuard} from '@letseat/infrastructure/authorization/guards';
 import {CreateProductCommand} from '@letseat/application/commands/product';
+import {GetStoreProductsQuery} from '@letseat/application/queries/store';
 
 @Controller('stores/me/products')
 export class CurrentStoreProductsController {
@@ -24,6 +25,16 @@ export class CurrentStoreProductsController {
 			product: CreateProductDto): Promise<any> {
 		return request.user.entity === AuthEntities.Store
 			? this.commandBus.execute(new CreateProductCommand(request.user.uuid, product))
+			: (() => {
+				throw new UnauthorizedException();
+			})();
+	}
+
+	@Get()
+	@UseGuards(AuthGuard('jwt'))
+	public async getProducts(@Req() request: any): Promise<any> {
+		return request.user.entity === AuthEntities.Store
+			? this.commandBus.execute(new GetStoreProductsQuery(request.user.uuid))
 			: (() => {
 				throw new UnauthorizedException();
 			})();
