@@ -16,6 +16,7 @@ export class GetStoreIngredientByUuidHandler implements ICommandHandler<GetStore
 			if (typeof ingredient === 'undefined') {
 				resolve(Promise.reject(new NotFoundException('Ingredient not found')));
 			}
+			resolve(ingredient);
 		} catch (err) {
 			resolve(Promise.reject((err.message)));
 		}

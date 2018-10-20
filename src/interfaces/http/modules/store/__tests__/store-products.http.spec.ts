@@ -115,9 +115,58 @@ describe('Store Ingredients HTTP Requests', () => {
 				.expect(200);
 		});
 
-		it('should return a HTTP 401 status code when query param is not an UUID', () => {
+		it('should return a HTTP 400 status code when query param is not an UUID', () => {
 			return request(app.getHttpServer())
 				.get('/stores/uususu/products')
+				.expect(400);
+		});
+	});
+
+	describe('GET stores/:uuid/product/:uuid', () => {
+		it('should return a HTTP 200 status code when successful', () => {
+			return request(app.getHttpServer())
+				.get(`/stores/${mocks.storeRepository.data[0].uuid}/products/${mocks.productRepository.data[0].uuid}`)
+				.expect(200);
+		});
+
+		it('should return a HTTP 400 status code when Store query param is not an UUID', () => {
+			return request(app.getHttpServer())
+				.get('/stores/hey/products/a7859141-7d67-403c-99f5-6f10b36c7dc')
+				.expect(400);
+		});
+
+		it('should return a HTTP 400 status code when Ingredient query param is not an UUID', () => {
+			return request(app.getHttpServer())
+				.get('/stores/9c1e887c-4a77-47ca-a572-c9286d6b7cea/products/hello')
+				.expect(400);
+		});
+	});
+
+	describe('GET stores/me/product/:uuid', () => {
+		it('should return a HTTP 200 status code when successful', () => {
+			return request(app.getHttpServer())
+				.get(`/stores/${mocks.storeRepository.data[0].uuid}/products/${mocks.productRepository.data[0].uuid}`)
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.expect(200);
+		});
+
+		it('should return a HTTP 400 status code when Store query param is not an UUID', () => {
+			return request(app.getHttpServer())
+				.get('/stores/hey/products/a7859141-7d67-403c-99f5-6f10b36c7dc')
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.expect(400);
+		});
+
+		it('should return a HTTP 401 status code when no JWT is present in Authorization header', () => {
+			return request(app.getHttpServer())
+				.get(`/stores/me/products/${mocks.productRepository.data[0].uuid}`)
+				.expect(401);
+		});
+
+		it('should return a HTTP 400 status code when Ingredient query param is not an UUID', () => {
+			return request(app.getHttpServer())
+				.get('/stores/9c1e887c-4a77-47ca-a572-c9286d6b7cea/products/hello')
+				.set('Authorization', `Bearer ${mocks.token}`)
 				.expect(400);
 		});
 	});
