@@ -2,7 +2,7 @@ import request from 'supertest';
 import {Test, TestingModule} from '@nestjs/testing';
 import {INestApplication} from '@nestjs/common';
 import {
-	CurrentStoreProductsController,
+	CurrentStoreProductsController, StoreProductsController,
 } from '../controllers';
 import * as mocks from './mocks';
 import {getRepositoryToken} from '@nestjs/typeorm';
@@ -18,7 +18,8 @@ describe('Store Ingredients HTTP Requests', () => {
 	beforeAll(async () => {
 		const module: TestingModule = await Test.createTestingModule({
 			controllers: [
-				CurrentStoreProductsController
+				CurrentStoreProductsController,
+				StoreProductsController
 			],
 			providers: [
 				CQRSModule,
@@ -89,6 +90,35 @@ describe('Store Ingredients HTTP Requests', () => {
 				.set('Authorization', `Bearer ${mocks.token}`)
 				.send({oops: 'hello'})
 				.expect(500);
+		});
+	});
+
+	describe('GET stores/me/products', () => {
+		it('should return a HTTP 200 status code when successful', () => {
+			return request(app.getHttpServer())
+				.get('/stores/me/products')
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.expect(200);
+		});
+
+		it('should return a HTTP 401 status code when no JWT is present in Authorization header', () => {
+			return request(app.getHttpServer())
+				.get('/stores/me/products')
+				.expect(401);
+		});
+	});
+
+	describe('GET stores/:storeUuid/products', () => {
+		it('should return a HTTP 200 status code when successful', () => {
+			return request(app.getHttpServer())
+				.get('/stores/9c1e887c-4a77-47ca-a572-c9286d6b7cea/products')
+				.expect(200);
+		});
+
+		it('should return a HTTP 401 status code when query param is not an UUID', () => {
+			return request(app.getHttpServer())
+				.get('/stores/uususu/products')
+				.expect(400);
 		});
 	});
 
