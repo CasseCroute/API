@@ -15,7 +15,7 @@ export class CreateProductHandler implements ICommandHandler<CreateProductComman
 		const product = Product.register(command.product);
 		try {
 			await storeRepository.saveStoreProduct(command.storeUuid, product, new Repository<Store>());
-			if (product.ingredients.length > 0) {
+			if (product.ingredients && product.ingredients.length > 0) {
 				await productIngredientRepository.saveStoreProductIngredients(command.storeUuid, product, new Repository<Store>());
 			}
 			resolve();
