@@ -3,14 +3,10 @@ import {
 	EntityRepository,
 	Repository,
 	Transaction,
-	TransactionManager, getManager, createQueryBuilder,
 } from 'typeorm';
-import {Store} from '@letseat/domains/store/store.entity';
 import {ResourceRepository} from '@letseat/infrastructure/repository/resource.repository';
 import {omitDeep} from '@letseat/shared/utils';
-import {Ingredient} from '@letseat/domains/ingredient/ingredient.entity';
 import {Product} from '@letseat/domains/product/product.entity';
-import {ProductIngredient} from '@letseat/domains/product-ingredient/product-ingredient.entity';
 
 @EntityRepository(Product)
 export class ProductRepository extends Repository<Product> implements ResourceRepository {
@@ -43,5 +39,32 @@ export class ProductRepository extends Repository<Product> implements ResourceRe
 			.where('store.uuid = :uuid', {uuid: storeUuid})
 			.getMany();
 		return selectId ? storeProducts : omitDeep('id', storeProducts);
+	}
+
+	public async findStoreProductByUuid(storeUuid: string, productUuid: string, selectId = false) {
+		const storeProduct = await this.createQueryBuilder('product')
+			.select('product')
+			.leftJoin('product.store', 'store', 'store.uuid = :uuid', {uuid: storeUuid})
+			.where('product.uuid = :uuid', {uuid: productUuid})
+			.getOne();
+		return selectId ? storeProduct : omitDeep('id', storeProduct);
+	}
+
+	/**
+	 * Same as findStoreProductByUuid except that this method doesn't return private properties
+	 */
+	public async findStoreProductByUuidPublic(storeUuid: string, productUuid: string, selectId = false) {
+		const storeProduct = await this.createQueryBuilder('product')
+			.select([
+				'product.reference',
+				'product.ean13',
+				'product.price',
+				'product.name',
+				'product.description'
+			])
+			.leftJoin('product.store', 'store', 'store.uuid = :uuid', {uuid: storeUuid})
+			.where('product.uuid = :uuid', {uuid: productUuid})
+			.getOne();
+		return selectId ? storeProduct : omitDeep('id', storeProduct);
 	}
 }

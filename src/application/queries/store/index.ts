@@ -6,3 +6,4 @@ export {GetStoresByQueryParamsQuery} from './get-stores-by-query-params.query';
 export {GetStoreIngredientsQuery} from './get-store-ingredients.query';
 export {GetStoreIngredientByUuidQuery} from './get-store-ingredient-by-uuid.query';
 export {GetStoreProductsQuery} from './get-store-products.query';
+export {GetStoreProductByUuidQuery} from './get-store-product-by-uuid.query';
