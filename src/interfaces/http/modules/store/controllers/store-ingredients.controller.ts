@@ -1,10 +1,9 @@
 import {
+	BadRequestException,
 	Body,
-	Controller,
-	Delete,
-	HttpCode,
-	Param,
-	Patch,
+	Controller, Delete,
+	Get, HttpCode,
+	Param, Patch,
 	Post,
 	Req,
 	UnauthorizedException,
@@ -14,17 +13,49 @@ import {AuthGuard} from '@letseat/infrastructure/authorization/guards';
 import {CommandBus} from '@nestjs/cqrs';
 import {ValidationPipe} from '@letseat/domains/common/pipes/validation.pipe';
 import {Ingredient} from '@letseat/domains/ingredient/ingredient.entity';
-import {createIngredientValidatorOptions} from '@letseat/domains/ingredient/pipes';
+import {createIngredientValidatorOptions, updateIngredientValidatorOptions} from '@letseat/domains/ingredient/pipes';
 import {CreateIngredientDto, UpdateIngredientDto} from '@letseat/domains/ingredient/dtos';
 import {AuthEntities} from '@letseat/infrastructure/authorization/enums/auth.entites';
 import {
+	GetStoreIngredientByUuidQuery,
+	GetStoreIngredientsQuery,
+} from '@letseat/application/queries/store';
+import {isUuid} from '@letseat/shared/utils';
+import {
 	CreateIngredientCommand,
-	DeleteIngredientCommand,
+	DeleteIngredientByUuidCommand,
 	UpdateIngredientCommand
 } from '@letseat/application/commands/ingredient';
 
-@Controller('stores/me/ingredients')
+@Controller('stores')
 export class StoreIngredientsController {
+	constructor(private readonly commandBus: CommandBus) {
+	}
+
+	@Get(':storeUuid/ingredients')
+	public async getStoreIngredients(
+		@Param('storeUuid') storeUuid: string) {
+		return isUuid(storeUuid)
+			? this.commandBus.execute(new GetStoreIngredientsQuery(storeUuid, true))
+			: (() => {
+				throw new BadRequestException();
+			})();
+	}
+
+	@Get(':storeUuid/ingredients/:ingredientUuid')
+	public async getStoreIngredientByUuid(
+		@Param('storeUuid') storeUuid: string,
+		@Param('ingredientUuid') ingredientUuid: string) {
+		return isUuid(storeUuid) && isUuid(ingredientUuid)
+			? this.commandBus.execute(new GetStoreIngredientByUuidQuery(storeUuid, ingredientUuid, true))
+			: (() => {
+				throw new BadRequestException();
+			})();
+	}
+}
+
+@Controller('stores/me/ingredients')
+export class CurrentStoreIngredientsController {
 	constructor(private readonly commandBus: CommandBus) {
 	}
 
@@ -45,9 +76,29 @@ export class StoreIngredientsController {
 	@UseGuards(AuthGuard('jwt'))
 	public async updateIngredient(
 		@Req() request: any,
-		@Body(new ValidationPipe<Ingredient>(createIngredientValidatorOptions)) ingredient: UpdateIngredientDto, @Param('uuid') uuid: string): Promise<any> {
+		@Body(new ValidationPipe<Ingredient>(updateIngredientValidatorOptions)) ingredient: UpdateIngredientDto, @Param('uuid') uuid: string): Promise<any> {
 		return request.user.entity === AuthEntities.Store
 			? this.commandBus.execute(new UpdateIngredientCommand(request.user.uuid, uuid , ingredient))
+			: (() => {
+				throw new UnauthorizedException();
+			})();
+	}
+
+	@Get(':uuid')
+	@UseGuards(AuthGuard('jwt'))
+	public async getIngredientsByUuid(@Req() request: any, @Param('uuid') uuid: string) {
+		return request.user.entity === AuthEntities.Store
+			? this.commandBus.execute(new GetStoreIngredientByUuidQuery(request.user.uuid, uuid))
+			: (() => {
+				throw new UnauthorizedException();
+			})();
+	}
+
+	@Get()
+	@UseGuards(AuthGuard('jwt'))
+	public async getIngredients(@Req() request: any) {
+		return request.user.entity === AuthEntities.Store
+			? this.commandBus.execute(new GetStoreIngredientsQuery(request.user.uuid))
 			: (() => {
 				throw new UnauthorizedException();
 			})();
@@ -60,7 +111,7 @@ export class StoreIngredientsController {
 		@Req() request: any,
 		@Param('uuid') uuid: string): Promise<any> {
 		return request.user.entity === AuthEntities.Store
-			? this.commandBus.execute(new DeleteIngredientCommand(request.user.uuid, uuid))
+			? this.commandBus.execute(new DeleteIngredientByUuidCommand(request.user.uuid, uuid))
 			: (() => {
 				throw new UnauthorizedException();
 			})();

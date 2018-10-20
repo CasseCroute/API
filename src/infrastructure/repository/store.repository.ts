@@ -6,7 +6,7 @@ import {
 	getRepository,
 	Repository,
 	Transaction,
-	TransactionManager, getManager, getCustomRepository
+	TransactionManager, getManager, createQueryBuilder,
 } from 'typeorm';
 import {Store} from '@letseat/domains/store/store.entity';
 import {ResourceRepository} from '@letseat/infrastructure/repository/resource.repository';
@@ -25,9 +25,9 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 		return this.findOne({where: {email: storeEmail}});
 	}
 
-	public async findByQueryParams(queryParams: any) {
+	public async findByQueryParams(queryParams: any, selectId: boolean = false) {
 		const stores = await this.find({where: queryParams});
-		return stores.map(({id, ...attrs}) => attrs);
+		return selectId ? stores : omitDeep('id', stores);
 	}
 
 	public async findOneByUuid(storeUuid: string, selectId: boolean = false) {
@@ -83,8 +83,8 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 		storeUuid: string,
 		ingredient: Ingredient,
 		@TransactionManager() storeRepository: Repository<Store>) {
-		const store: Store = await this.findOneByUuid(storeUuid, true);
-		store.ingredients = [ingredient];
-		return storeRepository.save(store);
+		const store = await this.findOne({where: {uuid: storeUuid}, relations: ['ingredients']});
+		store!.ingredients.push(ingredient);
+		return storeRepository.save(store as Store);
 	}
 }

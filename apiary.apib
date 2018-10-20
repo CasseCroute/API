@@ -13,7 +13,6 @@ FORMAT: 1A
 + This API issues a **long-lived access tokens** for consumers. A long-lived JWT generally SHOULD lasts about **7 days**. If no requests are made, the token MUST expire and the user MUST go through the login flow again to get a new one.
 
 > A custom scheme strategy like "JWT" seems to be more appropriate than coercing the OAuth2 Bearer scheme.
-
 ### Example Header
 ```
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhNnZoQW8zRkc3dDEiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE0NzA1OTg5NzIsImV4cCI6MTQ3MDY4NTM3Mn0.ltA9zZmJKszBJuuV7pTWtY7LzLXrRUfebJDhy_jGMeM
@@ -218,7 +217,7 @@ Add a Kiosk to a store
 
 + Response 201 (application/json; charset=utf-8)
 
-## Current Store Ingredients [/stores/me/ingredients/{uuid}]
+## Current Store Ingredients [/stores/me/ingredients]
 
 ### Create a new Ingredient [POST]
 
@@ -241,13 +240,94 @@ Allows Stores to create an ingredient.
 
 + Response 201
 
-### Update an Ingredient of the current Store [PATCH]
+### Get Ingredients [GET]
 
-+ Parameters
-    + uuid: `890df35b-3e94-4c68-9553-42976cfd5612` (string) - UUID of the ingredient.
-Update an ingredient of the current Store.
+Retrieve Store Ingredients
 
 **Endpoint information**
+
+| Requires authentication | Has restricted scope |
+|-------------------------|----------------------|
+| Yes (JWT)               | No                   |
+
++ Request (application/json; charset=utf-8)
+    + Headers
+
+            Authorization: Bearer <JWT>
+
++ Response 200 (application/json; charset=utf-8)
+    + Attributes (object)
+        + data (array)
+            + (Ingredient)
+
+## Store Ingredients [/stores/{storeUuid}/ingredients]
+
++ Parameters
+    + storeUuid: `890df35b-3e94-4c68-9553-42976cfd5612` (string) - UUID of the Store.
+
+### Retrieve Store Ingredients [GET]
+
+Allows to retrieve Ingredients of a Store.
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+|-------------------------|----------------------|
+| No                      | No                   |
+
++ Request (application/json; charset=utf-8)
+
++ Response 200 (application/json; charset=utf-8)
+    + Attributes (object)
+        + data (array)
+            + (Ingredient)
+
+## Store Ingredient [/stores/{storeUuid}/ingredients/{ingredientUuid}]
++ Parameters
+    + storeUuid: `890df35b-3e94-4c68-9553-42976cfd5612` (string) - UUID of the Store.
+    + ingredientUuid: `058ec1d0-3ac6-4d4f-8dae-cf08c91c8765` (string) - UUID of the Ingredient.
+
+### Retrieve a Store Ingredient [GET]
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+|-------------------------|----------------------|
+| No                      | No                   |
+
++ Request (application/json; charset=utf-8)
+
++ Response 200 (application/json; charset=utf-8)
+    + Attributes (object)
+        + data (Ingredient)
+
+## Current Store Ingredient [/stores/me/ingredients/{uuid}]
+
+ + Parameters
+     + uuid: `890df35b-3e94-4c68-9553-42976cfd5612` (string) - UUID of the ingredient.
+
+### Get Ingredient by UUID [GET]
+
+Allows Stores to retrieve an ingredient by it's UUID.
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+|-------------------------|----------------------|
+| Yes (JWT)               | No                   |
+
++ Request (application/json; charset=utf-8)
+    + Headers
+
+            Authorization: Bearer <JWT>
+
++ Response 200 (application/json; charset=utf-8)
+    + Attributes (object)
+        + data (Ingredient)
+
+### Update an Ingredient [PATCH]
+
+ **Endpoint information**
 
 | Requires authentication | Has restricted scope |
 | ----------------------- | -------------------- |
@@ -256,20 +336,17 @@ Update an ingredient of the current Store.
 + Request (application/json; charset=utf-8)
     + Headers
 
-            Authorization: Bearer <JWT>
+                Authorization: Bearer <JWT>
+
     + Attributes
-       + name: `salade` (string, required) - Name of the engredient.
-       + quantity: `200` (number, required) - New quantity.
+       + name: `Salad` (string, optional) - Name of the ingredient.
+       + quantity: `200` (number, optional) - Quantity.
 
 + Response 204
 
-### Delete an Ingredient of the current Store [DELETE]
+### Delete an Ingredient [DELETE]
 
-+ Parameters
-    + uuid: `890df35b-3e94-4c68-9553-42976cfd5612` (string) - UUID of the ingredient.
 Delete an ingredient of the current Store.
-
-Delete the current Store account and all related resources.
 
 **Endpoint information**
 
@@ -280,7 +357,7 @@ Delete the current Store account and all related resources.
 + Request (application/json; charset=utf-8)
     + Headers
 
-            Authorization: Bearer <JWT>
+                Authorization: Bearer <JWT>
 
 + Response 204
 
@@ -509,10 +586,10 @@ Delete the current Customer account.
 ## Data Structures
 
 ### Resource (object)
-+ id: `1` (string, fixed) - Auto-incremented resource identifier.
-+ uuid: `2a64296d-0f87-4457-b9ed-cac36f20c587` (string, fixed) - Universal Unique Identifier.
-+ createdAt: `2018-07-01T15:11:09.553Z` (string, optional) - ISO Date/time string. When this resource was created.
-+ updatedAt: `2018-07-01T15:11:09.553Z` (string, optional) - ISO Date/time string. When this resource was last updated.
++ id (string) - Auto-incremented resource identifier.
++ uuid (string, required) - Universal Unique Identifier.
++ createdAt (string, optional) - ISO Date/time string. When this resource was created.
++ updatedAt (string, optional) - ISO Date/time string. When this resource was last updated.
 
 ### Store (Resource)
 + name: `Let's Eat` (string, required) - Name of the store.

@@ -136,11 +136,11 @@ export const kioskRepository = {
 export const ingredientRepository = {
 	data: [
 		{
-			id: 2,
-			uuid: '9cZe887c-4277-47ca-a572-c9286d6b7cea',
-			name: 'tomato',
-			quantity: 20,
-			idStore: 3
+			id: 1,
+			uuid: 'a7859141-7d67-403c-99f5-6f10b36c7dc',
+			name: 'Tomatoes',
+			quantity: 12,
+			idStore: 1
 		}
 	]
 };

@@ -24,6 +24,8 @@ hooks.beforeAll((transactions, done) => {
 // CUSTOMER
 const customer = {};
 
+const ingredient = {};
+
 // After Customer Registration
 hooks.after('Customers > Customer Registration > Register a new Customer', (transaction, done) => {
 	const response = JSON.parse(transaction.real.body);
@@ -124,17 +126,60 @@ hooks.before('Stores > Current Store Ingredients > Create a new Ingredient', (tr
 	done();
 });
 
-// Update an Ingredient of the current Store
 
-// Before adding an Ingredient
-hooks.before('Stores > Current Store Ingredients > Update an Ingredient of the current Store', (transaction, done) => {
+// Before current Store updates an Ingredient
+hooks.before('Stores > Current Store Ingredient > Update an Ingredient', (transaction, done) => {
+	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
+	transaction.request.uri = `/stores/me/ingredients/${ingredient.uuid}`;
+	transaction.fullPath = `/stores/me/ingredients/${ingredient.uuid}`;
+	done();
+});
+
+// Before current Store deletes an Ingredient
+hooks.before('Stores > Current Store Ingredient > Delete an Ingredient', (transaction, done) => {
+	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
+	transaction.request.uri = `/stores/me/ingredients/${ingredient.uuid}`;
+	transaction.fullPath = `/stores/me/ingredients/${ingredient.uuid}`;
+	done();
+});
+
+// After adding an Ingredient
+hooks.after('Stores > Current Store Ingredients > Create a new Ingredient', (transaction, done) => {
+	client.query('SELECT * from ingredient')
+		.then(res => {
+			ingredient['uuid'] = res.rows[0].uuid;
+			done();
+		})
+		.catch(err => {
+			return done(err);
+		})
+});
+
+// Before retrieving store Ingredients
+hooks.before('Stores > Current Store Ingredients > Get Ingredients', (transaction, done) => {
 	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
 	done();
 });
 
-// Before deleting an Ingredient
-hooks.before('Stores > Current Store Ingredients > Delete an Ingredient of the current Store', (transaction, done) => {
+// Before retrieving a store Ingredient by it's UUID
+hooks.before('Stores > Current Store Ingredient > Get Ingredient by UUID', (transaction, done) => {
 	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
+	transaction.request.uri = `/stores/me/ingredients/${ingredient.uuid}`;
+	transaction.fullPath = `/stores/me/ingredients/${ingredient.uuid}`;
+	done();
+});
+
+// Before retrieving a store Ingredients
+hooks.before('Stores > Store Ingredients > Retrieve Store Ingredients', (transaction, done) => {
+	transaction.request.uri = `/stores/${store.uuid}/ingredients`;
+	transaction.fullPath = `/stores/${store.uuid}/ingredients`;
+	done();
+});
+
+// Before retrieving a store Ingredient by it's UUID
+hooks.before('Stores > Store Ingredients > Retrieve a Store Ingredient', (transaction, done) => {
+	transaction.request.uri = `/stores/${store.uuid}/ingredients/${ingredient.uuid}`;
+	transaction.fullPath = `/stores/${store.uuid}/ingredients/${ingredient.uuid}`;
 	done();
 });
 
