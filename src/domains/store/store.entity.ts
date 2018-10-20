@@ -4,6 +4,7 @@ import {Resource} from '@letseat/domains/resource/resource';
 import {Kiosk} from '@letseat/domains/kiosk/kiosk.entity';
 import {Address} from '@letseat/domains/address/address.entity';
 import {Ingredient} from '@letseat/domains/ingredient/ingredient.entity';
+import {Product} from '@letseat/domains/product/product.entity';
 
 @Entity()
 @Unique(['email'])
@@ -40,6 +41,9 @@ export class Store extends Resource {
 
 	@OneToMany(type => Ingredient, ingredient => ingredient.store, {cascade: ['insert']})
 	ingredients: Ingredient[];
+
+	@OneToMany(type => Product, product => product.store, {cascade: ['insert']})
+	products: Product[];
 
 	public static register(args: any): Store {
 		return new Store(args);

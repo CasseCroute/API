@@ -217,6 +217,36 @@ Add a Kiosk to a store
 
 + Response 201 (application/json; charset=utf-8)
 
+## Current Store Products [/stores/me/products]
+
+### Create a new Product [POST]
+
+Allows Stores to create a Product.
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+|-------------------------|----------------------|
+| Yes (JWT)               | No                   |
+
++ Request (application/json; charset=utf-8)
+    + Headers
+
+            Authorization: Bearer <JWT>
+
+    + Attributes
+        + reference: `BURG-01` (string, required) - Reference of the Product
+        + ean13: `978020137962` (string, optional) - EAN13 code of the Product.
+        + name: `Burger` (string, required) - Name of the Product.
+        + price: `9.70` (number, required) - Price of the Product.
+        + description: `A delicious burger with tasty hot sauce` (string, optional) - Description of the Product.
+        + ingredients (array, optional)
+            + (object)
+                + uuid: `f5b06da6-e619-4e97-a30e-116872204e11` (string, required) - UUID of the ingredient included in the Product.
+                + quantity: `3` (number, required) - Ingredient quantity needed for the product.
+
++ Response 201
+
 ## Current Store Ingredients [/stores/me/ingredients]
 
 ### Create a new Ingredient [POST]

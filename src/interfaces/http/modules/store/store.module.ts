@@ -10,6 +10,7 @@ import {JwtStrategy} from '@letseat/infrastructure/authorization/strategies/jwt.
 import {ResourceQueryHandlers} from '@letseat/application/queries/resource/handlers';
 import {IngredientCommandHandlers} from '@letseat/application/commands/ingredient/handlers';
 import {StoreContollers} from '@letseat/interfaces/http/modules/store/controllers';
+import {ProductCommandHandlers} from '@letseat/application/commands/product/handlers';
 
 @Module({
 	imports: [
@@ -21,7 +22,8 @@ import {StoreContollers} from '@letseat/interfaces/http/modules/store/controller
 		...ResourceQueryHandlers,
 		...StoreCommandHandlers,
 		...StoreQueryHandlers,
-		...IngredientCommandHandlers
+		...IngredientCommandHandlers,
+		...ProductCommandHandlers
 	],
 	controllers: [
 		...StoreContollers
@@ -42,5 +44,6 @@ export class StoreModule implements OnModuleInit {
 		this.command$.register(IngredientCommandHandlers);
 		this.command$.register(StoreQueryHandlers);
 		this.command$.register(ResourceQueryHandlers);
+		this.command$.register(ProductCommandHandlers);
 	}
 }
