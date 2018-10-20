@@ -126,14 +126,22 @@ hooks.before('Stores > Current Store Ingredients > Create a new Ingredient', (tr
 	done();
 });
 
-// Update an Ingredient of the current Store
 
-// Before adding an Ingredient
-hooks.before('Stores > Current Store Ingredients > Update an Ingredient of the current Store', (transaction, done) => {
+// Before current Store updates an Ingredient
+hooks.before('Stores > Current Store Ingredient > Update an Ingredient', (transaction, done) => {
 	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
+	transaction.request.uri = `/stores/me/ingredients/${ingredient.uuid}`;
+	transaction.fullPath = `/stores/me/ingredients/${ingredient.uuid}`;
 	done();
 });
 
+// Before current Store deletes an Ingredient
+hooks.before('Stores > Current Store Ingredient > Delete an Ingredient', (transaction, done) => {
+	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
+	transaction.request.uri = `/stores/me/ingredients/${ingredient.uuid}`;
+	transaction.fullPath = `/stores/me/ingredients/${ingredient.uuid}`;
+	done();
+});
 
 // After adding an Ingredient
 hooks.after('Stores > Current Store Ingredients > Create a new Ingredient', (transaction, done) => {

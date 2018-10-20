@@ -1,5 +1,5 @@
 /* tslint:disable:no-duplicate-string */
-import {EntityRepository, Repository} from 'typeorm';
+import {EntityRepository, ObjectLiteral, Repository} from 'typeorm';
 import {Ingredient} from '@letseat/domains/ingredient/ingredient.entity';
 import {omitDeep} from '@letseat/shared/utils';
 
@@ -11,8 +11,7 @@ export class IngredientRepository extends Repository<Ingredient> {
 	}
 
 	public async updateIngredient(storeId: number, ingredientUuid: string, values: ObjectLiteral) {
-		return getRepository(Ingredient)
-			.createQueryBuilder('ingredient')
+		return this.createQueryBuilder('ingredient')
 			.update()
 			.set(values)
 			.where('id_store = :id and uuid = :uuid', {id: storeId, uuid: ingredientUuid})
@@ -56,5 +55,12 @@ export class IngredientRepository extends Repository<Ingredient> {
 			.where('ingredient.uuid = :uuid', {uuid: ingredientUuid})
 			.getOne();
 		return selectId ? storeIngredients : omitDeep('id', storeIngredients);
+	}
+
+	public async deleteStoreIngredientByUuid(storeId: number, ingredientUuid: string) {
+		return this.createQueryBuilder('ingredient')
+			.delete()
+			.where('uuid = :uuid AND id_store = :id', {uuid: ingredientUuid, id: storeId})
+			.execute();
 	}
 }

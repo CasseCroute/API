@@ -31,7 +31,7 @@ describe('Store Ingredients HTTP Requests', () => {
 				},
 				{
 					provide: getRepositoryToken(Ingredient),
-					useValue: mocks.storeRepository,
+					useValue: mocks.ingredientRepository,
 				},
 			]
 		})
@@ -151,6 +151,20 @@ describe('Store Ingredients HTTP Requests', () => {
 		it('should return a HTTP 404 status code when no JWT is present in Authorization header', () => {
 			return request(app.getHttpServer())
 				.patch('/stores/me/ingredients' + mocks.ingredientRepository.data[0].uuid)
+				.expect(404);
+		});
+	});
+
+	describe('DELETE stores/me/ingredients/:uuid', () => {
+		it('should return a HTTP 204 status code when successful', () => {
+			return request(app.getHttpServer())
+				.delete('/stores/me/ingredients/' + mocks.ingredientRepository.data[0].uuid)
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.expect(204);
+		});
+		it('should return a HTTP 404 status code when no resource found', () => {
+			return request(app.getHttpServer())
+				.delete('/stores/me/ingredients' + mocks.ingredientRepository.data[0].uuid)
 				.expect(404);
 		});
 	});

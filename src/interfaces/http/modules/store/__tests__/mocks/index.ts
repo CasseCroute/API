@@ -133,7 +133,7 @@ export const kioskRepository = {
 	]
 };
 
-export const ingredientsRepository = {
+export const ingredientRepository = {
 	data: [
 		{
 			id: 1,
