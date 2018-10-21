@@ -1,4 +1,4 @@
-import {IsString, IsOptional, IsNumber, ValidateNested} from 'class-validator';
+import {IsString, IsOptional, ValidateNested, IsNumberString} from 'class-validator';
 import {Type} from 'class-transformer';
 import {CreateProductIngredientDto} from '@letseat/domains/product-ingredient/dtos';
 
@@ -17,7 +17,7 @@ export class CreateProductDto {
 	@IsOptional()
 	readonly description: string;
 
-	@IsNumber()
+	@IsNumberString()
 	readonly price: number;
 
 	@IsOptional()

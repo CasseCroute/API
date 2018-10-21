@@ -1,4 +1,3 @@
-/* tslint:disable:no-typeof-undefined */
 import {ICommandHandler, CommandHandler} from '@nestjs/cqrs';
 import {getCustomRepository} from 'typeorm';
 import {GetStoreProductByUuidQuery} from '@letseat/application/queries/store';
@@ -14,7 +13,7 @@ export class GetStoreProductByUuidHandler implements ICommandHandler<GetStorePro
 				? await productRepository.findStoreProductByUuidPublic(command.storeUuid, command.productUuid)
 				: await productRepository.findStoreProductByUuid(command.storeUuid, command.productUuid);
 
-			if (typeof product === 'undefined') {
+			if (typeof product === undefined) {
 				resolve(Promise.reject(new NotFoundException('Product not found')));
 			}
 			resolve(product);

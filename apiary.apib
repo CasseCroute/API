@@ -238,7 +238,7 @@ Allows Stores to create a Product.
         + reference: `BURG-01` (string, required) - Reference of the Product
         + ean13: `978020137962` (string, optional) - EAN13 code of the Product.
         + name: `Burger` (string, required) - Name of the Product.
-        + price: `9.70` (number, required) - Price of the Product.
+        + price: `9.70` (string, required) - Price of the Product.
         + description: `A delicious burger with tasty hot sauce` (string, optional) - Description of the Product.
         + ingredients (array, optional)
             + (object)
@@ -247,6 +247,26 @@ Allows Stores to create a Product.
 
 + Response 201
 
+### Retrieve Products [GET]
+
+Retrieve current Store Products
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+|-------------------------|----------------------|
+| Yes (JWT)               | No                   |
+
++ Request (application/json; charset=utf-8)
+    + Headers
+
+            Authorization: Bearer <JWT>
+
++ Response 200 (application/json; charset=utf-8)
+    + Attributes (object)
+        + data (array)
+            + (Product)
+            
 ## Current Store Ingredients [/stores/me/ingredients]
 
 ### Create a new Ingredient [POST]
@@ -289,7 +309,48 @@ Retrieve Store Ingredients
     + Attributes (object)
         + data (array)
             + (Ingredient)
+            
+## Store Products [/stores/{storeUuid}/products]
 
++ Parameters
+    + storeUuid: `890df35b-3e94-4c68-9553-42976cfd5612` (string) - UUID of the Store.
+
+### Retrieve Store Products [GET]
+
+Allows to retrieve Products of a Store.
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+|-------------------------|----------------------|
+| No                      | No                   |
+
++ Request (application/json; charset=utf-8)
+
++ Response 200 (application/json; charset=utf-8)
+    + Attributes (object)
+        + data (array)
+            + (Product)
+
+## Store Product [/stores/{storeUuid}/products/{productUuid}]
++ Parameters
+    + storeUuid: `890df35b-3e94-4c68-9553-42976cfd5612` (string) - UUID of the Store.
+    + productUuid: `058ec1d0-3ac6-4d4f-8dae-cf08c91c8765` (string) - UUID of the Product.
+
+### Retrieve a Store Product [GET]
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+|-------------------------|----------------------|
+| No                      | No                   |
+
++ Request (application/json; charset=utf-8)
+
++ Response 200 (application/json; charset=utf-8)
+    + Attributes (object)
+        + data (Product)
+        
 ## Store Ingredients [/stores/{storeUuid}/ingredients]
 
 + Parameters
@@ -331,6 +392,30 @@ Allows to retrieve Ingredients of a Store.
     + Attributes (object)
         + data (Ingredient)
 
+## Current Store Product [/stores/me/products/{uuid}]
+
+ + Parameters
+     + uuid: `890df35b-3e94-4c68-9553-42976cfd5612` (string) - UUID of the Product.
+
+### Retrieve Product by UUID [GET]
+
+Allows Stores to retrieve a Product by it's UUID.
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+|-------------------------|----------------------|
+| Yes (JWT)               | No                   |
+
++ Request (application/json; charset=utf-8)
+    + Headers
+
+            Authorization: Bearer <JWT>
+
++ Response 200 (application/json; charset=utf-8)
+    + Attributes (object)
+        + data (Product)
+        
 ## Current Store Ingredient [/stores/me/ingredients/{uuid}]
 
  + Parameters
@@ -629,6 +714,17 @@ Delete the current Customer account.
 + password: `f8e2cfacc6` (string, required) - Password of the store.
 + imageUrl: `https://some.cdn.com/img.png` (string, optional) - Main image URL of the store.
 
+### Product (Resource)
++ reference: `BURG-01` (string, required) - Reference of the Product
++ ean13: `978020137962` (string, optional) - EAN13 code of the Product.
++ name: `Burger` (string, required) - Name of the Product.
++ price: `9.70` (string, required) - Price of the Product.
++ description: `A delicious burger with tasty hot sauce` (string, optional) - Description of the Product.
++ ingredients (array, optional)
+    + (object)
+        + uuid: `f5b06da6-e619-4e97-a30e-116872204e11` (string, required) - UUID of the ingredient included in the Product.
+        + quantity: `3` (number, required) - Ingredient quantity needed for the product.
+        
 ### Ingredient (Resource)
 + name: `Avocado` (string, required) - Name of the ingredient.
 + quantity: `20` (number, required) - Quantity available for the ingredient.

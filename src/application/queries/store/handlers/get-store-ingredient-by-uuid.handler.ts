@@ -1,4 +1,3 @@
-/* tslint:disable:no-typeof-undefined */
 import {ICommandHandler, CommandHandler} from '@nestjs/cqrs';
 import {getCustomRepository} from 'typeorm';
 import {GetStoreIngredientByUuidQuery} from '@letseat/application/queries/store';
@@ -13,7 +12,7 @@ export class GetStoreIngredientByUuidHandler implements ICommandHandler<GetStore
 			const ingredient = command.isPublic
 				? await ingredientRepository.findStoreIngredientByUuidPublic(command.storeUuid, command.ingredientUuid)
 				: await ingredientRepository.findStoreIngredientByUuid(command.storeUuid, command.ingredientUuid);
-			if (typeof ingredient === 'undefined') {
+			if (typeof ingredient === undefined) {
 				resolve(Promise.reject(new NotFoundException('Ingredient not found')));
 			}
 			resolve(ingredient);
