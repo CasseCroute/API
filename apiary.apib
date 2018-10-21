@@ -416,6 +416,28 @@ Allows Stores to retrieve a Product by it's UUID.
     + Attributes (object)
         + data (Product)
         
+### Update a Product [PATCH]
+
+ **Endpoint information**
+
+| Requires authentication | Has restricted scope |
+| ----------------------- | -------------------- |
+| Yes (JWT)               | No                   |
+
++ Request (application/json; charset=utf-8)
+    + Headers
+
+                Authorization: Bearer <JWT>
+
+    + Attributes
+        + reference: `BURG-01` (string, optional) - Reference of the Product
+        + ean13: `978020137962` (string, optional) - EAN13 code of the Product.
+        + name: `Burger` (string, optional) - Name of the Product.
+        + price: `9.70` (string, optional) - Price of the Product.
+        + description: `A delicious burger with tasty hot sauce` (string, optional) - Description of the Product.
+
++ Response 204
+        
 ## Current Store Ingredient [/stores/me/ingredients/{uuid}]
 
  + Parameters
