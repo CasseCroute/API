@@ -63,6 +63,102 @@ describe('Store Ingredients HTTP Requests', () => {
 				.expect(201);
 		});
 
+		it('should return a HTTP 201 status code when meal has 1 subsection', () => {
+			return request(app.getHttpServer())
+				.post('/stores/me/meals')
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.send({
+					reference: 'MENU',
+					name: 'Menu Burger',
+					price: '12',
+					productUuid: mocks.productRepository.data[0].uuid,
+					subsections: [
+						{
+							name: 'Dessert',
+							isRequired: true,
+							minSelectionsPermitted: 1,
+							maxSelectionsPermitted: 1
+						}
+					]
+				})
+				.expect(201);
+		});
+
+		it('should return a HTTP 201 status code when meal has 1 subsection with incorrect data', () => {
+			return request(app.getHttpServer())
+				.post('/stores/me/meals')
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.send({
+					reference: 'MENU',
+					name: 'Menu Burger',
+					price: '12',
+					productUuid: mocks.productRepository.data[0].uuid,
+					subsections: [
+						{
+							what: 'Dessert',
+							isRequired: true,
+							minSelectionsPermitted: 1,
+							maxSelectionsPermitted: 1
+						}
+					]
+				})
+				.expect(400);
+		});
+
+		it('should return a HTTP 201 status code when meal has multiple subsections', () => {
+			return request(app.getHttpServer())
+				.post('/stores/me/meals')
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.send({
+					reference: 'MENU',
+					name: 'Menu Burger',
+					price: '12',
+					productUuid: mocks.productRepository.data[0].uuid,
+					subsections: [
+						{
+							name: 'Dessert',
+							isRequired: true,
+							minSelectionsPermitted: 1,
+							maxSelectionsPermitted: 1
+						},
+						{
+							name: 'Extra',
+							isRequired: false,
+							minSelectionsPermitted: 1,
+							maxSelectionsPermitted: 2
+						}
+					]
+				})
+				.expect(201);
+		});
+
+		it('should return a HTTP 201 status code when meal has multiple subsections with incorrect data', () => {
+			return request(app.getHttpServer())
+				.post('/stores/me/meals')
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.send({
+					reference: 'MENU',
+					name: 'Menu Burger',
+					price: '12',
+					productUuid: mocks.productRepository.data[0].uuid,
+					subsections: [
+						{
+							name: 'Dessert',
+							isRequired: true,
+							minSelectionsPermitted: 1,
+							maxSelectionsPermitted: 1
+						},
+						{
+							uh: 'Extra',
+							isRequired: false,
+							minSelectionsPermitted: 1,
+							maxSelectionsPermitted: 2
+						}
+					]
+				})
+				.expect(400);
+		});
+
 		it('should return an empty body when successful', () => {
 			return request(app.getHttpServer())
 				.post('/stores/me/meals')
