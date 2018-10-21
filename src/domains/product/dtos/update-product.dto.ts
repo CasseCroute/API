@@ -1,4 +1,6 @@
-import {IsString, IsNumberString, MaxLength} from 'class-validator';
+import {IsString, IsNumberString, MaxLength, IsOptional, ValidateNested} from 'class-validator';
+import {Type} from 'class-transformer';
+import {UpdateProductIngredientDto} from '@letseat/domains/product-ingredient/dtos';
 
 export class UpdateProductDto {
 	@IsString()
@@ -17,4 +19,9 @@ export class UpdateProductDto {
 
 	@IsNumberString()
 	readonly price?: number;
+
+	@IsOptional()
+	@ValidateNested()
+	@Type(() => UpdateProductIngredientDto)
+	ingredients: UpdateProductIngredientDto[];
 }

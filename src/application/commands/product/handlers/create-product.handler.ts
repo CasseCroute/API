@@ -6,6 +6,7 @@ import {StoreRepository} from '@letseat/infrastructure/repository/store.reposito
 import {Store} from '@letseat/domains/store/store.entity';
 import {Product} from '@letseat/domains/product/product.entity';
 import {ProductIngredientRepository} from '@letseat/infrastructure/repository/product-ingredient.repository';
+import {ProductIngredient} from '@letseat/domains/product-ingredient/product-ingredient.entity';
 
 @CommandHandler(CreateProductCommand)
 export class CreateProductHandler implements ICommandHandler<CreateProductCommand> {
@@ -16,7 +17,7 @@ export class CreateProductHandler implements ICommandHandler<CreateProductComman
 		try {
 			await storeRepository.saveStoreProduct(command.storeUuid, product, new Repository<Store>());
 			if (product.ingredients && product.ingredients.length > 0) {
-				await productIngredientRepository.saveStoreProductIngredients(command.storeUuid, product, new Repository<Store>());
+				await productIngredientRepository.saveStoreProductIngredients(command.storeUuid, product, new Repository<ProductIngredient>());
 			}
 			resolve();
 		} catch (err) {

@@ -435,7 +435,11 @@ Allows Stores to retrieve a Product by it's UUID.
         + name: `Burger` (string, optional) - Name of the Product.
         + price: `9.70` (string, optional) - Price of the Product.
         + description: `A delicious burger with tasty hot sauce` (string, optional) - Description of the Product.
-
+         + ingredients (array, optional)
+            + (object)
+                + uuid: `f5b06da6-e619-4e97-a30e-116872204e11` (string, required) - UUID of the ingredient included in the Product.
+                + quantity: `3` (number, required) - Ingredient quantity needed for the product.
+                
 + Response 204
         
 ## Current Store Ingredient [/stores/me/ingredients/{uuid}]
