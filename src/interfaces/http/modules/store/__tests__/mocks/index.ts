@@ -170,6 +170,33 @@ export const productRepository = {
 	]
 };
 
+export const mealRepository = {
+	data: [
+		{
+			id: 1,
+			uuid: '2a4dcbb2-39c5-4cdd-aa1e-3d1f407d4d92',
+			reference: 'BREAKFASTLUNCH',
+			name: 'Breakfast Lunch',
+			price: '21.00',
+			description: 'For your breakfast',
+			idStore: 1,
+			idProduct: 2,
+			productQuantity: 2
+		},
+		{
+			id: 1,
+			uuid: '4a1786f3-a77c-49e7-a430-98338df53528',
+			reference: 'MENUBURGER',
+			name: 'Menu Burger',
+			price: '12.00',
+			description: '',
+			idStore: 1,
+			idProduct: 1,
+			productQuantity: 3
+		},
+	]
+};
+
 export const token = jwt.sign({
 	uuid: storeRepository.data[0].uuid,
 	email: storeRepository.data[0].email,

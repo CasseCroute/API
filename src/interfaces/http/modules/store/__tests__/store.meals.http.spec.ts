@@ -1,0 +1,95 @@
+import request from 'supertest';
+import {Test, TestingModule} from '@nestjs/testing';
+import {INestApplication} from '@nestjs/common';
+import {
+	CurrentStoreMealsController,
+} from '../controllers';
+import * as mocks from './mocks';
+import {getRepositoryToken} from '@nestjs/typeorm';
+import {AuthService} from '@letseat/infrastructure/authorization';
+import {CommandBus, EventPublisher, EventBus, CQRSModule} from '@nestjs/cqrs';
+import {Store} from '@letseat/domains/store/store.entity';
+import {JwtStrategy} from '@letseat/infrastructure/authorization/strategies/jwt.strategy';
+import {CustomExceptionFilter} from '@letseat/domains/common/exceptions';
+import {Meal} from '@letseat/domains/meal/meal.entity';
+
+describe('Store Ingredients HTTP Requests', () => {
+	let app: INestApplication;
+
+	beforeAll(async () => {
+		const module: TestingModule = await Test.createTestingModule({
+			controllers: [
+				CurrentStoreMealsController,
+			],
+			providers: [
+				CQRSModule,
+				AuthService,
+				CommandBus,
+				EventPublisher,
+				EventBus,
+				{
+					provide: getRepositoryToken(Store),
+					useValue: mocks.storeRepository,
+				},
+				{
+					provide: getRepositoryToken(Meal),
+					useValue: mocks.mealRepository,
+				},
+			]
+		})
+			.overrideProvider(AuthService).useValue(mocks.authService)
+			.overrideProvider(EventBus).useValue({
+				setModuleRef: jest.fn(),
+				publish: jest.fn()
+			})
+			.overrideProvider(CommandBus).useValue({
+				register: jest.fn(),
+				execute: jest.fn()
+			})
+			.overrideProvider(JwtStrategy).useClass(mocks.JwtStrategyMock)
+			.compile();
+
+		app = module.createNestApplication();
+		app.useGlobalFilters(new CustomExceptionFilter());
+		await app.init();
+	});
+
+	describe('POST stores/me/meals', () => {
+		it('should return a HTTP 201 status code when successful', () => {
+			return request(app.getHttpServer())
+				.post('/stores/me/meals')
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.send({reference: 'MENU', name: 'Menu Burger', price: '12', productUuid: mocks.productRepository.data[0].uuid})
+				.expect(201);
+		});
+
+		it('should return an empty body when successful', () => {
+			return request(app.getHttpServer())
+				.post('/stores/me/meals')
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.send({reference: 'MENU', name: 'Menu Burger', price: '12', productUuid: mocks.productRepository.data[0].uuid})
+				.expect((res: any) => {
+					res.body = '';
+				});
+		});
+
+		it('should return a HTTP 401 status code when no JWT is provided in Authorization header', () => {
+			return request(app.getHttpServer())
+				.post('/stores/me/meals')
+				.send({reference: 'MENU', name: 'Menu Burger', price: '12', productUuid: mocks.productRepository.data[0].uuid})
+				.expect(401);
+		});
+
+		it('should return a HTTP 400 status code when incorrect data is sent', () => {
+			return request(app.getHttpServer())
+				.post('/stores/me/meals')
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.send({ref: 'MENU', name: 'Menu Burger', price: '12', productUuid: mocks.productRepository.data[0].uuid})
+				.expect(400);
+		});
+	});
+
+	afterAll(async () => {
+		await app.close();
+	});
+});

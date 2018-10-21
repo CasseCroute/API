@@ -149,6 +149,8 @@ hooks.before('Stores > Current Store Products > Retrieve Products', (transaction
 
 // Before current Store updates a Product
 hooks.before('Stores > Current Store Product > Update a Product', (transaction, done) => {
+	const {ingredients, ...body} = JSON.parse(transaction.request.body);
+	transaction.request.body = JSON.stringify(body);
 	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
 	transaction.request.uri = `/stores/me/products/${product.uuid}`;
 	transaction.fullPath = `/stores/me/products/${product.uuid}`;
