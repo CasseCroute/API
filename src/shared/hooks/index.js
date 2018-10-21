@@ -179,12 +179,13 @@ hooks.before('Stores > Store Products > Retrieve a Store Product ', (transaction
 	done();
 });
 
+// INGREDIENTS
+
 // Before adding an Ingredient
 hooks.before('Stores > Current Store Ingredients > Create a new Ingredient', (transaction, done) => {
 	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
 	done();
 });
-
 
 // Before current Store updates an Ingredient
 hooks.before('Stores > Current Store Ingredient > Update an Ingredient', (transaction, done) => {
@@ -242,6 +243,16 @@ hooks.before('Stores > Store Ingredients > Retrieve a Store Ingredient', (transa
 	done();
 });
 
+// PRODUCTS
+
+// Before current Store creates a Meal
+hooks.before('Stores > Current Store Meals > Create a new Meal', (transaction, done) => {
+	const body = JSON.parse(transaction.request.body);
+	body.productUuid = product.uuid;
+	transaction.request.body = JSON.stringify(body);
+	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
+	done();
+});
 
 hooks.afterAll((transactions, done) => {
 	client.query(

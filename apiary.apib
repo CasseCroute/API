@@ -309,6 +309,32 @@ Retrieve Store Ingredients
     + Attributes (object)
         + data (array)
             + (Ingredient)
+ 
+## Current Store Meals [/stores/me/meals]
+
+### Create a new Meal [POST]
+
+Allows Stores to create a Meal.
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+|-------------------------|----------------------|
+| Yes (JWT)               | No                   |
+
++ Request (application/json; charset=utf-8)
+    + Headers
+
+            Authorization: Bearer <JWT>
+
+    + Attributes
+        + reference: `MENU-MAXI-BURGER` (string, required) - Reference of the Meal.
+        + name: `Burger` (string, required) - Name of the Meal.
+        + price: `9.70` (string, required) - Price of the Meal.
+        + description: `A delicious maxi burger` (string, optional) - Description of the Meal.
+        + productUuid: `8d4cb225-8760-4643-a5b0-02baddce109b` (string, required) - UUID of the Product associated with the Meal.
+
++ Response 201
             
 ## Store Products [/stores/{storeUuid}/products]
 
