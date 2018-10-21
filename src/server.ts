@@ -3,9 +3,9 @@ import config from 'config';
 import dotenv from 'dotenv';
 import {HTTPCoreModule} from '@letseat/interfaces/http/modules/http.core.module';
 import {CustomExceptionFilter} from '@letseat/domains/common/exceptions';
-import {LoggerService} from '@letseat/application/queries/common/services';
 import {Transport} from '@nestjs/microservices';
 import helmet from 'helmet';
+import {LoggerService} from '@letseat/infrastructure/services';
 
 const logger = new LoggerService('Server');
 

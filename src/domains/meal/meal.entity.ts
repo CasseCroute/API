@@ -1,8 +1,9 @@
 /* tslint:disable:no-unused */
-import {Entity, Column, Unique, ManyToOne, JoinColumn} from 'typeorm';
+import {Entity, Column, Unique, ManyToOne, JoinColumn, OneToMany} from 'typeorm';
 import {Resource} from '@letseat/domains/resource/resource';
 import {Store} from '@letseat/domains/store/store.entity';
 import {Product} from '@letseat/domains/product/product.entity';
+import {MealSubsection} from '@letseat/domains/meal/meal-subsection.entity';
 
 @Unique(['reference'])
 @Entity()
@@ -34,6 +35,9 @@ export class Meal extends Resource {
 	@ManyToOne(type => Product, product => product.meals, {nullable: false, cascade: ['insert'], onDelete: 'CASCADE'})
 	@JoinColumn({name: 'id_product'})
 	product: Product;
+
+	@OneToMany(type => MealSubsection, subsection => subsection.meal, {nullable: false, cascade: ['insert'], onDelete: 'CASCADE'})
+	subsections: MealSubsection[];
 
 	public static register(args: any): Meal {
 		return new Meal(args);

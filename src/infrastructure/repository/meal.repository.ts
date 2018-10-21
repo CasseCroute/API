@@ -1,6 +1,6 @@
 /* tslint:disable */
 import {
-	EntityRepository, ObjectLiteral,
+	EntityRepository,
 	Repository,
 	Transaction,
 } from 'typeorm';
@@ -9,7 +9,7 @@ import {omitDeep} from '@letseat/shared/utils';
 import {Meal} from '@letseat/domains/meal/meal.entity';
 
 @EntityRepository(Meal)
-export class ProductRepository extends Repository<Meal> implements ResourceRepository {
+export class MealRepository extends Repository<Meal> implements ResourceRepository {
 	@Transaction()
 
 	public async findOneByUuid(mealUuid: string, selectId: boolean = false) {

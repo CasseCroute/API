@@ -1,7 +1,7 @@
 /* tslint:disable */
 import {
 	EntityRepository,
-	getConnection,
+	getConnection, getCustomRepository,
 	getManager,
 	getRepository,
 	ObjectLiteral,
@@ -15,8 +15,10 @@ import {CreateKioskCommand} from '@letseat/application/commands/store/create-kio
 import {omitDeep} from '@letseat/shared/utils';
 import {Ingredient} from '@letseat/domains/ingredient/ingredient.entity';
 import {Product} from '@letseat/domains/product/product.entity';
+import {LoggerService} from '@letseat/infrastructure/services';
 import {Meal} from '@letseat/domains/meal/meal.entity';
 import {CreateMealDto} from '@letseat/domains/meal/dtos/create-meal.dto';
+import {MealSubsectionRepository} from '@letseat/infrastructure/repository/meal.subsection.repository';
 
 @EntityRepository(Store)
 export class StoreRepository extends Repository<Store> implements ResourceRepository {
@@ -102,17 +104,31 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 		return storeRepository.save(store as Store);
 	}
 
-	@Transaction()
 	public async saveStoreMeal(
 		storeUuid: string,
-		meal: any,
-		@TransactionManager() storeRepository: Repository<Store>) {
-		const store = await this.findOne({where: {uuid: storeUuid}, relations: ['meals']});
-		meal.product = await getRepository(Product).findOne({
-			where: {uuid: meal.productUuid, store: store},
-			relations: ['meals', 'store']
-		}) as Product;
-		store!.meals.push(meal);
-		return storeRepository.save(store as Store);
+		meal: any) {
+		const queryRunner = getConnection().createQueryRunner();
+		await queryRunner.startTransaction();
+		const mealSubsectionRepository = queryRunner.manager.getCustomRepository(MealSubsectionRepository);
+		try {
+			const store = await this.manager
+				.findOneOrFail(Store, {where: {uuid: storeUuid}, relations: ['meals']});
+			meal.product = await this.manager
+				.findOneOrFail(Product,{
+				where: {uuid: meal.productUuid, store: store},
+				relations: ['meals', 'store']
+			}) as Product;
+			store!.meals.push(meal);
+			await queryRunner.manager.save(store as Store);
+			await mealSubsectionRepository.saveStoreMealSubsections(meal);
+			await queryRunner.commitTransaction();
+		} catch (err) {
+			const logger = new LoggerService('Database');
+			logger.error(err.message, err.stack);
+			await queryRunner.rollbackTransaction();
+		} finally {
+			await queryRunner.release();
+		}
+		return;
 	}
 }

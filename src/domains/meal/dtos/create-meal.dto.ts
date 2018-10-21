@@ -1,4 +1,6 @@
-import {IsString, IsOptional, IsNumberString, MaxLength, IsNumber, IsUUID} from 'class-validator';
+import {IsString, IsOptional, IsNumberString, MaxLength, IsNumber, IsUUID, ValidateNested} from 'class-validator';
+import {Type} from 'class-transformer';
+import {CreateMealSubsectionDto} from '@letseat/domains/meal/dtos/create-meal-subsection.dto';
 
 export class CreateMealDto {
 	@IsString()
@@ -21,4 +23,9 @@ export class CreateMealDto {
 
 	@IsUUID()
 	readonly productUuid: string;
+
+	@IsOptional()
+	@ValidateNested()
+	@Type(() => CreateMealSubsectionDto)
+	subsections: CreateMealSubsectionDto[];
 }

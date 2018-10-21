@@ -1,10 +1,9 @@
 import {ICommandHandler, CommandHandler} from '@nestjs/cqrs';
-import {getCustomRepository, Repository} from 'typeorm';
+import {getCustomRepository} from 'typeorm';
 import {CreateMealCommand} from '../create-meal.command';
 import {Meal} from '@letseat/domains/meal/meal.entity';
 import {BadRequestException} from '@nestjs/common';
 import {StoreRepository} from '@letseat/infrastructure/repository/store.repository';
-import {Store} from '@letseat/domains/store/store.entity';
 
 @CommandHandler(CreateMealCommand)
 export class CreateMealHandler implements ICommandHandler<CreateMealCommand> {
@@ -12,7 +11,7 @@ export class CreateMealHandler implements ICommandHandler<CreateMealCommand> {
 		const storeRepository = getCustomRepository(StoreRepository);
 		const meal = Meal.register(command.meal);
 		try {
-			await storeRepository.saveStoreMeal(command.storeUuid, meal, new Repository<Store>());
+			await storeRepository.saveStoreMeal(command.storeUuid, meal);
 			resolve();
 		} catch (err) {
 			resolve(Promise.reject(new BadRequestException(err.message)));
