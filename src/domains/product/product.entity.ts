@@ -3,6 +3,7 @@ import {Entity, Column, Unique, ManyToOne, JoinColumn, OneToMany} from 'typeorm'
 import {Resource} from '@letseat/domains/resource/resource';
 import {Store} from '@letseat/domains/store/store.entity';
 import {ProductIngredient} from '@letseat/domains/product-ingredient/product-ingredient.entity';
+import {Meal} from '@letseat/domains/meal/meal.entity';
 
 @Unique(['reference'])
 @Entity()
@@ -33,6 +34,9 @@ export class Product extends Resource {
 
 	@OneToMany(type => ProductIngredient, productIngredient => productIngredient.product)
 	ingredients: ProductIngredient[];
+
+	@OneToMany(type => Meal, meal => meal.product)
+	meals: Meal[];
 
 	public static register(args: any): Product {
 		return new Product(args);
