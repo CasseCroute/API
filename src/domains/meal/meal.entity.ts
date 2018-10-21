@@ -24,14 +24,14 @@ export class Meal extends Resource {
 	@Column('decimal', {precision: 10, scale: 2, unsigned: true})
 	price: number;
 
-	@Column('int', {name: 'product_quantity', unsigned: true})
+	@Column('int', {default: 1, name: 'product_quantity', unsigned: true})
 	productQuantity: number;
 
-	@ManyToOne(type => Store, store => store.meals, {cascade: ['insert'], onDelete: 'CASCADE'})
+	@ManyToOne(type => Store, store => store.meals, {nullable: false, cascade: ['insert'], onDelete: 'CASCADE'})
 	@JoinColumn({name: 'id_store'})
 	store: Store;
 
-	@ManyToOne(type => Product, product => product.meals, {cascade: ['insert'], onDelete: 'CASCADE'})
+	@ManyToOne(type => Product, product => product.meals, {nullable: false, cascade: ['insert'], onDelete: 'CASCADE'})
 	@JoinColumn({name: 'id_product'})
 	product: Product;
 

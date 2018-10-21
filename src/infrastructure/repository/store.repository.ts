@@ -2,11 +2,12 @@
 import {
 	EntityRepository,
 	getConnection,
-	ObjectLiteral,
+	getManager,
 	getRepository,
+	ObjectLiteral,
 	Repository,
 	Transaction,
-	TransactionManager, getManager, createQueryBuilder,
+	TransactionManager,
 } from 'typeorm';
 import {Store} from '@letseat/domains/store/store.entity';
 import {ResourceRepository} from '@letseat/infrastructure/repository/resource.repository';
@@ -14,7 +15,8 @@ import {CreateKioskCommand} from '@letseat/application/commands/store/create-kio
 import {omitDeep} from '@letseat/shared/utils';
 import {Ingredient} from '@letseat/domains/ingredient/ingredient.entity';
 import {Product} from '@letseat/domains/product/product.entity';
-import {ProductIngredient} from '@letseat/domains/product-ingredient/product-ingredient.entity';
+import {Meal} from '@letseat/domains/meal/meal.entity';
+import {CreateMealDto} from '@letseat/domains/meal/dtos/create-meal.dto';
 
 @EntityRepository(Store)
 export class StoreRepository extends Repository<Store> implements ResourceRepository {
@@ -97,6 +99,20 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 		@TransactionManager() storeRepository: Repository<Store>) {
 		const store = await this.findOne({where: {uuid: storeUuid}, relations: ['products']});
 		store!.products.push(product);
+		return storeRepository.save(store as Store);
+	}
+
+	@Transaction()
+	public async saveStoreMeal(
+		storeUuid: string,
+		meal: any,
+		@TransactionManager() storeRepository: Repository<Store>) {
+		const store = await this.findOne({where: {uuid: storeUuid}, relations: ['meals']});
+		meal.product = await getRepository(Product).findOne({
+			where: {uuid: meal.productUuid, store: store},
+			relations: ['meals', 'store']
+		}) as Product;
+		store!.meals.push(meal);
 		return storeRepository.save(store as Store);
 	}
 }
