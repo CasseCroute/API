@@ -1,9 +1,10 @@
-import {IsString, IsOptional, ValidateNested, IsNumberString} from 'class-validator';
+import {IsString, IsOptional, ValidateNested, IsNumberString, MaxLength} from 'class-validator';
 import {Type} from 'class-transformer';
 import {CreateProductIngredientDto} from '@letseat/domains/product-ingredient/dtos';
 
 export class CreateProductDto {
 	@IsString()
+	@MaxLength(16)
 	readonly reference: string;
 
 	@IsString()
@@ -11,6 +12,7 @@ export class CreateProductDto {
 
 	@IsString()
 	@IsOptional()
+	@MaxLength(13)
 	readonly ean13: string;
 
 	@IsString()

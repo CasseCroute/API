@@ -147,6 +147,14 @@ hooks.before('Stores > Current Store Products > Retrieve Products', (transaction
 	done();
 });
 
+// Before current Store updates a Product
+hooks.before('Stores > Current Store Product > Update a Product', (transaction, done) => {
+	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
+	transaction.request.uri = `/stores/me/products/${product.uuid}`;
+	transaction.fullPath = `/stores/me/products/${product.uuid}`;
+	done();
+});
+
 // Before current Store retrieve a Product by it's UUID
 hooks.before('Stores > Current Store Product > Retrieve Product by UUID', (transaction, done) => {
 	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;

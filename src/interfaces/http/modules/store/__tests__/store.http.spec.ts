@@ -8,6 +8,7 @@ import {AuthService, CryptographerService} from '@letseat/infrastructure/authori
 import {CommandBus, EventPublisher, EventBus, CQRSModule} from '@nestjs/cqrs';
 import {Store} from '@letseat/domains/store/store.entity';
 import {JwtStrategy} from '@letseat/infrastructure/authorization/strategies/jwt.strategy';
+import {CustomExceptionFilter} from '@letseat/domains/common/exceptions';
 
 describe('Store HTTP Requests', () => {
 	let app: INestApplication;
@@ -43,6 +44,7 @@ describe('Store HTTP Requests', () => {
 			.compile();
 
 		app = module.createNestApplication();
+		app.useGlobalFilters(new CustomExceptionFilter());
 		commandBus = module.get<CommandBus>(CommandBus);
 		await app.init();
 	});
@@ -101,11 +103,11 @@ describe('Store HTTP Requests', () => {
 				.expect(201);
 		});
 
-		it('should return a HTTP 500 status code when failed', () => {
+		it('should return a HTTP 400 status code when failed', () => {
 			return request(app.getHttpServer())
 				.post('/stores/register')
 				.send({})
-				.expect(500);
+				.expect(400);
 		});
 	});
 
@@ -154,12 +156,12 @@ describe('Store HTTP Requests', () => {
 				.expect(204);
 		});
 
-		it('should return an HTTP 500 status code when incorrect data is sent', () => {
+		it('should return an HTTP 400 status code when incorrect data is sent', () => {
 			return request(app.getHttpServer())
 				.patch('/stores/me')
 				.send({fake: 'hello@burgerking.com'})
 				.set('Authorization', `Bearer ${mocks.token}`)
-				.expect(500);
+				.expect(400);
 		});
 
 		it('should return an HTTP 401 status code when no JWT is provided', () => {

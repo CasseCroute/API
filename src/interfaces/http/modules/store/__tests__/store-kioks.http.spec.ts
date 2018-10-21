@@ -8,6 +8,7 @@ import {AuthService} from '@letseat/infrastructure/authorization';
 import {CommandBus, EventPublisher, EventBus, CQRSModule} from '@nestjs/cqrs';
 import {Store} from '@letseat/domains/store/store.entity';
 import {JwtStrategy} from '@letseat/infrastructure/authorization/strategies/jwt.strategy';
+import {CustomExceptionFilter} from '@letseat/domains/common/exceptions';
 
 describe('Store HTTP Requests', () => {
 	let app: INestApplication;
@@ -42,6 +43,7 @@ describe('Store HTTP Requests', () => {
 			.compile();
 
 		app = module.createNestApplication();
+		app.useGlobalFilters(new CustomExceptionFilter());
 		await app.init();
 	});
 
@@ -61,12 +63,12 @@ describe('Store HTTP Requests', () => {
 				.expect(401);
 		});
 
-		it('should return a HTTP 500 status code when incorrect data is sent', () => {
+		it('should return a HTTP 400 status code when incorrect data is sent', () => {
 			return request(app.getHttpServer())
 				.post('/stores/me/kiosks')
 				.set('Authorization', `Bearer ${mocks.token}`)
 				.send({serial: '2X0NFW-E6M36H-AAFLPC-GPS81M'})
-				.expect(500);
+				.expect(400);
 		});
 	});
 

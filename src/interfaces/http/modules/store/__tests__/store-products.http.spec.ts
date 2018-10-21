@@ -11,6 +11,7 @@ import {CommandBus, EventPublisher, EventBus, CQRSModule} from '@nestjs/cqrs';
 import {Store} from '@letseat/domains/store/store.entity';
 import {JwtStrategy} from '@letseat/infrastructure/authorization/strategies/jwt.strategy';
 import {Product} from '@letseat/domains/product/product.entity';
+import {CustomExceptionFilter} from '@letseat/domains/common/exceptions';
 
 describe('Store Ingredients HTTP Requests', () => {
 	let app: INestApplication;
@@ -50,6 +51,7 @@ describe('Store Ingredients HTTP Requests', () => {
 			.compile();
 
 		app = module.createNestApplication();
+		app.useGlobalFilters(new CustomExceptionFilter());
 		await app.init();
 	});
 
@@ -84,12 +86,12 @@ describe('Store Ingredients HTTP Requests', () => {
 				.expect(401);
 		});
 
-		it('should return a HTTP 500 status code when incorrect data is sent', () => {
+		it('should return a HTTP 400 status code when incorrect data is sent', () => {
 			return request(app.getHttpServer())
 				.post('/stores/me/products')
 				.set('Authorization', `Bearer ${mocks.token}`)
 				.send({oops: 'hello'})
-				.expect(500);
+				.expect(400);
 		});
 	});
 
@@ -168,6 +170,30 @@ describe('Store Ingredients HTTP Requests', () => {
 				.get('/stores/9c1e887c-4a77-47ca-a572-c9286d6b7cea/products/hello')
 				.set('Authorization', `Bearer ${mocks.token}`)
 				.expect(400);
+		});
+	});
+
+	describe('PATCH stores/me/products/:uuid', () => {
+		it('should return a HTTP 204 status code when successful', () => {
+			return request(app.getHttpServer())
+				.patch('/stores/me/products/' + mocks.productRepository.data[0].uuid)
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.send({name: 'Burger Maxi'})
+				.expect(204);
+		});
+
+		it('should return a HTTP 400 status code when incorrect data is sent', () => {
+			return request(app.getHttpServer())
+				.patch('/stores/me/products/' + mocks.productRepository.data[0].uuid)
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.send({what: 'cucumber'})
+				.expect(400);
+		});
+
+		it('should return a HTTP 401 status code when no JWT is present in Authorization header', () => {
+			return request(app.getHttpServer())
+				.patch('/stores/me/products/' + mocks.productRepository.data[0].uuid)
+				.expect(401);
 		});
 	});
 
