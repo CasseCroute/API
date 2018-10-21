@@ -1,20 +1,24 @@
 import {
 	BadRequestException,
-	Body, Controller, Get, Param, Post, Req, UnauthorizedException, UseGuards
+	Body, Controller, Get, HttpCode, Param, Patch, Post, Req, UnauthorizedException, UseGuards
 } from '@nestjs/common';
 import {CommandBus} from '@nestjs/cqrs';
 import {ValidationPipe} from '@letseat/domains/common/pipes/validation.pipe';
 import {CreateProductDto} from '@letseat/domains/product/dtos/create-product.dto';
 import {Product} from '@letseat/domains/product/product.entity';
-import {createProductValidatorOptions} from '@letseat/domains/product/pipes/product-validator-pipe-options';
+import {
+	createProductValidatorOptions,
+	updateProductValidatorOptions
+} from '@letseat/domains/product/pipes/product-validator-pipe-options';
 import {AuthEntities} from '@letseat/infrastructure/authorization/enums/auth.entites';
 import {AuthGuard} from '@letseat/infrastructure/authorization/guards';
-import {CreateProductCommand} from '@letseat/application/commands/product';
+import {CreateProductCommand, UpdateProductCommand} from '@letseat/application/commands/product';
 import {
 	GetStoreProductByUuidQuery,
 	GetStoreProductsQuery
 } from '@letseat/application/queries/store';
 import {isUuid} from '@letseat/shared/utils';
+import {UpdateProductDto} from '@letseat/domains/product/dtos/update-product.dto';
 
 @Controller('stores/me/products')
 export class CurrentStoreProductsController {
@@ -54,6 +58,20 @@ export class CurrentStoreProductsController {
 			? this.commandBus.execute(new GetStoreProductByUuidQuery(request.user.uuid, productUuid))
 			: (() => {
 				throw new BadRequestException();
+			})();
+	}
+
+	@Patch(':uuid')
+	@HttpCode(204)
+	@UseGuards(AuthGuard('jwt'))
+	public async updateProduct(
+		@Req() request: any,
+		@Body(new ValidationPipe<Product>(updateProductValidatorOptions)) product: UpdateProductDto,
+		@Param('uuid') uuid: string): Promise<any> {
+		return request.user.entity === AuthEntities.Store && isUuid(uuid)
+			? this.commandBus.execute(new UpdateProductCommand(request.user.uuid, uuid , product))
+			: (() => {
+				throw new UnauthorizedException();
 			})();
 	}
 }

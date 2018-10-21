@@ -15,13 +15,14 @@ import {omitDeep} from '@letseat/shared/utils';
 import {Ingredient} from '@letseat/domains/ingredient/ingredient.entity';
 import {Product} from '@letseat/domains/product/product.entity';
 import {ProductIngredient} from '@letseat/domains/product-ingredient/product-ingredient.entity';
+import {NotFoundException} from '@nestjs/common';
 
 @EntityRepository(ProductIngredient)
 export class ProductIngredientRepository extends Repository<ProductIngredient> implements ResourceRepository {
 	@Transaction()
 
 	public async findOneByUuid(productIngredientUuid: string, selectId: boolean = false) {
-		const productIngredient = await this.findOne({where: {uuid: productIngredientUuid}});
+		const productIngredient = await this.findOne({where: {uuid: productIngredientUuid}}) as ProductIngredient;
 		return selectId ? productIngredient : omitDeep('id', productIngredient);
 	}
 
@@ -41,6 +42,25 @@ export class ProductIngredientRepository extends Repository<ProductIngredient> i
 			productIngredient.quantity = productIng.quantity;
 			productIngredient.product = savedProduct;
 			productIngredient.ingredient = ingredient;
+			await this.save(productIngredient);
+		});
+		return
+	}
+
+	@Transaction()
+	public async updateStoreProductIngredients(
+		storeUuid: string,
+		productUuid: string,
+		product: Product,
+		@TransactionManager() storeRepository: Repository<Store>) {
+		product.ingredients.forEach(async (productIng) => {
+			console.log(productIng);
+			const productIngredient = await this.findOne({where: {uuid: productIng.uuid}}) as ProductIngredient;
+
+
+				throw new NotFoundException();
+
+			productIngredient.quantity = productIng.quantity;
 			await this.save(productIngredient);
 		});
 		return

@@ -1,6 +1,6 @@
 /* tslint:disable */
 import {
-	EntityRepository,
+	EntityRepository, ObjectLiteral,
 	Repository,
 	Transaction,
 } from 'typeorm';
@@ -15,6 +15,14 @@ export class ProductRepository extends Repository<Product> implements ResourceRe
 	public async findOneByUuid(productUuid: string, selectId: boolean = false) {
 		const product = await this.findOne({where: {uuid: productUuid}});
 		return selectId ? product : omitDeep('id', product);
+	}
+
+	public async updateProduct(storeId: number, productUuid: string, values: ObjectLiteral) {
+		return this.createQueryBuilder('product')
+			.update()
+			.set(values)
+			.where('id_store = :id and uuid = :uuid', {id: storeId, uuid: productUuid})
+			.execute();
 	}
 
 	public async findStoreProducts(storeUuid: string, selectId = false) {
