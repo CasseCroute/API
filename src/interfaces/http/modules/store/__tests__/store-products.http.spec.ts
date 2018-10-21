@@ -2,7 +2,7 @@ import request from 'supertest';
 import {Test, TestingModule} from '@nestjs/testing';
 import {INestApplication} from '@nestjs/common';
 import {
-	CurrentStoreProductsController,
+	CurrentStoreProductsController, StoreProductsController,
 } from '../controllers';
 import * as mocks from './mocks';
 import {getRepositoryToken} from '@nestjs/typeorm';
@@ -18,7 +18,8 @@ describe('Store Ingredients HTTP Requests', () => {
 	beforeAll(async () => {
 		const module: TestingModule = await Test.createTestingModule({
 			controllers: [
-				CurrentStoreProductsController
+				CurrentStoreProductsController,
+				StoreProductsController
 			],
 			providers: [
 				CQRSModule,
@@ -57,7 +58,7 @@ describe('Store Ingredients HTTP Requests', () => {
 			return request(app.getHttpServer())
 				.post('/stores/me/products')
 				.set('Authorization', `Bearer ${mocks.token}`)
-				.send({reference: 'BURG', name: 'Burger', price: 12})
+				.send({reference: 'BURG', name: 'Burger', price: '12'})
 				.expect(201);
 		});
 
@@ -66,7 +67,7 @@ describe('Store Ingredients HTTP Requests', () => {
 				.post('/stores/me/products')
 				.set('Authorization', `Bearer ${mocks.token}`)
 				.send({
-					reference: 'BURG', name: 'Burger', price: 12,
+					reference: 'BURG', name: 'Burger', price: '12',
 					ingredients: [
 						{
 							uuid: 'f5b06da6-e619-4e97-a30e-116872204e11',
@@ -89,6 +90,84 @@ describe('Store Ingredients HTTP Requests', () => {
 				.set('Authorization', `Bearer ${mocks.token}`)
 				.send({oops: 'hello'})
 				.expect(500);
+		});
+	});
+
+	describe('GET stores/me/products', () => {
+		it('should return a HTTP 200 status code when successful', () => {
+			return request(app.getHttpServer())
+				.get('/stores/me/products')
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.expect(200);
+		});
+
+		it('should return a HTTP 401 status code when no JWT is present in Authorization header', () => {
+			return request(app.getHttpServer())
+				.get('/stores/me/products')
+				.expect(401);
+		});
+	});
+
+	describe('GET stores/:storeUuid/products', () => {
+		it('should return a HTTP 200 status code when successful', () => {
+			return request(app.getHttpServer())
+				.get('/stores/9c1e887c-4a77-47ca-a572-c9286d6b7cea/products')
+				.expect(200);
+		});
+
+		it('should return a HTTP 400 status code when query param is not an UUID', () => {
+			return request(app.getHttpServer())
+				.get('/stores/uususu/products')
+				.expect(400);
+		});
+	});
+
+	describe('GET stores/:uuid/product/:uuid', () => {
+		it('should return a HTTP 200 status code when successful', () => {
+			return request(app.getHttpServer())
+				.get(`/stores/${mocks.storeRepository.data[0].uuid}/products/${mocks.productRepository.data[0].uuid}`)
+				.expect(200);
+		});
+
+		it('should return a HTTP 400 status code when Store query param is not an UUID', () => {
+			return request(app.getHttpServer())
+				.get('/stores/hey/products/a7859141-7d67-403c-99f5-6f10b36c7dc')
+				.expect(400);
+		});
+
+		it('should return a HTTP 400 status code when Ingredient query param is not an UUID', () => {
+			return request(app.getHttpServer())
+				.get('/stores/9c1e887c-4a77-47ca-a572-c9286d6b7cea/products/hello')
+				.expect(400);
+		});
+	});
+
+	describe('GET stores/me/product/:uuid', () => {
+		it('should return a HTTP 200 status code when successful', () => {
+			return request(app.getHttpServer())
+				.get(`/stores/${mocks.storeRepository.data[0].uuid}/products/${mocks.productRepository.data[0].uuid}`)
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.expect(200);
+		});
+
+		it('should return a HTTP 400 status code when Store query param is not an UUID', () => {
+			return request(app.getHttpServer())
+				.get('/stores/hey/products/a7859141-7d67-403c-99f5-6f10b36c7dc')
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.expect(400);
+		});
+
+		it('should return a HTTP 401 status code when no JWT is present in Authorization header', () => {
+			return request(app.getHttpServer())
+				.get(`/stores/me/products/${mocks.productRepository.data[0].uuid}`)
+				.expect(401);
+		});
+
+		it('should return a HTTP 400 status code when Ingredient query param is not an UUID', () => {
+			return request(app.getHttpServer())
+				.get('/stores/9c1e887c-4a77-47ca-a572-c9286d6b7cea/products/hello')
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.expect(400);
 		});
 	});
 

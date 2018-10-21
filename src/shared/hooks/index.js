@@ -126,6 +126,49 @@ hooks.before('Stores > Current Store Products > Create a new Product', (transact
 	done();
 });
 
+// PRODUCTS
+const product = {};
+
+// After current Store add and Ingredient
+hooks.after('Stores > Current Store Products > Create a new Product', (transaction, done) => {
+	client.query('SELECT * from product')
+		.then(res => {
+			product['uuid'] = res.rows[0].uuid;
+			done();
+		})
+		.catch(err => {
+			return done(err);
+		})
+});
+
+// Before current Store retrieve Products
+hooks.before('Stores > Current Store Products > Retrieve Products', (transaction, done) => {
+	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
+	done();
+});
+
+// Before current Store retrieve a Product by it's UUID
+hooks.before('Stores > Current Store Product > Retrieve Product by UUID', (transaction, done) => {
+	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
+	transaction.request.uri = `/stores/me/products/${product.uuid}`;
+	transaction.fullPath = `/stores/me/products/${product.uuid}`;
+	done();
+});
+
+// Before retrieving Store Products
+hooks.before('Stores > Store Products > Retrieve Store Products', (transaction, done) => {
+	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
+	done();
+});
+
+// Before retrieving a Store Product by it's UUID
+hooks.before('Stores > Store Products > Retrieve a Store Product ', (transaction, done) => {
+	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
+	transaction.request.uri = `/stores/${store.uuid}/products/${product.uuid}`;
+	transaction.fullPath = `/stores/${store.uuid}/products/${product.uuid}`;
+	done();
+});
+
 // Before adding an Ingredient
 hooks.before('Stores > Current Store Ingredients > Create a new Ingredient', (transaction, done) => {
 	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
