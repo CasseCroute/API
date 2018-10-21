@@ -58,7 +58,7 @@ describe('Store Ingredients HTTP Requests', () => {
 			return request(app.getHttpServer())
 				.post('/stores/me/products')
 				.set('Authorization', `Bearer ${mocks.token}`)
-				.send({reference: 'BURG', name: 'Burger', price: 12})
+				.send({reference: 'BURG', name: 'Burger', price: '12'})
 				.expect(201);
 		});
 
@@ -67,7 +67,7 @@ describe('Store Ingredients HTTP Requests', () => {
 				.post('/stores/me/products')
 				.set('Authorization', `Bearer ${mocks.token}`)
 				.send({
-					reference: 'BURG', name: 'Burger', price: 12,
+					reference: 'BURG', name: 'Burger', price: '12',
 					ingredients: [
 						{
 							uuid: 'f5b06da6-e619-4e97-a30e-116872204e11',

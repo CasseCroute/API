@@ -153,7 +153,7 @@ export const productRepository = {
 			reference: 'BURG-BIG',
 			ean13: '501234567890',
 			name: 'Big Burger',
-			price: 23.12,
+			price: '23.12',
 			description: 'A delicious Tasty Burger',
 			idStore: 1
 		},
@@ -163,7 +163,7 @@ export const productRepository = {
 			reference: 'ICE-CREAM',
 			ean13: '978020137962',
 			name: 'Strawberry Ice Cream',
-			price: 2.12,
+			price: '2.12',
 			description: 'Ice Cream',
 			idStore: 1
 		},
