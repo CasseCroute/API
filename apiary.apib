@@ -441,6 +441,23 @@ Allows Stores to retrieve a Product by it's UUID.
                 + quantity: `3` (number, required) - Ingredient quantity needed for the product.
                 
 + Response 204
+
+### Delete a Product [DELETE]
+
+Delete a product of the current Store.
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+| ----------------------- | -------------------- |
+| Yes (JWT)               | No                   |
+
++ Request (application/json; charset=utf-8)
+    + Headers
+
+                Authorization: Bearer <JWT>
+
++ Response 204
         
 ## Current Store Ingredient [/stores/me/ingredients/{uuid}]
 

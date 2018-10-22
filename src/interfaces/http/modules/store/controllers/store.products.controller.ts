@@ -1,6 +1,6 @@
 import {
 	BadRequestException,
-	Body, Controller, Get, HttpCode, Param, Patch, Post, Req, UnauthorizedException, UseGuards
+	Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Req, UnauthorizedException, UseGuards
 } from '@nestjs/common';
 import {CommandBus} from '@nestjs/cqrs';
 import {ValidationPipe} from '@letseat/domains/common/pipes/validation.pipe';
@@ -12,7 +12,7 @@ import {
 } from '@letseat/domains/product/pipes/product-validator-pipe-options';
 import {AuthEntities} from '@letseat/infrastructure/authorization/enums/auth.entites';
 import {AuthGuard} from '@letseat/infrastructure/authorization/guards';
-import {CreateProductCommand, UpdateProductCommand} from '@letseat/application/commands/product';
+import {CreateProductCommand, UpdateProductCommand, DeleteProductCommand} from '@letseat/application/commands/product';
 import {
 	GetStoreProductByUuidQuery,
 	GetStoreProductsQuery
@@ -70,6 +70,19 @@ export class CurrentStoreProductsController {
 		@Param('uuid') uuid: string): Promise<any> {
 		return request.user.entity === AuthEntities.Store && isUuid(uuid)
 			? this.commandBus.execute(new UpdateProductCommand(request.user.uuid, uuid , product))
+			: (() => {
+				throw new UnauthorizedException();
+			})();
+	}
+
+	@Delete(':uuid')
+	@HttpCode(204)
+	@UseGuards(AuthGuard('jwt'))
+	public async deleteProduct(
+		@Req() request: any,
+		@Param('uuid') uuid: string): Promise<any> {
+		return request.user.entity === AuthEntities.Store && isUuid(uuid)
+			? this.commandBus.execute(new DeleteProductCommand(request.user.uuid, uuid))
 			: (() => {
 				throw new UnauthorizedException();
 			})();
