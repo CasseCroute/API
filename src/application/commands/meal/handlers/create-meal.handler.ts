@@ -9,9 +9,10 @@ import {StoreRepository} from '@letseat/infrastructure/repository/store.reposito
 export class CreateMealHandler implements ICommandHandler<CreateMealCommand> {
 	async execute(command: CreateMealCommand, resolve: (value?) => void) {
 		const storeRepository = getCustomRepository(StoreRepository);
-		const meal = Meal.register(command.meal);
+		const mealProductUuid = command.meal.productUuid;
+		const meal = new Meal(command.meal);
 		try {
-			await storeRepository.saveStoreMeal(command.storeUuid, meal);
+			await storeRepository.saveStoreMeal(command.storeUuid, meal, mealProductUuid);
 			resolve();
 		} catch (err) {
 			resolve(Promise.reject(new BadRequestException(err.message)));

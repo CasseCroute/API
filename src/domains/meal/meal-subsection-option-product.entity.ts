@@ -18,11 +18,14 @@ export class MealSubsectionOptionProduct extends Resource {
 	@Column('decimal', {default: 0, precision: 10, scale: 2, unsigned: true})
 	price: number;
 
+	@Column('int2', {default: 1})
+	quantity: number;
+
 	@ManyToOne(type => MealSubsectionOption, option => option.products, {nullable: false, cascade: ['insert'], onDelete: 'CASCADE'})
 	@JoinColumn({name: 'id_meal_subsection_option'})
 	option: MealSubsectionOption;
 
-	@ManyToOne(type => Ingredient)
+	@ManyToOne(type => Product)
 	@JoinColumn({name: 'id_product'})
 	product: Product;
 

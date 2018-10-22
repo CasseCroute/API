@@ -106,22 +106,25 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 
 	public async saveStoreMeal(
 		storeUuid: string,
-		meal: any) {
+		meal: Meal,
+		mealProductUuid: string) {
 		const queryRunner = getConnection().createQueryRunner();
 		await queryRunner.startTransaction();
-		const mealSubsectionRepository = queryRunner.manager.getCustomRepository(MealSubsectionRepository);
+		const mealSubsectionRepository = queryRunner
+			.manager.getCustomRepository(MealSubsectionRepository);
 		try {
 			const store = await this.manager
 				.findOneOrFail(Store, {where: {uuid: storeUuid}, relations: ['meals']});
 			meal.product = await this.manager
 				.findOneOrFail(Product,{
-				where: {uuid: meal.productUuid, store: store},
+				where: {uuid: mealProductUuid, store: store},
 				relations: ['meals', 'store']
 			}) as Product;
 			store!.meals.push(meal);
-			await queryRunner.manager.save(store as Store);
-			await mealSubsectionRepository.saveStoreMealSubsections(meal);
-			await queryRunner.commitTransaction();
+			await queryRunner.manager.save([store as Store, meal as Meal]).then(async (res) => {
+				await queryRunner.commitTransaction();
+				await mealSubsectionRepository.saveStoreMealSubsections(res[0] as Store, res[1] as Meal);
+			});
 		} catch (err) {
 			const logger = new LoggerService('Database');
 			logger.error(err.message, err.stack);

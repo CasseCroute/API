@@ -6,6 +6,7 @@ import {Address} from '@letseat/domains/address/address.entity';
 import {Ingredient} from '@letseat/domains/ingredient/ingredient.entity';
 import {Product} from '@letseat/domains/product/product.entity';
 import {Meal} from '@letseat/domains/meal/meal.entity';
+import {StoreCreatedMealEvent} from '@letseat/application/events/store-created-meal.event';
 
 @Entity()
 @Unique(['email'])
@@ -51,5 +52,9 @@ export class Store extends Resource {
 
 	public static register(args: any): Store {
 		return new Store(args);
+	}
+
+	public createMeal(mealReference: string) {
+		this.apply(new StoreCreatedMealEvent(this.uuid, mealReference));
 	}
 }
