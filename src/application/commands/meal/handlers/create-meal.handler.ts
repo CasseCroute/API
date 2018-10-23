@@ -12,6 +12,11 @@ export class CreateMealHandler implements ICommandHandler<CreateMealCommand> {
 		const mealProductUuid = command.meal.productUuid;
 		const meal = new Meal(command.meal);
 		try {
+			if (meal.subsections && meal.subsections.length > 0) {
+				meal.subsections.forEach(subsection => {
+					subsection.allowMultipleSelections = subsection.maxSelectionsPermitted > 1;
+				});
+			}
 			await storeRepository.saveStoreMeal(command.storeUuid, meal, mealProductUuid);
 			resolve();
 		} catch (err) {

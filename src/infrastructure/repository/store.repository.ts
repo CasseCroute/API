@@ -116,14 +116,14 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 			const store = await this.manager
 				.findOneOrFail(Store, {where: {uuid: storeUuid}, relations: ['meals']});
 			meal.product = await this.manager
-				.findOneOrFail(Product,{
-				where: {uuid: mealProductUuid, store: store},
-				relations: ['meals', 'store']
-			}) as Product;
+				.findOneOrFail(Product, {
+					where: {uuid: mealProductUuid, store: store},
+					relations: ['meals', 'store']
+				}) as Product;
 			store!.meals.push(meal);
 			await queryRunner.manager.save([store as Store, meal as Meal]).then(async (res) => {
 				await queryRunner.commitTransaction();
-				await mealSubsectionRepository.saveStoreMealSubsections(res[0] as Store, res[1] as Meal);
+				await mealSubsectionRepository.saveStoreMealSubsections(res[1] as Meal);
 			});
 		} catch (err) {
 			const logger = new LoggerService('Database');

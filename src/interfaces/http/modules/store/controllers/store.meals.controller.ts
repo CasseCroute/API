@@ -21,11 +21,6 @@ export class CurrentStoreMealsController {
 		@Req() request: any,
 		@Body(new ValidationPipe<Meal>(createMealValidatorOptions))meal: CreateMealDto): Promise<any> {
 		if (request.user.entity === AuthEntities.Store) {
-			if (meal.subsections && meal.subsections.length > 0) {
-				meal.subsections.forEach(subsection => {
-					subsection.allowMultipleSelections = subsection.maxSelectionsPermitted > 1;
-				});
-			}
 			return this.commandBus.execute(new CreateMealCommand(request.user.uuid, meal));
 		}
 		return (() => {

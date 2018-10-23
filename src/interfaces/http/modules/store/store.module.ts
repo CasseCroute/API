@@ -12,8 +12,6 @@ import {IngredientCommandHandlers} from '@letseat/application/commands/ingredien
 import {StoreContollers} from '@letseat/interfaces/http/modules/store/controllers';
 import {ProductCommandHandlers} from '@letseat/application/commands/product/handlers';
 import {MealCommandHandlers} from '@letseat/application/commands/meal/handlers';
-import {StoreEventsHandlers} from '@letseat/application/events/handlers';
-import {StoreMealsSagas, StoreSagas} from '@letseat/application/sagas/store';
 
 @Module({
 	imports: [
@@ -28,8 +26,6 @@ import {StoreMealsSagas, StoreSagas} from '@letseat/application/sagas/store';
 		...IngredientCommandHandlers,
 		...ProductCommandHandlers,
 		...MealCommandHandlers,
-		...StoreEventsHandlers,
-		...StoreSagas
 	],
 	controllers: [
 		...StoreContollers
@@ -40,7 +36,6 @@ export class StoreModule implements OnModuleInit {
 		private readonly moduleRef: ModuleRef,
 		private readonly command$: CommandBus,
 		private readonly event$: EventBus,
-		private readonly storeMealsSagas: StoreMealsSagas,
 	) {}
 
 	onModuleInit() {
@@ -54,8 +49,5 @@ export class StoreModule implements OnModuleInit {
 		this.command$.register(ProductCommandHandlers);
 		this.command$.register(MealCommandHandlers);
 
-		this.event$.combineSagas([
-			this.storeMealsSagas.mealCreated
-		]);
 	}
 }
