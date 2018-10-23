@@ -137,9 +137,16 @@ export const ingredientRepository = {
 	data: [
 		{
 			id: 1,
-			uuid: 'a7859141-7d67-403c-99f5-6f10b36c7dc',
+			uuid: '2a52fb81-b6e9-4811-9b97-b7721935d986',
 			name: 'Tomatoes',
 			quantity: 12,
+			idStore: 1
+		},
+		{
+			id: 1,
+			uuid: '94d4fee2-68a9-42d3-87a8-851ce29d3238',
+			name: 'Salad',
+			quantity: 34,
 			idStore: 1
 		}
 	]
@@ -166,6 +173,33 @@ export const productRepository = {
 			price: '2.12',
 			description: 'Ice Cream',
 			idStore: 1
+		},
+	]
+};
+
+export const mealRepository = {
+	data: [
+		{
+			id: 1,
+			uuid: '2a4dcbb2-39c5-4cdd-aa1e-3d1f407d4d92',
+			reference: 'BREAKFASTLUNCH',
+			name: 'Breakfast Lunch',
+			price: '21.00',
+			description: 'For your breakfast',
+			idStore: 1,
+			idProduct: 2,
+			productQuantity: 2
+		},
+		{
+			id: 1,
+			uuid: '4a1786f3-a77c-49e7-a430-98338df53528',
+			reference: 'MENUBURGER',
+			name: 'Menu Burger',
+			price: '12.00',
+			description: '',
+			idStore: 1,
+			idProduct: 1,
+			productQuantity: 3
 		},
 	]
 };

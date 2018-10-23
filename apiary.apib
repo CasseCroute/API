@@ -309,6 +309,48 @@ Retrieve Store Ingredients
     + Attributes (object)
         + data (array)
             + (Ingredient)
+ 
+## Current Store Meals [/stores/me/meals]
+
+### Create a new Meal [POST]
+
+Allows Stores to create a Meal.
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+|-------------------------|----------------------|
+| Yes (JWT)               | No                   |
+
++ Request (application/json; charset=utf-8)
+    + Headers
+
+            Authorization: Bearer <JWT>
+
+    + Attributes
+        + reference: `MENU-MAXI-BURGER` (string, required) - Reference of the Meal.
+        + name: `Burger` (string, required) - Name of the Meal.
+        + price: `9.70` (string, required) - Price of the Meal.
+        + description: `A delicious maxi burger` (string, optional) - Description of the Meal.
+        + productUuid: `8d4cb225-8760-4643-a5b0-02baddce109b` (string, required) - UUID of the Product associated with the Meal.
+        + subsections (array, optional) - Subsections of the Meal (e.g: Desserts, Drinks...)
+            + (object)
+                + name: `Dessert` (string, required) - Name of the subsection.
+                + isRequired: `true` (boolean, required) - If the subsection is required to process an Order.
+                + minSelectionsPermitted: `1` (number, required) - Minimum of subsection options selections.
+                + maxSelectionsPermitted: `5` (number, required) - Maximum of subsection options selections.
+                + products (array, optional)
+                    + (object)
+                        + uuid: `2a52fb81-b6e9-4811-9b97-b7721935d986` (string, required) - UUID of the Product option associated with the Subsection.
+                        + price: `3.50` (string, optional) - Price of the Product option (default: `0`).
+                        + quantity: `3` (number, optional) - Quantity of the Product option to decrement from Store Stock (default: `1`).
+                + ingredients (array, optional)
+                    + (object)
+                        + uuid: `94d4fee2-68a9-42d3-87a8-851ce29d3238` (string, required) - UUID of the Ingredient option associated with the Subsection.
+                        + price: `1` (string, optional) - Price of the Ingredient option (default: `0`).
+                        + quantity: `2` (number, optional) - Quantity of the Ingredient option to decrement from Store Stock (default: `1`).
+
++ Response 201
             
 ## Store Products [/stores/{storeUuid}/products]
 
@@ -435,7 +477,7 @@ Allows Stores to retrieve a Product by it's UUID.
         + name: `Burger` (string, optional) - Name of the Product.
         + price: `9.70` (string, optional) - Price of the Product.
         + description: `A delicious burger with tasty hot sauce` (string, optional) - Description of the Product.
-         + ingredients (array, optional)
+        + ingredients (array, optional)
             + (object)
                 + uuid: `f5b06da6-e619-4e97-a30e-116872204e11` (string, required) - UUID of the ingredient included in the Product.
                 + quantity: `3` (number, required) - Ingredient quantity needed for the product.

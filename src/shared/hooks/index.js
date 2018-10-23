@@ -149,6 +149,8 @@ hooks.before('Stores > Current Store Products > Retrieve Products', (transaction
 
 // Before current Store updates a Product
 hooks.before('Stores > Current Store Product > Update a Product', (transaction, done) => {
+	const {ingredients, ...body} = JSON.parse(transaction.request.body);
+	transaction.request.body = JSON.stringify(body);
 	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
 	transaction.request.uri = `/stores/me/products/${product.uuid}`;
 	transaction.fullPath = `/stores/me/products/${product.uuid}`;
@@ -185,12 +187,13 @@ hooks.before('Stores > Store Products > Retrieve a Store Product ', (transaction
 	done();
 });
 
+// INGREDIENTS
+
 // Before adding an Ingredient
 hooks.before('Stores > Current Store Ingredients > Create a new Ingredient', (transaction, done) => {
 	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
 	done();
 });
-
 
 // Before current Store updates an Ingredient
 hooks.before('Stores > Current Store Ingredient > Update an Ingredient', (transaction, done) => {
@@ -248,6 +251,17 @@ hooks.before('Stores > Store Ingredients > Retrieve a Store Ingredient', (transa
 	done();
 });
 
+// PRODUCTS
+
+// Before current Store creates a Meal
+hooks.before('Stores > Current Store Meals > Create a new Meal', (transaction, done) => {
+	const body = JSON.parse(transaction.request.body);
+	body.productUuid = product.uuid;
+	delete body.subsections;
+	transaction.request.body = JSON.stringify(body);
+	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
+	done();
+});
 
 hooks.afterAll((transactions, done) => {
 	client.query(
@@ -255,6 +269,7 @@ hooks.afterAll((transactions, done) => {
 		'TRUNCATE TABLE customer CASCADE;' +
 		'TRUNCATE TABLE ingredient CASCADE;' +
 		'TRUNCATE TABLE product CASCADE;' +
+		'TRUNCATE TABLE meal CASCADE;' +
 		'TRUNCATE TABLE product_ingredient CASCADE;' +
 		'TRUNCATE TABLE address CASCADE;' +
 		'TRUNCATE TABLE kiosk CASCADE;')

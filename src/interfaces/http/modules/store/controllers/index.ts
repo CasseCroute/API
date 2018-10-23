@@ -2,6 +2,7 @@ import {StoreController} from './store.controller';
 import {StoreKiosksController} from './store-kiosks.controller';
 import {CurrentStoreIngredientsController, StoreIngredientsController} from './store-ingredients.controller';
 import {CurrentStoreProductsController, StoreProductsController} from './store.products.controller';
+import {CurrentStoreMealsController} from './store.meals.controller';
 
 export const StoreContollers = [
 	StoreController,
@@ -9,7 +10,8 @@ export const StoreContollers = [
 	CurrentStoreIngredientsController,
 	StoreIngredientsController,
 	CurrentStoreProductsController,
-	StoreProductsController
+	StoreProductsController,
+	CurrentStoreMealsController
 ];
 export {
 	StoreController,
@@ -17,5 +19,6 @@ export {
 	CurrentStoreIngredientsController,
 	StoreIngredientsController,
 	CurrentStoreProductsController,
-	StoreProductsController
+	StoreProductsController,
+	CurrentStoreMealsController
 };
