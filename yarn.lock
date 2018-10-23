@@ -66,9 +66,9 @@
     reflect-metadata "^0.1.12"
     rxjs "^6.1.0"
 
-"@nestjs/microservices@^5.3.11":
-  version "5.3.11"
-  resolved "https://registry.yarnpkg.com/@nestjs/microservices/-/microservices-5.3.11.tgz#17f26ecf3ef351c7d83f2ce91df4ba612f785c39"
+"@nestjs/microservices@^5.4.0":
+  version "5.4.0"
+  resolved "https://registry.yarnpkg.com/@nestjs/microservices/-/microservices-5.4.0.tgz#5d12743e521a5b927409969c6f629d2d98e96ea8"
   dependencies:
     iterare "0.0.8"
     json-socket "^0.2.1"
