@@ -103,8 +103,8 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "docker-compose run app yarn test",
-      "pre-push": "docker-compose run app yarn test"
+      "pre-commit": "docker-compose run app yarn test && docker-compose down",
+      "pre-push": "docker-compose run app yarn test && docker-compose down"
     }
   }
 }
