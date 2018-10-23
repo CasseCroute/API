@@ -76,4 +76,13 @@ export class ProductRepository extends Repository<Product> implements ResourceRe
 			.getOne();
 		return selectId ? storeProduct : omitDeep('id', storeProduct);
 	}
+
+	public async deleteProductByUuid(storeUuid: string, productUuid: string){
+
+		return this.createQueryBuilder('product')
+			.leftJoin('product.store', 'store', 'store.uuid = :uuid', {uuid: storeUuid})
+			.where('product.uuid = :uuid', {uuid: productUuid})
+			.delete()
+			.execute()
+	}
 }
