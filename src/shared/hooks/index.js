@@ -257,8 +257,7 @@ hooks.before('Stores > Store Ingredients > Retrieve a Store Ingredient', (transa
 hooks.before('Stores > Current Store Meals > Create a new Meal', (transaction, done) => {
 	const body = JSON.parse(transaction.request.body);
 	body.productUuid = product.uuid;
-	delete body.subsections[0].products;
-	delete body.subsections[0].ingredients;
+	delete body.subsections;
 	transaction.request.body = JSON.stringify(body);
 	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
 	done();
@@ -270,6 +269,7 @@ hooks.afterAll((transactions, done) => {
 		'TRUNCATE TABLE customer CASCADE;' +
 		'TRUNCATE TABLE ingredient CASCADE;' +
 		'TRUNCATE TABLE product CASCADE;' +
+		'TRUNCATE TABLE meal CASCADE;' +
 		'TRUNCATE TABLE product_ingredient CASCADE;' +
 		'TRUNCATE TABLE address CASCADE;' +
 		'TRUNCATE TABLE kiosk CASCADE;')
