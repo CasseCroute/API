@@ -137,9 +137,16 @@ export const ingredientRepository = {
 	data: [
 		{
 			id: 1,
-			uuid: 'a7859141-7d67-403c-99f5-6f10b36c7dc',
+			uuid: '2a52fb81-b6e9-4811-9b97-b7721935d986',
 			name: 'Tomatoes',
 			quantity: 12,
+			idStore: 1
+		},
+		{
+			id: 1,
+			uuid: '94d4fee2-68a9-42d3-87a8-851ce29d3238',
+			name: 'Salad',
+			quantity: 34,
 			idStore: 1
 		}
 	]
