@@ -2,7 +2,7 @@ import {IsNumber, IsNumberString, IsOptional, IsUUID} from 'class-validator';
 
 export class CreateMealSubsectionOptionProductDto {
 	@IsUUID()
-	readonly uuid: string;
+	readonly productUuid: string;
 
 	@IsOptional()
 	@IsNumberString()

@@ -1,4 +1,4 @@
-import {EventPublisher, ICommandHandler, CommandHandler, AggregateRoot} from '@nestjs/cqrs';
+import {EventPublisher, ICommandHandler, CommandHandler} from '@nestjs/cqrs';
 import {NotFoundException} from '@nestjs/common';
 import {GetResourceByUuidQuery} from '@letseat/application/queries/resource';
 import {ResourceRepository} from '@letseat/infrastructure/repository/resource.repository';
@@ -13,9 +13,7 @@ export class GetResourceByUuidHandler implements ICommandHandler<GetResourceByUu
 		const resource = Resource.register(command);
 		const repository = new ResourceRepository();
 		try {
-			const storeFound = this.publisher.mergeObjectContext(
-				await repository.findOneByUuid(resource.uuid, command.entity) as AggregateRoot
-			);
+			const storeFound =	await repository.findOneByUuid(resource.uuid, command.entity);
 			resolve(storeFound);
 		} catch (err) {
 			err.message = 'Resource not found';

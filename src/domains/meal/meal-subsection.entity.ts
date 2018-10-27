@@ -1,5 +1,5 @@
 /* tslint:disable:no-unused */
-import {Entity, Column, ManyToOne, JoinColumn, OneToMany} from 'typeorm';
+import {Entity, Column, ManyToOne, JoinColumn, OneToMany, OneToOne} from 'typeorm';
 import {Resource} from '@letseat/domains/resource/resource';
 import {Meal} from '@letseat/domains/meal/meal.entity';
 import {MealSubsectionOption} from '@letseat/domains/meal/meal-subsection-option.entity';
@@ -30,8 +30,8 @@ export class MealSubsection extends Resource {
 	@JoinColumn({name: 'id_meal'})
 	meal: Meal;
 
-	@OneToMany(type => MealSubsectionOption, option => option.subsection, {nullable: false, cascade: ['insert'], onDelete: 'CASCADE'})
-	options: MealSubsectionOption[];
+	@OneToOne(type => MealSubsectionOption, option => option.subsection, {nullable: false, cascade: ['insert'], onDelete: 'CASCADE'})
+	options: MealSubsectionOption;
 
 	public static register(args: any): MealSubsection {
 		return new MealSubsection(args);

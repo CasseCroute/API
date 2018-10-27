@@ -1,5 +1,5 @@
 import {
-	Body, Controller, Post, Req, UnauthorizedException, UseGuards
+	Body, Controller, Get, Post, Req, UnauthorizedException, UseGuards
 } from '@nestjs/common';
 import {CommandBus} from '@nestjs/cqrs';
 import {ValidationPipe} from '@letseat/domains/common/pipes/validation.pipe';
@@ -9,6 +9,7 @@ import {Meal} from '@letseat/domains/meal/meal.entity';
 import {createMealValidatorOptions} from '@letseat/domains/meal/pipes';
 import {CreateMealDto} from '@letseat/domains/meal/dtos/create-meal.dto';
 import {CreateMealCommand} from '@letseat/application/commands/meal';
+import {GetStoreMealsQuery} from '@letseat/application/queries/store';
 
 @Controller('stores/me/meals')
 export class CurrentStoreMealsController {
@@ -26,5 +27,15 @@ export class CurrentStoreMealsController {
 		return (() => {
 			throw new UnauthorizedException();
 		})();
+	}
+
+	@Get()
+	@UseGuards(AuthGuard('jwt'))
+	public async getMeals(@Req() request: any) {
+		return request.user.entity === AuthEntities.Store
+			? this.commandBus.execute(new GetStoreMealsQuery(request.user.uuid))
+			: (() => {
+				throw new UnauthorizedException();
+			})();
 	}
 }

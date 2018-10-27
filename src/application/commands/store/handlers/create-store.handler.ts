@@ -20,12 +20,9 @@ export class CreateStoreHandler implements ICommandHandler<CreateStoreCommand> {
 		const store = Store.register(command);
 
 		try {
-			const storeSaved = this.publisher.mergeObjectContext(
-				await storeRepository.saveStore(store, new Repository<Store>())
-			);
+			const storeSaved = await storeRepository.saveStore(store, new Repository<Store>());
 			delete storeSaved.password;
 			const jwt = AuthService.createToken<Store>(storeSaved);
-			storeSaved.commit();
 			resolve(jwt);
 		} catch (err) {
 			resolve(Promise.reject(new BadRequestException(err.message)));

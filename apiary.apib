@@ -95,7 +95,7 @@ This API returns both, machine-readable error codes and human-readable error mes
 
 ##### Generic Error
 
-```js
+```json
 {
     "statusCode": 403,
     "error": "Forbidden",
@@ -333,22 +333,24 @@ Allows Stores to create a Meal.
         + price: `9.70` (string, required) - Price of the Meal.
         + description: `A delicious maxi burger` (string, optional) - Description of the Meal.
         + productUuid: `8d4cb225-8760-4643-a5b0-02baddce109b` (string, required) - UUID of the Product associated with the Meal.
+        + productQuantity (number, optional) - Product quantity in the Meal (Default: `1`)
         + subsections (array, optional) - Subsections of the Meal (e.g: Desserts, Drinks...)
             + (object)
                 + name: `Dessert` (string, required) - Name of the subsection.
                 + isRequired: `true` (boolean, required) - If the subsection is required to process an Order.
                 + minSelectionsPermitted: `1` (number, required) - Minimum of subsection options selections.
                 + maxSelectionsPermitted: `5` (number, required) - Maximum of subsection options selections.
-                + products (array, optional)
-                    + (object)
-                        + uuid: `2a52fb81-b6e9-4811-9b97-b7721935d986` (string, required) - UUID of the Product option associated with the Subsection.
-                        + price: `3.50` (string, optional) - Price of the Product option (default: `0`).
-                        + quantity: `3` (number, optional) - Quantity of the Product option to decrement from Store Stock (default: `1`).
-                + ingredients (array, optional)
-                    + (object)
-                        + uuid: `94d4fee2-68a9-42d3-87a8-851ce29d3238` (string, required) - UUID of the Ingredient option associated with the Subsection.
-                        + price: `1` (string, optional) - Price of the Ingredient option (default: `0`).
-                        + quantity: `2` (number, optional) - Quantity of the Ingredient option to decrement from Store Stock (default: `1`).
+                + options (object, optional)
+                    + products (array, optional)
+                        + (object)
+                            + uuid: `2a52fb81-b6e9-4811-9b97-b7721935d986` (string, required) - UUID of the Product option associated with the Subsection.
+                            + price: `3.50` (string, optional) - Price of the Product option (default: `0`).
+                            + quantity: `3` (number, optional) - Quantity of the Product option to decrement from Store Stock (default: `1`).
+                    + ingredients (array, optional)
+                        + (object)
+                            + uuid: `94d4fee2-68a9-42d3-87a8-851ce29d3238` (string, required) - UUID of the Ingredient option associated with the Subsection.
+                            + price: `1` (string, optional) - Price of the Ingredient option (default: `0`).
+                            + quantity: `2` (number, optional) - Quantity of the Ingredient option to decrement from Store Stock (default: `1`).
 
 + Response 201
             
@@ -640,7 +642,7 @@ Delete the current Store account and all related resources.
         + firstName: `John` (string, required) - First name of the customer.
         + lastName: `Doe` (string, required) - Last name of the customer.
         + email: `john.doe@mail.com` (string, required) - Email of the customer.
-        + phoneNumber: `0663451278` (number, required) - Phone number of the customer.
+        + phoneNumber: `0663451278` (string, required) - Phone number of the customer.
         + password: `RHN4uNu3` (string, required) - Password of the customer.
 
 + Response 201 (application/json; charset=utf-8)
@@ -762,7 +764,7 @@ Update informations of the current Customer.
        + firstName: `Joe` (string, optional) - New first name.
        + lastName: `Poe` (string, optional) - New last name.
        + email: `joe.poe@mail.com` (string, optional) - New email.
-       + phoneNumber: `0789211234` (number, optional) - New phone number
+       + phoneNumber: `0789211234` (string, optional) - New phone number
 
 + Response 204
 
@@ -791,6 +793,32 @@ Delete the current Customer account.
 + createdAt (string, optional) - ISO Date/time string. When this resource was created.
 + updatedAt (string, optional) - ISO Date/time string. When this resource was last updated.
 
+### Address (Resource)
++ street (string, required) - Street name
++ company (string, optional)
++ city (string, required) - City 
++ zipCode (string, required) - Zip code
++ country (string, required) - Country
+
+### Meal (Resource)
++ reference (string, required) - Reference of the Meal.
++ name (string, optional) - Name of the Meal.
++ price (number, required) - Price of the Meal.
++ description (optional, optional) - Description of the Meal.
++ productQuantity (number, optional) - Product quantity in the Meal (Default: `1`)
++ productUuid (string, required) - UUID of the Product associated with the Meal.
++ options (object, optional)
+    + ingredients (array, optional)
+        + (object)
+            + ingredientUuid (string, required) - UUID of the option Ingredient.
+            + price (number, optional) - Price the option Ingredient. (Default: `1`)
+            + quantity (number, optional) - Quantity of the option Ingredient. (Default: `1`)
+    + products (array, optional)
+        + (object)
+            + productUuid (string, required) - UUID of the option Product.
+            + price (number, optional) - Price the option Product. (Default: `1`)
+            + quantity (number, optional) - Quantity of the option Product. (Default: `1`)
+    
 ### Store (Resource)
 + name: `Let's Eat` (string, required) - Name of the store.
 + email: `hello@letseat.co` (string, required) - Email of the store.
@@ -798,6 +826,11 @@ Delete the current Customer account.
 + slug: `lets-eat-7d6ae7c69f` (string, required) - Slug of the store.
 + password: `f8e2cfacc6` (string, required) - Password of the store.
 + imageUrl: `https://some.cdn.com/img.png` (string, optional) - Main image URL of the store.
++ address ([Address])
++ products (array)
+    + ([Product])
++ meals (array)
+    + ([Meal])
 
 ### Product (Resource)
 + reference: `BURG-01` (string, required) - Reference of the Product
@@ -818,7 +851,7 @@ Delete the current Customer account.
 + firstName: `John` (string, required) - First name of the customer.
 + lastName: `Doe` (string, required) - Last name of the customer.
 + email: `john.doe@mail.com` (string, required) - Email of the customer.
-+ phoneNumber: `0663451278` (number, required) - Phone number of the customer.
++ phoneNumber: `0663451278` (string, required) - Phone number of the customer.
 + password: `RHN4uNu3` (string, required) - Password of the customer.
 
 ### JWT (object)

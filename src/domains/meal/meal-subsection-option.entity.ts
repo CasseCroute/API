@@ -16,10 +16,10 @@ export class MealSubsectionOption extends Resource {
 	@JoinColumn({name: 'id_meal_subsection'})
 	subsection: MealSubsection;
 
-	@OneToMany(type => MealSubsectionOptionIngredient, ingredientOption => ingredientOption.option, {nullable: false, cascade: ['insert'], onDelete: 'CASCADE'})
+	@OneToMany(type => MealSubsectionOptionIngredient, ingredientOption => ingredientOption.option, {nullable: false, cascade: ['insert'], onDelete: 'CASCADE', eager: true})
 	ingredients: MealSubsectionOptionIngredient[];
 
-	@OneToMany(type => MealSubsectionOptionProduct, productOption => productOption.option, {nullable: false, cascade: ['insert'], onDelete: 'CASCADE'})
+	@OneToMany(type => MealSubsectionOptionProduct, productOption => productOption.option, {nullable: false, cascade: ['insert'], onDelete: 'CASCADE', eager: true})
 	products: MealSubsectionOptionProduct[];
 
 	public static register(args: any): MealSubsectionOption {

@@ -100,11 +100,13 @@ describe('Store Meals HTTP Requests', () => {
 							isRequired: true,
 							minSelectionsPermitted: 1,
 							maxSelectionsPermitted: 1,
-							products: [
-								{
-									uuid: mocks.productRepository.data[1].uuid
-								}
-							]
+							options: {
+								products: [
+									{
+										productUuid: mocks.productRepository.data[1].uuid
+									}
+								]
+							}
 						}
 					]
 				})
@@ -126,14 +128,16 @@ describe('Store Meals HTTP Requests', () => {
 							isRequired: true,
 							minSelectionsPermitted: 1,
 							maxSelectionsPermitted: 1,
-							products: [
-								{
-									uuid: mocks.productRepository.data[1].uuid
-								},
-								{
-									uuid: mocks.productRepository.data[0].uuid
-								}
-							]
+							options: {
+								products: [
+									{
+										productUuid: mocks.productRepository.data[1].uuid
+									},
+									{
+										productUuid: mocks.productRepository.data[0].uuid
+									}
+								]
+							}
 						}
 					]
 				})
@@ -155,11 +159,13 @@ describe('Store Meals HTTP Requests', () => {
 							isRequired: true,
 							minSelectionsPermitted: 1,
 							maxSelectionsPermitted: 1,
-							ingredients: [
-								{
-									uuid: mocks.ingredientRepository.data[0].uuid
-								}
-							]
+							options: {
+								ingredients: [
+									{
+										ingredientUuid: mocks.ingredientRepository.data[0].uuid
+									}
+								]
+							}
 						}
 					]
 				})
@@ -181,14 +187,16 @@ describe('Store Meals HTTP Requests', () => {
 							isRequired: true,
 							minSelectionsPermitted: 1,
 							maxSelectionsPermitted: 1,
-							ingredients: [
-								{
-									uuid: mocks.ingredientRepository.data[0].uuid
-								},
-								{
-									uuid: mocks.ingredientRepository.data[1].uuid
-								}
-							]
+							options: {
+								ingredients: [
+									{
+										ingredientUuid: mocks.ingredientRepository.data[0].uuid
+									},
+									{
+										ingredientUuid: mocks.ingredientRepository.data[1].uuid
+									}
+								]
+							}
 						}
 					]
 				})
@@ -210,16 +218,18 @@ describe('Store Meals HTTP Requests', () => {
 							isRequired: true,
 							minSelectionsPermitted: 1,
 							maxSelectionsPermitted: 1,
-							products: [
-								{
-									uuid: mocks.productRepository.data[1].uuid
-								}
-							],
-							ingredients: [
-								{
-									uuid: mocks.ingredientRepository.data[0].uuid
-								}
-							]
+							options: {
+								products: [
+									{
+										productUuid: mocks.productRepository.data[1].uuid
+									}
+								],
+								ingredients: [
+									{
+										ingredientUuid: mocks.ingredientRepository.data[0].uuid
+									}
+								]
+							}
 						}
 					]
 				})
@@ -241,22 +251,24 @@ describe('Store Meals HTTP Requests', () => {
 							isRequired: true,
 							minSelectionsPermitted: 1,
 							maxSelectionsPermitted: 1,
-							products: [
-								{
-									uuid: mocks.productRepository.data[1].uuid
-								},
-								{
-									uuid: mocks.productRepository.data[0].uuid
-								}
-							],
-							ingredients: [
-								{
-									uuid: mocks.ingredientRepository.data[0].uuid
-								},
-								{
-									uuid: mocks.ingredientRepository.data[1].uuid
-								}
-							]
+							options: {
+								products: [
+									{
+										productUuid: mocks.productRepository.data[1].uuid
+									},
+									{
+										productUuid: mocks.productRepository.data[0].uuid
+									}
+								],
+								ingredients: [
+									{
+										ingredientUuid: mocks.ingredientRepository.data[0].uuid
+									},
+									{
+										ingredientUuid: mocks.ingredientRepository.data[1].uuid
+									}
+								]
+							}
 						}
 					]
 				})
@@ -326,44 +338,48 @@ describe('Store Meals HTTP Requests', () => {
 							isRequired: true,
 							minSelectionsPermitted: 1,
 							maxSelectionsPermitted: 1,
-							products: [
-								{
-									uuid: mocks.productRepository.data[1].uuid
-								},
-								{
-									uuid: mocks.productRepository.data[0].uuid
-								}
-							],
-							ingredients: [
-								{
-									uuid: mocks.ingredientRepository.data[0].uuid
-								},
-								{
-									uuid: mocks.ingredientRepository.data[1].uuid
-								}
-							]
+							options: {
+								products: [
+									{
+										productUuid: mocks.productRepository.data[1].uuid
+									},
+									{
+										productUuid: mocks.productRepository.data[0].uuid
+									}
+								],
+								ingredients: [
+									{
+										ingredientUuid: mocks.ingredientRepository.data[0].uuid
+									},
+									{
+										ingredientUuid: mocks.ingredientRepository.data[1].uuid
+									}
+								]
+							}
 						},
 						{
 							name: 'Extra',
 							isRequired: false,
 							minSelectionsPermitted: 1,
 							maxSelectionsPermitted: 2,
-							products: [
-								{
-									uuid: mocks.productRepository.data[1].uuid
-								},
-								{
-									uuid: mocks.productRepository.data[0].uuid
-								}
-							],
-							ingredients: [
-								{
-									uuid: mocks.ingredientRepository.data[0].uuid
-								},
-								{
-									uuid: mocks.ingredientRepository.data[1].uuid
-								}
-							]
+							options: {
+								products: [
+									{
+										productUuid: mocks.productRepository.data[1].uuid
+									},
+									{
+										productUuid: mocks.productRepository.data[0].uuid
+									}
+								],
+								ingredients: [
+									{
+										ingredientUuid: mocks.ingredientRepository.data[0].uuid
+									},
+									{
+										ingredientUuid: mocks.ingredientRepository.data[1].uuid
+									}
+								]
+							}
 						}
 					]
 				})
@@ -418,7 +434,12 @@ describe('Store Meals HTTP Requests', () => {
 			return request(app.getHttpServer())
 				.post('/stores/me/meals')
 				.set('Authorization', `Bearer ${mocks.token}`)
-				.send({reference: 'MENUMENUMENUMENUMENU', name: 'Menu Burger', price: '12', productUuid: mocks.productRepository.data[0].uuid})
+				.send({
+					reference: 'MENUMENUMENUMENUMENU',
+					name: 'Menu Burger',
+					price: '12',
+					productUuid: mocks.productRepository.data[0].uuid
+				})
 				.expect(400);
 		});
 

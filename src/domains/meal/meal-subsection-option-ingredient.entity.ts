@@ -6,6 +6,7 @@ import {MealSubsection} from '@letseat/domains/meal/meal-subsection.entity';
 import {MealSubsectionOption} from '@letseat/domains/meal/meal-subsection-option.entity';
 import {ProductIngredient} from '@letseat/domains/product-ingredient/product-ingredient.entity';
 import {Ingredient} from '@letseat/domains/ingredient/ingredient.entity';
+import {Product} from '@letseat/domains/product/product.entity';
 
 @Entity()
 export class MealSubsectionOptionIngredient extends Resource {
@@ -24,7 +25,7 @@ export class MealSubsectionOptionIngredient extends Resource {
 	@JoinColumn({name: 'id_meal_subsection_option'})
 	option: MealSubsectionOption;
 
-	@ManyToOne(type => Ingredient)
+	@ManyToOne(type => Ingredient, {eager: true})
 	@JoinColumn({name: 'id_ingredient'})
 	ingredient: Ingredient;
 

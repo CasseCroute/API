@@ -1,3 +1,4 @@
+/* tslint:disable:no-unused */
 import {
 	EntityRepository, getConnection, getManager,
 	Repository,
@@ -13,6 +14,10 @@ import {MealSubsectionOption} from '@letseat/domains/meal/meal-subsection-option
 import {Product} from '@letseat/domains/product/product.entity';
 import {Ingredient} from '@letseat/domains/ingredient/ingredient.entity';
 import {MealSubsectionOptionIngredient} from '@letseat/domains/meal/meal-subsection-option-ingredient.entity';
+import {
+	CreateMealSubsectionOptionIngredientDto,
+	CreateMealSubsectionOptionProductDto
+} from '@letseat/domains/meal/dtos';
 
 @EntityRepository(MealSubsection)
 export class MealSubsectionRepository extends Repository<MealSubsection> implements ResourceRepository {
@@ -35,7 +40,7 @@ export class MealSubsectionRepository extends Repository<MealSubsection> impleme
 				meal.subsections.forEach(async subsection => {
 					const mealSubsection = new MealSubsection(subsection);
 					const mealSubsectionOption = new MealSubsectionOption();
-					const {products, ingredients} = subsection as any;
+					const {options} = subsection as any;
 					mealSubsection.meal = await queryRunner.manager
 						.findOneOrFail(Meal, {
 							where: {uuid: meal.uuid}
@@ -43,11 +48,11 @@ export class MealSubsectionRepository extends Repository<MealSubsection> impleme
 					mealSubsectionOption.subsection = mealSubsection;
 					await getManager().save(mealSubsection);
 					await getManager().save(mealSubsectionOption);
-					if (products && products.length > 0) {
-						await this.saveStoreMealSubsectionOptionProducts(mealSubsectionOption, products);
+					if (options.products && options.products.length > 0) {
+						await this.saveStoreMealSubsectionOptionProducts(mealSubsectionOption, options.products);
 					}
-					if (ingredients && ingredients.length > 0) {
-						await this.saveStoreMealSubsectionOptionIngredients(mealSubsectionOption, ingredients);
+					if (options.ingredients && options.ingredients.length > 0) {
+						await this.saveStoreMealSubsectionOptionIngredients(mealSubsectionOption, options.ingredients);
 					}
 				});
 			} catch (err) {
@@ -59,18 +64,19 @@ export class MealSubsectionRepository extends Repository<MealSubsection> impleme
 	}
 
 	/**
-	 * Bulk insert Meal Subsection Option Productss
+	 * Bulk insert Meal Subsection Option Products
 	 */
 	public async saveStoreMealSubsectionOptionProducts(
 		subsectionOption: MealSubsectionOption,
-		products: Product[]) {
+		products: any) {
+		console.log(products);
 		try {
 			products.forEach(async product => {
 				const {uuid, ...data} = product;
 				const subsectionOptionProduct = new MealSubsectionOptionProduct(data);
 				subsectionOptionProduct.product = await getManager()
 					.findOneOrFail(Product, {
-						where: {uuid}
+						where: {uuid: product.productUuid}
 					});
 				subsectionOptionProduct.option = subsectionOption;
 				await getManager().save(subsectionOptionProduct);
@@ -87,14 +93,14 @@ export class MealSubsectionRepository extends Repository<MealSubsection> impleme
 	 */
 	public async saveStoreMealSubsectionOptionIngredients(
 		subsectionOption: MealSubsectionOption,
-		ingredients: Ingredient[]) {
+		ingredients: any) {
 		try {
 			ingredients.forEach(async ingredient => {
 				const {uuid, ...data} = ingredient;
 				const subsectionOptionIngredient = new MealSubsectionOptionIngredient(data);
 				subsectionOptionIngredient.ingredient = await getManager()
 					.findOneOrFail(Ingredient, {
-						where: {uuid}
+						where: {uuid: ingredient.ingredientUuid}
 					});
 				subsectionOptionIngredient.option = subsectionOption;
 				await getManager().save(subsectionOptionIngredient);

@@ -1,4 +1,4 @@
-import {IsEmail, IsNumber, IsString, Min} from 'class-validator';
+import {IsEmail, IsNumberString, IsString, MinLength} from 'class-validator';
 
 export class UpdateCustomerDto {
 	@IsString()
@@ -10,7 +10,7 @@ export class UpdateCustomerDto {
 	@IsEmail()
 	readonly email?: string;
 
-	@IsNumber()
-	@Min(10)
+	@IsNumberString()
+	@MinLength(10)
 	readonly phoneNumber: number;
 }

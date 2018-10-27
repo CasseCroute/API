@@ -12,6 +12,7 @@ import {IngredientCommandHandlers} from '@letseat/application/commands/ingredien
 import {StoreContollers} from '@letseat/interfaces/http/modules/store/controllers';
 import {ProductCommandHandlers} from '@letseat/application/commands/product/handlers';
 import {MealCommandHandlers} from '@letseat/application/commands/meal/handlers';
+import {MealsQueryHandlers} from '@letseat/application/queries/meal/handlers';
 
 @Module({
 	imports: [
@@ -26,6 +27,7 @@ import {MealCommandHandlers} from '@letseat/application/commands/meal/handlers';
 		...IngredientCommandHandlers,
 		...ProductCommandHandlers,
 		...MealCommandHandlers,
+		...MealsQueryHandlers
 	],
 	controllers: [
 		...StoreContollers

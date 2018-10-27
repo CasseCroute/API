@@ -25,7 +25,7 @@ export class MealSubsectionOptionProduct extends Resource {
 	@JoinColumn({name: 'id_meal_subsection_option'})
 	option: MealSubsectionOption;
 
-	@ManyToOne(type => Product)
+	@ManyToOne(type => Product, {eager: true})
 	@JoinColumn({name: 'id_product'})
 	product: Product;
 
