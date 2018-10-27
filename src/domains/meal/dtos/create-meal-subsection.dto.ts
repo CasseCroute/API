@@ -4,8 +4,7 @@ import {
 	IsBoolean, IsOptional, ValidateNested
 } from 'class-validator';
 import {Type} from 'class-transformer';
-import {CreateMealSubsectionOptionIngredientDto} from './create-meal-subsection-option-ingredient.dto';
-import {CreateMealSubsectionOptionProductDto} from './create-meal-subsection-option-product.dto';
+import {CreateMealSubsectionOptionDto} from '@letseat/domains/meal/dtos/create-meal-subsection-option.dto';
 
 export class CreateMealSubsectionDto {
 	@IsString()
@@ -26,11 +25,7 @@ export class CreateMealSubsectionDto {
 
 	@IsOptional()
 	@ValidateNested()
-	@Type(() => CreateMealSubsectionOptionIngredientDto)
-	ingredients: CreateMealSubsectionOptionIngredientDto[];
+	@Type(() => CreateMealSubsectionOptionDto)
+	options: CreateMealSubsectionOptionDto;
 
-	@IsOptional()
-	@ValidateNested()
-	@Type(() => CreateMealSubsectionOptionProductDto)
-	products: CreateMealSubsectionOptionProductDto[];
 }

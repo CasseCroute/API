@@ -14,7 +14,7 @@ export const customerRepository = {
 			firstName: 'Arthur',
 			lastName: 'De La Ronde',
 			email: 'arthurdlr@mail.me',
-			phoneNumber: 1234567890,
+			phoneNumber: '1234567890',
 			password: 'password1'
 		},
 		{
@@ -23,7 +23,7 @@ export const customerRepository = {
 			firstName: 'Urho',
 			lastName: 'Wahlman',
 			email: 'urho@wahlman.com',
-			phoneNumber: 1234567890,
+			phoneNumber: '1234567890',
 			password: 'password2'
 		},
 		{
@@ -32,7 +32,7 @@ export const customerRepository = {
 			firstName: 'Erin',
 			lastName: 'Bishop',
 			email: 'bishop.erin@mail.com',
-			phoneNumber: 1234567890,
+			phoneNumber: '1234567890',
 			password: 'password3'
 		},
 	],
@@ -61,7 +61,7 @@ export const customerCreateDto: CreateCustomerDto = {
 	firstName: 'Agrican',
 	lastName: 'Deslauriers',
 	email: 'deslauriers@whatmail.com',
-	phoneNumber: 1234567890,
+	phoneNumber: '1234567890',
 	password: 'password'
 };
 

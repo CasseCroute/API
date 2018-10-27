@@ -37,7 +37,10 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 	}
 
 	public async findOneByUuid(storeUuid: string, selectId: boolean = false) {
-		const store = await this.findOne({where: {uuid: storeUuid}});
+		const store = await this.findOne({
+			where: {uuid: storeUuid},
+			relations: ['meals', 'meals.product', 'meals.subsections', 'meals.subsections.options', 'products']
+		});
 		return selectId ? store : omitDeep('id', store);
 	}
 
