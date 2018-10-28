@@ -1,4 +1,4 @@
-import {IsString, IsNumberString, MaxLength, IsNumber, IsUUID, ValidateNested} from 'class-validator';
+import {IsString, IsNumberString, MaxLength, IsNumber, ValidateNested} from 'class-validator';
 import {Type} from 'class-transformer';
 import {UpdateMealSubsectionDto} from '@letseat/domains/meal/dtos/update-meal-subsection.dto';
 
@@ -18,9 +18,6 @@ export class UpdateMealDto {
 
 	@IsNumber()
 	readonly productQuantity?: number;
-
-	@IsUUID()
-	readonly productUuid: string;
 
 	@ValidateNested()
 	@Type(() => UpdateMealSubsectionDto)

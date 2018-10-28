@@ -2,7 +2,7 @@ import {IsNumber, IsNumberString, IsUUID} from 'class-validator';
 
 export class UpdateMealSubsectionOptionProductDto {
 	@IsUUID()
-	readonly productUuid?: string;
+	readonly optionProductUuid: string;
 
 	@IsNumberString()
 	readonly price?: number;

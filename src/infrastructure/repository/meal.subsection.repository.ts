@@ -1,6 +1,6 @@
 /* tslint:disable:no-unused */
 import {
-	EntityRepository, getConnection, getManager,
+	EntityRepository, getConnection, getCustomRepository, getManager, getRepository,
 	Repository,
 	Transaction,
 } from 'typeorm';
@@ -16,8 +16,14 @@ import {Ingredient} from '@letseat/domains/ingredient/ingredient.entity';
 import {MealSubsectionOptionIngredient} from '@letseat/domains/meal/meal-subsection-option-ingredient.entity';
 import {
 	CreateMealSubsectionOptionIngredientDto,
-	CreateMealSubsectionOptionProductDto, UpdateMealSubsectionDto
+	CreateMealSubsectionOptionProductDto,
+	UpdateMealSubsectionDto,
+	UpdateMealSubsectionOptionIngredientDto,
+	UpdateMealSubsectionOptionProductDto
 } from '@letseat/domains/meal/dtos';
+import {Store} from '@letseat/domains/store/store.entity';
+import {MealSubsectionOptionProductRepository} from '@letseat/infrastructure/repository/meal.subsection.product.repository';
+import {MealSubsectionOptionIngredientRepository} from '@letseat/infrastructure/repository/meal.subsection.ingredient.repository';
 
 @EntityRepository(MealSubsection)
 export class MealSubsectionRepository extends Repository<MealSubsection> implements ResourceRepository {
@@ -69,7 +75,6 @@ export class MealSubsectionRepository extends Repository<MealSubsection> impleme
 	public async saveStoreMealSubsectionOptionProducts(
 		subsectionOption: MealSubsectionOption,
 		products: any) {
-		console.log(products);
 		try {
 			products.forEach(async product => {
 				const {uuid, ...data} = product;
@@ -115,20 +120,48 @@ export class MealSubsectionRepository extends Repository<MealSubsection> impleme
 	/**
 	 * Bulk update Meal Subsection
 	 */
-	public async updateStoreMealSubsections(subsections: UpdateMealSubsectionDto[] & MealSubsection[]) {
-		const queryRunner = getConnection().createQueryRunner();
-		await queryRunner.startTransaction();
+	public async updateStoreMealSubsections(
+		storeUuid: string,
+		subsections: UpdateMealSubsectionDto[] & MealSubsection[]
+	) {
+		const mealSubsectionOptionProductRepository =
+			getCustomRepository(MealSubsectionOptionProductRepository);
+		const mealSubsectionOptionIngredientRepository =
+			getCustomRepository(MealSubsectionOptionIngredientRepository);
 		try {
-			// Bulk insert meal subsections
 			subsections.forEach(async subsection => {
+				if (!subsection.subsectionUuid) {
+					return;
+				}
 				const {options, subsectionUuid, ...values} = subsection;
-				await this.update({uuid: subsectionUuid}, values);
-				await queryRunner.commitTransaction();
+				if (await this.belongsToStore(storeUuid, subsectionUuid)) {
+					await this.update({uuid: subsectionUuid}, values);
+				}
+				if (options && options.products && options.products.length > 0) {
+					await mealSubsectionOptionProductRepository
+						.updateStoreMealSubsectionOptionProducts(storeUuid, options.products);
+				}
+				if (options && options.ingredients && options.ingredients.length > 0) {
+					await mealSubsectionOptionIngredientRepository
+						.updateStoreMealSubsectionOptionIngredients(storeUuid, options.ingredients);
+				}
 			});
 		} catch (err) {
 			const logger = new LoggerService('Database');
 			logger.error(err.message, err.stack);
 		}
 		return;
+	}
+
+	private async belongsToStore(
+		storeUuid: string,
+		subsectionUuid: string
+	): Promise<boolean> {
+		const rawData = await this.createQueryBuilder('mealSubsection')
+			.leftJoinAndSelect('mealSubsection.meal', 'meal')
+			.leftJoinAndSelect('meal.store', 'store', 'store.uuid = :storeUuid', {storeUuid})
+			.where('mealSubsection.uuid = :subsectionUuid', {subsectionUuid})
+			.getRawOne();
+		return rawData.store_uuid === storeUuid;
 	}
 }

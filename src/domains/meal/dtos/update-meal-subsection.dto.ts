@@ -17,13 +17,13 @@ export class UpdateMealSubsectionDto {
 	readonly isRequired?: boolean;
 
 	@IsBoolean()
-	allowMultipleSelections?: boolean;
+	allowMultipleSelections: boolean;
 
 	@IsNumber()
-	readonly minSelectionsPermitted?: number;
+	readonly minSelectionsPermitted: number;
 
 	@IsNumber()
-	readonly maxSelectionsPermitted?: number;
+	readonly maxSelectionsPermitted: number;
 
 	@ValidateNested()
 	@Type(() => UpdateMealSubsectionOptionDto)
