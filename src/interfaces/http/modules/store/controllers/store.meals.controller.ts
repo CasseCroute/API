@@ -1,15 +1,17 @@
 import {
-	Body, Controller, Get, Post, Req, UnauthorizedException, UseGuards
+	Body, Controller, Get, HttpCode, Param, Patch, Post, Req, UnauthorizedException, UseGuards
 } from '@nestjs/common';
 import {CommandBus} from '@nestjs/cqrs';
 import {ValidationPipe} from '@letseat/domains/common/pipes/validation.pipe';
 import {AuthEntities} from '@letseat/infrastructure/authorization/enums/auth.entites';
 import {AuthGuard} from '@letseat/infrastructure/authorization/guards';
 import {Meal} from '@letseat/domains/meal/meal.entity';
-import {createMealValidatorOptions} from '@letseat/domains/meal/pipes';
+import {createMealValidatorOptions, updateMealValidatorOptions} from '@letseat/domains/meal/pipes';
 import {CreateMealDto} from '@letseat/domains/meal/dtos/create-meal.dto';
-import {CreateMealCommand} from '@letseat/application/commands/meal';
+import {CreateMealCommand, UpdateMealCommand} from '@letseat/application/commands/meal';
 import {GetStoreMealsQuery} from '@letseat/application/queries/store';
+import {isUuid} from '@letseat/shared/utils';
+import {UpdateMealDto} from '@letseat/domains/meal/dtos';
 
 @Controller('stores/me/meals')
 export class CurrentStoreMealsController {
@@ -34,6 +36,20 @@ export class CurrentStoreMealsController {
 	public async getMeals(@Req() request: any) {
 		return request.user.entity === AuthEntities.Store
 			? this.commandBus.execute(new GetStoreMealsQuery(request.user.uuid))
+			: (() => {
+				throw new UnauthorizedException();
+			})();
+	}
+
+	@Patch(':uuid')
+	@HttpCode(204)
+	@UseGuards(AuthGuard('jwt'))
+	public async updateMeal(
+		@Req() request: any,
+		@Body(new ValidationPipe<Meal>(updateMealValidatorOptions)) meal: UpdateMealDto,
+		@Param('uuid') uuid: string): Promise<any> {
+		return request.user.entity === AuthEntities.Store && isUuid(uuid)
+			? this.commandBus.execute(new UpdateMealCommand(request.user.uuid, uuid , meal))
 			: (() => {
 				throw new UnauthorizedException();
 			})();

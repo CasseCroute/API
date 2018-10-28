@@ -19,6 +19,8 @@ import {LoggerService} from '@letseat/infrastructure/services';
 import {Meal} from '@letseat/domains/meal/meal.entity';
 import {CreateMealDto} from '@letseat/domains/meal/dtos/create-meal.dto';
 import {MealSubsectionRepository} from '@letseat/infrastructure/repository/meal.subsection.repository';
+import {UpdateMealDto} from '@letseat/domains/meal/dtos';
+import {MealRepository} from '@letseat/infrastructure/repository/meal.repository';
 
 @EntityRepository(Store)
 export class StoreRepository extends Repository<Store> implements ResourceRepository {
@@ -128,6 +130,35 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 				await queryRunner.commitTransaction();
 				await mealSubsectionRepository.saveStoreMealSubsections(res[1] as Meal);
 			});
+		} catch (err) {
+			const logger = new LoggerService('Database');
+			logger.error(err.message, err.stack);
+			await queryRunner.rollbackTransaction();
+		} finally {
+			await queryRunner.release();
+		}
+		return;
+	}
+
+	public async updateStoreMeal(
+		storeUuid: string,
+		meal: Meal,
+		mealUuid: string) {
+		const queryRunner = getConnection().createQueryRunner();
+		await queryRunner.startTransaction();
+		const mealRepository = queryRunner
+			.manager.getCustomRepository(MealRepository);
+		const {uuid, ...values} = meal;
+		try {
+			const store = await this.manager
+				.findOneOrFail(Store, {where: {uuid: storeUuid}});
+			await mealRepository
+				.createQueryBuilder()
+				.update()
+				.set(values)
+				.where('id_store = :id and uuid = :uuid', {id: store.id, uuid: mealUuid})
+				.execute();
+			await queryRunner.commitTransaction();
 		} catch (err) {
 			const logger = new LoggerService('Database');
 			logger.error(err.message, err.stack);
