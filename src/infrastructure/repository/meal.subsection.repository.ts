@@ -16,7 +16,7 @@ import {Ingredient} from '@letseat/domains/ingredient/ingredient.entity';
 import {MealSubsectionOptionIngredient} from '@letseat/domains/meal/meal-subsection-option-ingredient.entity';
 import {
 	CreateMealSubsectionOptionIngredientDto,
-	CreateMealSubsectionOptionProductDto
+	CreateMealSubsectionOptionProductDto, UpdateMealSubsectionDto
 } from '@letseat/domains/meal/dtos';
 
 @EntityRepository(MealSubsection)
@@ -104,6 +104,26 @@ export class MealSubsectionRepository extends Repository<MealSubsection> impleme
 					});
 				subsectionOptionIngredient.option = subsectionOption;
 				await getManager().save(subsectionOptionIngredient);
+			});
+		} catch (err) {
+			const logger = new LoggerService('Database');
+			logger.error(err.message, err.stack);
+		}
+		return;
+	}
+
+	/**
+	 * Bulk update Meal Subsection
+	 */
+	public async updateStoreMealSubsections(subsections: UpdateMealSubsectionDto[] & MealSubsection[]) {
+		const queryRunner = getConnection().createQueryRunner();
+		await queryRunner.startTransaction();
+		try {
+			// Bulk insert meal subsections
+			subsections.forEach(async subsection => {
+				const {options, subsectionUuid, ...values} = subsection;
+				await this.update({uuid: subsectionUuid}, values);
+				await queryRunner.commitTransaction();
 			});
 		} catch (err) {
 			const logger = new LoggerService('Database');

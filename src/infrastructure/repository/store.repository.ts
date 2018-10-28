@@ -142,13 +142,15 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 
 	public async updateStoreMeal(
 		storeUuid: string,
-		meal: Meal,
+		meal: UpdateMealDto & Meal,
 		mealUuid: string) {
 		const queryRunner = getConnection().createQueryRunner();
 		await queryRunner.startTransaction();
 		const mealRepository = queryRunner
 			.manager.getCustomRepository(MealRepository);
-		const {uuid, ...values} = meal;
+		const mealSubsectionRepository = queryRunner
+			.manager.getCustomRepository(MealSubsectionRepository);
+		const {uuid, subsections, ...values} = meal;
 		try {
 			const store = await this.manager
 				.findOneOrFail(Store, {where: {uuid: storeUuid}});
@@ -159,6 +161,9 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 				.where('id_store = :id and uuid = :uuid', {id: store.id, uuid: mealUuid})
 				.execute();
 			await queryRunner.commitTransaction();
+			if (subsections && subsections.length > 0) {
+				await mealSubsectionRepository.updateStoreMealSubsections(subsections);
+			}
 		} catch (err) {
 			const logger = new LoggerService('Database');
 			logger.error(err.message, err.stack);
