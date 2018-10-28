@@ -12,13 +12,14 @@ import {
 import {Store} from '@letseat/domains/store/store.entity';
 import {ResourceRepository} from '@letseat/infrastructure/repository/resource.repository';
 import {CreateKioskCommand} from '@letseat/application/commands/store/create-kiosk.command';
-import {omitDeep} from '@letseat/shared/utils';
+import {isObjectEmpty, omitDeep} from '@letseat/shared/utils';
 import {Ingredient} from '@letseat/domains/ingredient/ingredient.entity';
 import {Product} from '@letseat/domains/product/product.entity';
 import {LoggerService} from '@letseat/infrastructure/services';
 import {Meal} from '@letseat/domains/meal/meal.entity';
-import {CreateMealDto} from '@letseat/domains/meal/dtos/create-meal.dto';
 import {MealSubsectionRepository} from '@letseat/infrastructure/repository/meal.subsection.repository';
+import {UpdateMealDto} from '@letseat/domains/meal/dtos';
+import {MealRepository} from '@letseat/infrastructure/repository/meal.repository';
 
 @EntityRepository(Store)
 export class StoreRepository extends Repository<Store> implements ResourceRepository {
@@ -128,6 +129,42 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 				await queryRunner.commitTransaction();
 				await mealSubsectionRepository.saveStoreMealSubsections(res[1] as Meal);
 			});
+		} catch (err) {
+			const logger = new LoggerService('Database');
+			logger.error(err.message, err.stack);
+			await queryRunner.rollbackTransaction();
+		} finally {
+			await queryRunner.release();
+		}
+		return;
+	}
+
+	public async updateStoreMeal(
+		storeUuid: string,
+		meal: UpdateMealDto & Meal,
+		mealUuid: string) {
+		const queryRunner = getConnection().createQueryRunner();
+		await queryRunner.startTransaction();
+		const mealRepository = queryRunner
+			.manager.getCustomRepository(MealRepository);
+		const mealSubsectionRepository = queryRunner
+			.manager.getCustomRepository(MealSubsectionRepository);
+		const {uuid, subsections, ...values} = meal;
+		try {
+			if (values && !isObjectEmpty(values)) {
+				const store = await this.manager
+					.findOneOrFail(Store, {where: {uuid: storeUuid}});
+				await mealRepository
+					.createQueryBuilder()
+					.update()
+					.set(values)
+					.where('id_store = :id and uuid = :uuid', {id: store.id, uuid: mealUuid})
+					.execute();
+			}
+			if (subsections && subsections.length > 0) {
+				await mealSubsectionRepository.updateStoreMealSubsections(storeUuid, subsections);
+			}
+			await queryRunner.commitTransaction();
 		} catch (err) {
 			const logger = new LoggerService('Database');
 			logger.error(err.message, err.stack);

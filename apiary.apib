@@ -343,12 +343,12 @@ Allows Stores to create a Meal.
                 + options (object, optional)
                     + products (array, optional)
                         + (object)
-                            + uuid: `2a52fb81-b6e9-4811-9b97-b7721935d986` (string, required) - UUID of the Product option associated with the Subsection.
+                            + productUuid: `2a52fb81-b6e9-4811-9b97-b7721935d986` (string, required) - UUID of the Product option associated with the Subsection.
                             + price: `3.50` (string, optional) - Price of the Product option (default: `0`).
                             + quantity: `3` (number, optional) - Quantity of the Product option to decrement from Store Stock (default: `1`).
                     + ingredients (array, optional)
                         + (object)
-                            + uuid: `94d4fee2-68a9-42d3-87a8-851ce29d3238` (string, required) - UUID of the Ingredient option associated with the Subsection.
+                            + ingredientUuid: `94d4fee2-68a9-42d3-87a8-851ce29d3238` (string, required) - UUID of the Ingredient option associated with the Subsection.
                             + price: `1` (string, optional) - Price of the Ingredient option (default: `0`).
                             + quantity: `2` (number, optional) - Quantity of the Ingredient option to decrement from Store Stock (default: `1`).
 
@@ -436,6 +436,69 @@ Allows to retrieve Ingredients of a Store.
     + Attributes (object)
         + data (Ingredient)
 
+## Current Store Meal [/stores/me/meals/{uuid}]
+
++ Parameters
+    + uuid: `890df35b-3e94-4c68-9553-42976cfd5612` (string) - UUID of the Meal.
+    
+### Update a Meal [PATCH]
+
+Update a Meal.
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+|-------------------------|----------------------|
+| Yes (JWT)               | No                   |
+
++ Request (application/json; charset=utf-8)
+    + Headers
+
+            Authorization: Bearer <JWT>
+
+    + Attributes
+        + reference: `SUSHIRLLS4` (string, optional) - Reference of the Meal.
+        + name: `Sushi Rolls for 4` (string, optional) - Name of the Meal.
+        + price: `19.70` (string, optional) - Price of the Meal.
+        + description: `A set of sushis to share for 4` (string, optional) - Description of the Meal.
+        + productQuantity (number, optional) - Product quantity in the Meal
+        + subsections (array, optional) - Subsections of the Meal (e.g: Desserts, Drinks...)
+            + (object)
+                + name: `Dessert` (string, optional) - Name of the subsection.
+                + isRequired: `true` (boolean, optional) - If the subsection is required to process an Order.
+                + minSelectionsPermitted: `1` (number, optional) - Minimum of subsection options selections.
+                + maxSelectionsPermitted: `5` (number, optional) - Maximum of subsection options selections.
+                + options (object, optional)
+                    + products (array, optional)
+                        + (object)
+                            + optionProductUuid: `2a52fb81-b6e9-4811-9b97-b7721935d986` (string, optional) - UUID of the option Product to update.
+                            + price: `3.50` (string, optional) - Price of the Product option.
+                            + quantity: `3` (number, optional) - Quantity of the Product option to decrement from Store Stock (default: `1`).
+                    + ingredients (array, optional)
+                        + (object)
+                            + ingredientProductUuid: `94d4fee2-68a9-42d3-87a8-851ce29d3238` (string, required) -  UUID of the option Ingredient to update
+                            + price: `1` (string, optional) - Price of the Ingredient option.
+                            + quantity: `2` (number, optional) - Quantity of the Ingredient option to decrement from Store Stock (default: `1`).
+
++ Response 204
+
+### Delete a Meal [DELETE]
+
+Deletes a Meal.
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+|-------------------------|----------------------|
+| Yes (JWT)               | No                   |
+
++ Request (application/json; charset=utf-8)
+    + Headers
+
+            Authorization: Bearer <JWT>
+     
++ Response 204
+       
 ## Current Store Product [/stores/me/products/{uuid}]
 
  + Parameters
@@ -788,36 +851,40 @@ Delete the current Customer account.
 ## Data Structures
 
 ### Resource (object)
-+ id (string) - Auto-incremented resource identifier.
-+ uuid (string, required) - Universal Unique Identifier.
-+ createdAt (string, optional) - ISO Date/time string. When this resource was created.
-+ updatedAt (string, optional) - ISO Date/time string. When this resource was last updated.
++ uuid (string, required): `88d2fff7-92ba-462a-adda-aba05e646dde` - Universal Unique Identifier.
++ createdAt: `2018-07-01T15:11:09.553Z` (string, optional) - ISO Date/time string. When this resource was created.
++ updatedAt: `2018-10-22T19:23:59.553Z` (string, optional) - ISO Date/time string. When this resource was last updated.
 
-### Address (Resource)
+### Address
 + street (string, required) - Street name
 + company (string, optional)
 + city (string, required) - City 
 + zipCode (string, required) - Zip code
 + country (string, required) - Country
 
-### Meal (Resource)
-+ reference (string, required) - Reference of the Meal.
-+ name (string, optional) - Name of the Meal.
-+ price (number, required) - Price of the Meal.
-+ description (optional, optional) - Description of the Meal.
-+ productQuantity (number, optional) - Product quantity in the Meal (Default: `1`)
-+ productUuid (string, required) - UUID of the Product associated with the Meal.
-+ options (object, optional)
-    + ingredients (array, optional)
-        + (object)
-            + ingredientUuid (string, required) - UUID of the option Ingredient.
-            + price (number, optional) - Price the option Ingredient. (Default: `1`)
-            + quantity (number, optional) - Quantity of the option Ingredient. (Default: `1`)
-    + products (array, optional)
-        + (object)
-            + productUuid (string, required) - UUID of the option Product.
-            + price (number, optional) - Price the option Product. (Default: `1`)
-            + quantity (number, optional) - Quantity of the option Product. (Default: `1`)
+### Meal
++ reference (string, required): `MENU-CHICKEN-MAX` - Reference of the Meal.
++ name (string, optional): `Menu Bucket Chicken` - Name of the Meal.
++ price (number, required): `20.00` - Price of the Meal.
++ description (string): `Menu to share with your friends` - Description of the Meal.
++ productQuantity (number) - Product quantity included in the Meal (Default: `1`)
++ subsections (array, optional) - Subsections of the Meal (e.g: Desserts, Drinks...)
+    + (object)
+        + name: `Drinks` (string, required) - Name of the subsection.
+        + isRequired: `true` (boolean, required) - If the subsection is required to process an Order.
+        + minSelectionsPermitted: `1` (number, required) - Minimum of subsection options selections.
+        + maxSelectionsPermitted: `5` (number, required) - Maximum of subsection options selections.
+        + options (object, optional)
+            + products (array, optional)
+                + (object)
+                    + productUuid: `2a52fb81-b6e9-4811-9b97-b7721935d986` (string, required) - UUID of the Product option associated with the Subsection.
+                    + price: `3.50` (string, optional) - Price of the Product option (default: `0`).
+                    + quantity: `3` (number, optional) - Quantity of the Product option to decrement from Store Stock (default: `1`).
+            + ingredients (array, optional)
+                + (object)
+                    + ingredientUuid: `94d4fee2-68a9-42d3-87a8-851ce29d3238` (string, required) - UUID of the Ingredient option associated with the Subsection.
+                    + price: `1` (string, optional) - Price of the Ingredient option (default: `0`).
+                    + quantity: `2` (number, optional) - Quantity of the Ingredient option to decrement from Store Stock (default: `1`).
     
 ### Store (Resource)
 + name: `Let's Eat` (string, required) - Name of the store.
@@ -826,18 +893,18 @@ Delete the current Customer account.
 + slug: `lets-eat-7d6ae7c69f` (string, required) - Slug of the store.
 + password: `f8e2cfacc6` (string, required) - Password of the store.
 + imageUrl: `https://some.cdn.com/img.png` (string, optional) - Main image URL of the store.
-+ address ([Address])
++ address (Address)
 + products (array)
-    + ([Product])
+    + (Product)
 + meals (array)
-    + ([Meal])
+    + (Meal)
 
 ### Product (Resource)
-+ reference: `BURG-01` (string, required) - Reference of the Product
++ reference: `CHICK-WNGS` (string, required) - Reference of the Product
 + ean13: `978020137962` (string, optional) - EAN13 code of the Product.
-+ name: `Burger` (string, required) - Name of the Product.
++ name: `Chicken Wings` (string, required) - Name of the Product.
 + price: `9.70` (string, required) - Price of the Product.
-+ description: `A delicious burger with tasty hot sauce` (string, optional) - Description of the Product.
++ description: `Delicious chicken wings with tasty hot sauce` (string, optional) - Description of the Product.
 + ingredients (array, optional)
     + (object)
         + uuid: `f5b06da6-e619-4e97-a30e-116872204e11` (string, required) - UUID of the ingredient included in the Product.
