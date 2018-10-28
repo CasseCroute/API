@@ -265,7 +265,7 @@ hooks.before('Stores > Current Store Meals > Create a new Meal', (transaction, d
 
 const meal = {};
 // After adding a Meal
-hooks.after('Stores > Current Store Ingredients > Create a new Ingredient', (transaction, done) => {
+hooks.after('Stores > Current Store Meals > Create a new Meal', (transaction, done) => {
 	client.query('SELECT * from meal')
 		.then(res => {
 			meal['uuid'] = res.rows[0].uuid;
