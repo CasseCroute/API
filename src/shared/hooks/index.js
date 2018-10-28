@@ -263,6 +263,27 @@ hooks.before('Stores > Current Store Meals > Create a new Meal', (transaction, d
 	done();
 });
 
+const meal = {};
+// After adding a Meal
+hooks.after('Stores > Current Store Meals > Create a new Meal', (transaction, done) => {
+	client.query('SELECT * from meal')
+		.then(res => {
+			meal['uuid'] = res.rows[0].uuid;
+			done();
+		})
+		.catch(err => {
+			return done(err);
+		})
+});
+
+
+hooks.before('Stores > Current Store Meals > Delete a Meal > Current Store meal', (transaction, done) => {
+	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
+	transaction.request.uri = `/stores/me/meals/${meal.uuid}`;
+	transaction.fullPath = `/stores/me/meals/${meal.uuid}`;
+	done();
+});
+
 hooks.afterAll((transactions, done) => {
 	client.query(
 		'TRUNCATE TABLE store CASCADE;' +

@@ -27,4 +27,11 @@ export class MealRepository extends Repository<Meal> implements ResourceReposito
 			.getMany();
 		return selectId ? storeMeals : omitDeep('id', storeMeals);
 	}
+
+	public async deleteStoreMealByUuid(storeId: number, mealUuid: string) {
+		return this.createQueryBuilder('meal')
+			.delete()
+			.where('uuid = :uuid AND id_store = :id', {uuid: mealUuid, id: storeId})
+			.execute();
+	}
 }
