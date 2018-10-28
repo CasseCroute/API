@@ -482,6 +482,23 @@ Update a Meal.
 
 + Response 204
 
+### Delete a Meal [DELETE]
+
+Deletes a Meal.
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+|-------------------------|----------------------|
+| Yes (JWT)               | No                   |
+
++ Request (application/json; charset=utf-8)
+    + Headers
+
+            Authorization: Bearer <JWT>
+     
++ Response 204
+       
 ## Current Store Product [/stores/me/products/{uuid}]
 
  + Parameters
