@@ -287,6 +287,13 @@ hooks.before('Stores > Current Store Meal > Update a Meal', (transaction, done) 
 	done();
 });
 
+hooks.before('Stores > Current Store Meals > Delete a Meal > Current Store meal', (transaction, done) => {
+	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
+	transaction.request.uri = `/stores/me/meals/${meal.uuid}`;
+	transaction.fullPath = `/stores/me/meals/${meal.uuid}`;
+	done();
+});
+
 hooks.afterAll((transactions, done) => {
 	client.query(
 		'TRUNCATE TABLE store CASCADE;' +

@@ -452,6 +452,27 @@ describe('Store Meals HTTP Requests', () => {
 		});
 	});
 
+	describe('DELETE stores/me/meals', () => {
+		it('should return a HTTP 204 status code when successful', () => {
+			return request(app.getHttpServer())
+				.delete('/stores/me/meals/' + mocks.mealRepository.data[0].uuid)
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.expect(204);
+		});
+
+		it('should return a HTTP 404 status code when the url is incorrect', () => {
+			return request(app.getHttpServer())
+				.delete('/stores/me/meals' + mocks.mealRepository.data[0].uuid)
+				.expect(404);
+		});
+
+		it('should return a HTTP 401 status code when no JWT is provided in Authorization header', () => {
+			return request(app.getHttpServer())
+				.delete('/stores/me/meals/' + mocks.mealRepository.data[0].uuid)
+				.expect(401);
+		});
+	});
+
 	describe('PATCH stores/me/meals/:uuid', () => {
 		it('should return a HTTP 204 status code when successful', () => {
 			return request(app.getHttpServer())
