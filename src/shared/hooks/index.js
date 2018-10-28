@@ -251,7 +251,8 @@ hooks.before('Stores > Store Ingredients > Retrieve a Store Ingredient', (transa
 	done();
 });
 
-// PRODUCTS
+// MEALS
+const meal = {};
 
 // Before current Store creates a Meal
 hooks.before('Stores > Current Store Meals > Create a new Meal', (transaction, done) => {
@@ -260,6 +261,29 @@ hooks.before('Stores > Current Store Meals > Create a new Meal', (transaction, d
 	delete body.subsections;
 	transaction.request.body = JSON.stringify(body);
 	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
+	done();
+});
+
+// After current Store creates a Meal
+hooks.after('Stores > Current Store Meals > Create a new Meal', (transaction, done) => {
+	client.query('SELECT * from meal')
+		.then(res => {
+			meal['uuid'] = res.rows[0].uuid;
+			done();
+		})
+		.catch(err => {
+			return done(err);
+		})
+});
+
+// Before current Store updates a Meal
+hooks.before('Stores > Current Store Meal > Update a Meal', (transaction, done) => {
+	const body = JSON.parse(transaction.request.body);
+	delete body.subsections;
+	transaction.request.body = JSON.stringify(body);
+	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
+	transaction.request.uri = `/stores/me/meals/${meal.uuid}`;
+	transaction.fullPath = `/stores/me/meals/${meal.uuid}`;
 	done();
 });
 

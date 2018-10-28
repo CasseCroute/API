@@ -4,6 +4,7 @@
   "main": "src/server.ts",
   "scripts": {
     "api:validate": "node -r ts-node/register/transpile-only src/shared/utils/validate-api.ts --files 'apiary.apib'",
+    "build:blueprint": "mkdir -p build/docs && apiary preview --path=\"./apiary.apib\" --output=\"build/docs/api.html\"",
     "start": "ts-node -r tsconfig-paths/register src/index.ts",
     "start:dev": "NODE_ENV=development nodemon --inspect -V",
     "start:test": "NODE_ENV=test nodemon --inspect -V",
