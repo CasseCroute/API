@@ -353,7 +353,29 @@ Allows Stores to create a Meal.
                             + quantity: `2` (number, optional) - Quantity of the Ingredient option to decrement from Store Stock (default: `1`).
 
 + Response 201
-            
+
+### Delete a Meal [DELETE]
+
+Delete a product of the current Store.
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+| ----------------------- | -------------------- |
+| Yes (JWT)               | No                   |
+
++ Request (application/json; charset=utf-8)
+    + Headers
+
+                Authorization: Bearer <JWT>
+
++ Response 204
+
+#### Current Store meal [/stores/me/meals/{uuid}]
+
+ + Parameters
+     + uuid: `890df35b-3e94-4c68-9553-42976cfd5612` (string) - UUID of the ingredient.
+
 ## Store Products [/stores/{storeUuid}/products]
 
 + Parameters
