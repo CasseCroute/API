@@ -27,8 +27,9 @@ export class ProductRepository extends Repository<Product> implements ResourceRe
 
 	public async findStoreProducts(storeUuid: string, selectId = false) {
 		const storeProducts = await this.createQueryBuilder('product')
-			.select()
 			.leftJoin('product.store', 'store')
+			.leftJoinAndSelect('product.ingredients', 'ingredients')
+			.leftJoinAndSelect('ingredients.ingredient', 'ingredient')
 			.where('store.uuid = :uuid', {uuid: storeUuid})
 			.getMany();
 		return selectId ? storeProducts : omitDeep('id', storeProducts);
