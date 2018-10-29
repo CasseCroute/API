@@ -12,6 +12,7 @@ import {Ingredient} from '@letseat/domains/ingredient/ingredient.entity';
 import {Product} from '@letseat/domains/product/product.entity';
 import {ProductIngredient} from '@letseat/domains/product-ingredient/product-ingredient.entity';
 import {isNullType} from 'tslint-sonarts/lib/utils/semantics';
+import {CreateProductDto} from '@letseat/domains/product/dtos';
 
 @EntityRepository(ProductIngredient)
 export class ProductIngredientRepository extends Repository<ProductIngredient> implements ResourceRepository {
@@ -25,15 +26,15 @@ export class ProductIngredientRepository extends Repository<ProductIngredient> i
 	@Transaction()
 	public async saveStoreProductIngredients(
 		storeUuid: string,
-		product: Product,
+		product: CreateProductDto & Product,
 		@TransactionManager() productIngredientRepository: Repository<ProductIngredient>) {
 		const savedProduct = await getManager()
-			.findOne(Product, {where: {reference: product.reference}}) as Product;
+			.findOne(Product, {where: {id: product.id}}) as Product;
 		product.ingredients.forEach(async (productIng) => {
 			const productIngredient = new ProductIngredient();
 			const ingredient = await createQueryBuilder(Ingredient, 'ingredient')
-				.innerJoinAndSelect('ingredient.store', 'store')
-				.where('store.uuid = :uuid', {uuid: storeUuid})
+				.leftJoinAndSelect('ingredient.store', 'store')
+				.where('store.uuid = :storeUuid and ingredient.uuid = :ingredientUuid', {storeUuid, ingredientUuid: productIng.ingredientUuid})
 				.getOne() as Ingredient;
 			productIngredient.quantity = productIng.quantity;
 			productIngredient.product = savedProduct;

@@ -5,7 +5,6 @@ import {Store} from '@letseat/domains/store/store.entity';
 import {ProductIngredient} from '@letseat/domains/product-ingredient/product-ingredient.entity';
 import {Meal} from '@letseat/domains/meal/meal.entity';
 
-@Unique(['reference'])
 @Entity()
 export class Product extends Resource {
 	constructor(args?: any) {
