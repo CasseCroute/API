@@ -72,7 +72,7 @@ describe('Store Ingredients HTTP Requests', () => {
 					reference: 'BURG', name: 'Burger', price: '12',
 					ingredients: [
 						{
-							uuid: 'f5b06da6-e619-4e97-a30e-116872204e11',
+							ingredientUuid: 'f5b06da6-e619-4e97-a30e-116872204e11',
 							quantity: 2
 						}
 					]

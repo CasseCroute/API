@@ -20,6 +20,7 @@ import {Meal} from '@letseat/domains/meal/meal.entity';
 import {MealSubsectionRepository} from '@letseat/infrastructure/repository/meal.subsection.repository';
 import {UpdateMealDto} from '@letseat/domains/meal/dtos';
 import {MealRepository} from '@letseat/infrastructure/repository/meal.repository';
+import {CreateProductDto} from '@letseat/domains/product/dtos';
 
 @EntityRepository(Store)
 export class StoreRepository extends Repository<Store> implements ResourceRepository {
@@ -98,14 +99,24 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 		return storeRepository.save(store as Store);
 	}
 
-	@Transaction()
-	public async saveStoreProduct(
-		storeUuid: string,
-		product: Product,
-		@TransactionManager() storeRepository: Repository<Store>) {
-		const store = await this.findOne({where: {uuid: storeUuid}, relations: ['products']});
-		store!.products.push(product);
-		return storeRepository.save(store as Store);
+	public async saveStoreProduct(storeUuid: string, productData: Product): Promise<any> {
+		const queryRunner = getConnection().createQueryRunner();
+		await queryRunner.startTransaction();
+		try {
+			const product = new Product({...productData});
+			const store = await this.findOneOrFail({where: {uuid: storeUuid}, relations: ['products']});
+			store!.products.push(product);
+			return queryRunner.manager.save([store as Store, product]).then(async (res) => {
+				await queryRunner.commitTransaction();
+				await queryRunner.release();
+				return res[1];
+			});
+		} catch (err) {
+			const logger = new LoggerService('Database');
+			logger.error(err.message, err.stack);
+			await queryRunner.rollbackTransaction();
+			await queryRunner.release();
+		}
 	}
 
 	public async saveStoreMeal(
