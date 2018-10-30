@@ -1,7 +1,7 @@
 /* tslint:disable */
 import {
 	EntityRepository,
-	getConnection, getCustomRepository,
+	getConnection,
 	getManager,
 	getRepository,
 	ObjectLiteral,
@@ -20,7 +20,8 @@ import {Meal} from '@letseat/domains/meal/meal.entity';
 import {MealSubsectionRepository} from '@letseat/infrastructure/repository/meal.subsection.repository';
 import {UpdateMealDto} from '@letseat/domains/meal/dtos';
 import {MealRepository} from '@letseat/infrastructure/repository/meal.repository';
-import {CreateProductDto} from '@letseat/domains/product/dtos';
+import {Section} from '@letseat/domains/section/section.entity';
+import {CreateSectionDto} from '@letseat/domains/section/dtos/create-section.dto';
 
 @EntityRepository(Store)
 export class StoreRepository extends Repository<Store> implements ResourceRepository {
@@ -184,5 +185,31 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 			await queryRunner.release();
 		}
 		return;
+	}
+
+	public async saveStoreSection(storeUuid: string, section: CreateSectionDto) {
+		const queryRunner = getConnection().createQueryRunner();
+		await queryRunner.startTransaction();
+		const {meals, products, ...sectionData} = section;
+		try {
+			const store = await this.manager
+				.findOneOrFail(Store, {where: {uuid: storeUuid}, relations: ['sections']});
+			const newSection = new Section(sectionData);
+			if (section.meals && section.meals.length > 0) {
+				const meals = section.meals.map(mealUuid => {
+					console.log(mealUuid)
+					return getManager().findOneOrFail(Meal, {uuid: mealUuid});
+				});
+				console.log(meals)
+			}
+			store.sections.push(newSection);
+			await this.save(store);
+		} catch (err) {
+			const logger = new LoggerService('Database');
+			logger.error(err.message, err.stack);
+			await queryRunner.rollbackTransaction();
+		} finally {
+			await queryRunner.release();
+		}
 	}
 }
