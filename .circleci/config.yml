@@ -35,7 +35,7 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
-  test-static:
+  test:static:
     <<: *defaults
 
     steps:
@@ -59,7 +59,7 @@ jobs:
           path: /tmp/test-results
           destination: test-results
 
-  test-unit:
+  test:unit:
     <<: *defaults
 
     steps:
@@ -98,7 +98,7 @@ jobs:
       - store_artifacts:
           path: /coverage
 
-  test-api:
+  test:api:
     <<: *defaults
 
     steps:
@@ -140,6 +140,21 @@ jobs:
           name: Test API with Dredd
           command: yarn test:api
 
+  analyze:dependencies:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Install FOSSA CLI
+          command: |
+            curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | bash
+
+      - run:
+          name: Dependencies analysis with FOSSA
+          command: |
+            fossa init
+            FOSSA_API_KEY=$FOSSA_API_KEY fossa
+
 workflows:
   version: 2
   build-and-test:
@@ -148,12 +163,15 @@ workflows:
             filters:
               branches:
                 ignore: master
-        - test-unit:
+        - test:unit:
             requires:
               - build
-        - test-static:
+        - test:static:
             requires:
               - build
-        - test-api:
+        - test:api:
+            requires:
+              - build
+        - analyze:dependencies:
             requires:
               - build
