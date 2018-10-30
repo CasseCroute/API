@@ -294,6 +294,20 @@ hooks.before('Stores > Current Store Meal > Delete a Meal', (transaction, done) 
 	done();
 });
 
+// SECTIONS
+const section = {};
+
+hooks.before('Stores > Current Store Sections > Create a new Section', (transaction, done) => {
+	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
+	const body = JSON.parse(transaction.request.body);
+	delete body.meals;
+	delete body.products;
+	transaction.request.body = JSON.stringify(body);
+	transaction.request.uri = '/stores/me/sections';
+	transaction.fullPath = '/stores/me/sections';
+	done();
+});
+
 hooks.afterAll((transactions, done) => {
 	client.query(
 		'TRUNCATE TABLE store CASCADE;' +

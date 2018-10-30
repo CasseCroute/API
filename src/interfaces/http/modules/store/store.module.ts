@@ -13,6 +13,7 @@ import {StoreContollers} from '@letseat/interfaces/http/modules/store/controller
 import {ProductCommandHandlers} from '@letseat/application/commands/product/handlers';
 import {MealCommandHandlers} from '@letseat/application/commands/meal/handlers';
 import {MealsQueryHandlers} from '@letseat/application/queries/meal/handlers';
+import {SectionCommandHandlers} from '@letseat/application/commands/section/handlers';
 
 @Module({
 	imports: [
@@ -27,7 +28,8 @@ import {MealsQueryHandlers} from '@letseat/application/queries/meal/handlers';
 		...IngredientCommandHandlers,
 		...ProductCommandHandlers,
 		...MealCommandHandlers,
-		...MealsQueryHandlers
+		...MealsQueryHandlers,
+		...SectionCommandHandlers
 	],
 	controllers: [
 		...StoreContollers
@@ -50,6 +52,6 @@ export class StoreModule implements OnModuleInit {
 		this.command$.register(ResourceQueryHandlers);
 		this.command$.register(ProductCommandHandlers);
 		this.command$.register(MealCommandHandlers);
-
+		this.command$.register(SectionCommandHandlers);
 	}
 }

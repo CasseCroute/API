@@ -1,9 +1,10 @@
 /* tslint:disable:no-unused */
-import {Entity, Column, Unique, ManyToOne, JoinColumn, OneToMany} from 'typeorm';
+import {Entity, Column, Unique, ManyToOne, JoinColumn, OneToMany, ManyToMany} from 'typeorm';
 import {Resource} from '@letseat/domains/resource/resource';
 import {Store} from '@letseat/domains/store/store.entity';
 import {ProductIngredient} from '@letseat/domains/product-ingredient/product-ingredient.entity';
 import {Meal} from '@letseat/domains/meal/meal.entity';
+import {Section} from '@letseat/domains/section/section.entity';
 
 @Entity()
 export class Product extends Resource {
@@ -36,6 +37,9 @@ export class Product extends Resource {
 
 	@OneToMany(type => Meal, meal => meal.product)
 	meals: Meal[];
+
+	@ManyToMany(type => Section, section => section.products)
+	sections: Section[];
 
 	public static register(args: any): Product {
 		return new Product(args);
