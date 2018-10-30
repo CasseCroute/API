@@ -22,6 +22,7 @@ import {UpdateMealDto} from '@letseat/domains/meal/dtos';
 import {MealRepository} from '@letseat/infrastructure/repository/meal.repository';
 import {Section} from '@letseat/domains/section/section.entity';
 import {CreateSectionDto} from '@letseat/domains/section/dtos/create-section.dto';
+import {BadRequestError} from 'passport-headerapikey';
 
 @EntityRepository(Store)
 export class StoreRepository extends Repository<Store> implements ResourceRepository {
@@ -191,25 +192,43 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 		const queryRunner = getConnection().createQueryRunner();
 		await queryRunner.startTransaction();
 		const {meals, products, ...sectionData} = section;
-		try {
-			const store = await this.manager
-				.findOneOrFail(Store, {where: {uuid: storeUuid}, relations: ['sections']});
-			const newSection = new Section(sectionData);
-			if (section.meals && section.meals.length > 0) {
-				const meals = section.meals.map(mealUuid => {
-					console.log(mealUuid)
-					return getManager().findOneOrFail(Meal, {uuid: mealUuid});
-				});
-				console.log(meals)
+		return new Promise<any>(async (resolve: any, reject: any) => {
+			try {
+				const store = await this.manager
+					.findOneOrFail(Store, {where: {uuid: storeUuid}, relations: ['sections']});
+				const newSection = new Section(sectionData);
+				if (section.meals && section.meals.length > 0) {
+					const meals = section.meals.map(async mealUuid => {
+						return getManager().findOneOrFail(Meal, {uuid: mealUuid, store});
+					});
+					await Promise.all(meals).then(res => {
+						newSection.meals = res
+					}).catch(() => {
+						reject('Some of Meals sent doesn\'t belongs to your Store');
+					});
+				}
+				if (section.products && section.products.length > 0) {
+					const products = section.meals.map(async mealUuid => {
+						return getManager().findOneOrFail(Product, {uuid: mealUuid, store});
+					});
+					await Promise.all(products).then(res => {
+						newSection.products = res
+					}).catch(() => {
+						reject('Some of Products sent doesn\'t belongs to your Store');
+					});
+				}
+				store.sections.push(newSection);
+				await this.save(store);
+				await queryRunner.commitTransaction();
+				resolve();
+			} catch (err) {
+				const logger = new LoggerService('Database');
+				logger.error(err.message, err.stack);
+				await queryRunner.rollbackTransaction();
+				reject();
+			} finally {
+				await queryRunner.release();
 			}
-			store.sections.push(newSection);
-			await this.save(store);
-		} catch (err) {
-			const logger = new LoggerService('Database');
-			logger.error(err.message, err.stack);
-			await queryRunner.rollbackTransaction();
-		} finally {
-			await queryRunner.release();
-		}
+		});
 	}
 }

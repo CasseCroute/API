@@ -9,9 +9,13 @@ export class CreateSectionHandler implements ICommandHandler<CreateSectionComman
 	async execute(command: CreateSectionCommand, resolve: (value?) => void) {
 		const storeRepository = getCustomRepository(StoreRepository);
 		try {
-			await storeRepository.saveStoreSection(command.storeUuid, command.section as any);
-
-			resolve();
+			storeRepository.saveStoreSection(command.storeUuid, command.section as any)
+				.then(() => {
+					resolve();
+				})
+				.catch(err => {
+					resolve(Promise.reject(new BadRequestException(err)));
+				});
 		} catch (err) {
 			resolve(Promise.reject(new BadRequestException(err.message)));
 		}
