@@ -353,7 +353,31 @@ Allows Stores to create a Meal.
                             + quantity: `2` (number, optional) - Quantity of the Ingredient option to decrement from Store Stock (default: `1`).
 
 + Response 201
-            
+
+## Current Store Sections [/stores/me/sections]
+
+### Create a new Section [POST]
+
+Allows Stores to create a Section of Products and Meals.
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+|-------------------------|----------------------|
+| Yes (JWT)               | No                   |
+
++ Request (application/json; charset=utf-8)
+    + Headers
+
+            Authorization: Bearer <JWT>
+
+    + Attributes
+        + name: `Our Burger Menus` (string, required) - Name of the Section.
+        + meals: `6bf1c66d-6850-4ad4-9001-7d6859a3c997` (array[string], optional) - A set of string values corresponding to meals UUID .
+        + products: `55a724d7-5106-42bc-8183-fcc85717a230` (array[string], optional) - A set of string values corresponding to products UUID .
+
++ Response 201 (application/json; charset=utf-8)
+
 ## Store Products [/stores/{storeUuid}/products]
 
 + Parameters
