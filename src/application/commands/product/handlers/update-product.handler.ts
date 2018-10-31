@@ -22,7 +22,8 @@ export class UpdateProductHandler implements ICommandHandler<UpdateProductComman
 			await productRepository.updateProduct(storeFound.id, command.productUuid, product);
 
 			if (product.ingredients && product.ingredients.length > 0) {
-				await productIngredientRepository.updateStoreProductIngredients(command.storeUuid, command.productUuid, product, new Repository<ProductIngredient>());
+				const productFound = await productRepository.findStoreProductByUuid(command.storeUuid, command.productUuid, true);
+				await productIngredientRepository.updateStoreProductIngredients(command.storeUuid, productFound, product, new Repository<ProductIngredient>());
 			}
 			resolve();
 		} catch (err) {
