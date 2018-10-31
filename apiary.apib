@@ -378,6 +378,23 @@ Allows Stores to create a Section of Products and Meals.
 
 + Response 201 (application/json; charset=utf-8)
 
+### Retrieve Sections [GET]
+
+Allows Stores to get their Sections
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+|-------------------------|----------------------|
+| Yes (JWT)               | No                   |
+
++ Request (application/json; charset=utf-8)
+    + Headers
+
+            Authorization: Bearer <JWT>
+
++ Response 200 (application/json; charset=utf-8)
+
 ## Store Products [/stores/{storeUuid}/products]
 
 + Parameters
@@ -460,6 +477,25 @@ Allows to retrieve Ingredients of a Store.
     + Attributes (object)
         + data (Ingredient)
 
+## Current Store Section [/stores/me/sections/{uuid}]
+
++ Parameters
+    + uuid: `890df35b-3e94-4c68-9553-42976cfd5612` (string) - UUID of the Section.
+    
+### Retrieve a Section by UUID [GET]
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+|-------------------------|----------------------|
+| Yes (JWT)               | No                   |
+
++ Request (application/json; charset=utf-8)
+
++ Response 200 (application/json; charset=utf-8)
+    + Attributes (object)
+        + data (object)
+        
 ## Current Store Meal [/stores/me/meals/{uuid}]
 
 + Parameters

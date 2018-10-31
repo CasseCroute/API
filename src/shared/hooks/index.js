@@ -308,6 +308,28 @@ hooks.before('Stores > Current Store Sections > Create a new Section', (transact
 	done();
 });
 
+hooks.after('Stores > Current Store Sections > Create a new Section', (transaction, done) => {
+	client.query('SELECT * from section')
+		.then(res => {
+			section['uuid'] = res.rows[0].uuid;
+			done();
+		})
+		.catch(err => {
+			return done(err);
+		});
+});
+
+hooks.before('Stores > Current Store Sections > Retrieve Sections', (transaction, done) => {
+	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
+	done();
+});
+
+hooks.before('Stores > Current Store Section > Retrieve a Section by UUID', (transaction, done) => {
+	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
+	transaction.request.uri = `/stores/me/sections/${section.uuid}`;
+	transaction.fullPath = `/stores/me/sections/${section.uuid}`;
+	done();
+});
 hooks.afterAll((transactions, done) => {
 	client.query(
 		'TRUNCATE TABLE store CASCADE;' +

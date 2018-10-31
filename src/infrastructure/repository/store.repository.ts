@@ -22,7 +22,6 @@ import {UpdateMealDto} from '@letseat/domains/meal/dtos';
 import {MealRepository} from '@letseat/infrastructure/repository/meal.repository';
 import {Section} from '@letseat/domains/section/section.entity';
 import {CreateSectionDto} from '@letseat/domains/section/dtos/create-section.dto';
-import {BadRequestError} from 'passport-headerapikey';
 
 @EntityRepository(Store)
 export class StoreRepository extends Repository<Store> implements ResourceRepository {
@@ -36,14 +35,31 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 	}
 
 	public async findByQueryParams(queryParams: any, selectId: boolean = false) {
-		const stores = await this.find({where: queryParams});
+		const stores = await this.findOneOrFail({
+			where: queryParams,
+			relations: [
+				'sections',
+				'sections.meals',
+				'sections.meals.product',
+				'sections.meals.subsections',
+				'sections.meals.subsections.options',
+				'sections.products'
+			]
+		});
 		return selectId ? stores : omitDeep('id', stores);
 	}
 
 	public async findOneByUuid(storeUuid: string, selectId: boolean = false) {
-		const store = await this.findOne({
+		const store = await this.findOneOrFail({
 			where: {uuid: storeUuid},
-			relations: ['meals', 'meals.product', 'meals.subsections', 'meals.subsections.options', 'products']
+			relations: [
+				'sections',
+				'sections.meals',
+				'sections.meals.product',
+				'sections.meals.subsections',
+				'sections.meals.subsections.options',
+				'sections.products'
+			]
 		});
 		return selectId ? store : omitDeep('id', store);
 	}
