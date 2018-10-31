@@ -3,7 +3,7 @@ import {
 	EntityRepository,
 	Repository,
 	Transaction,
-	TransactionManager, createQueryBuilder, getManager,
+	TransactionManager, createQueryBuilder, getManager, getCustomRepository,
 } from 'typeorm';
 import {ResourceRepository} from '@letseat/infrastructure/repository/resource.repository';
 import {omitDeep} from '@letseat/shared/utils';
@@ -11,6 +11,8 @@ import {Ingredient} from '@letseat/domains/ingredient/ingredient.entity';
 import {Product} from '@letseat/domains/product/product.entity';
 import {ProductIngredient} from '@letseat/domains/product-ingredient/product-ingredient.entity';
 import {CreateProductDto} from '@letseat/domains/product/dtos';
+import {UpdateProductDto} from "@letseat/domains/product/dtos/update-product.dto";
+import {IngredientRepository} from "@letseat/infrastructure/repository/ingredient.repository";
 
 @EntityRepository(ProductIngredient)
 export class ProductIngredientRepository extends Repository<ProductIngredient> implements ResourceRepository {
@@ -45,15 +47,31 @@ export class ProductIngredientRepository extends Repository<ProductIngredient> i
 	@Transaction()
 	public async updateStoreProductIngredients(
 		storeUuid: string,
-		productUuid: string,
-		product: Product,
+		productFoundCandidate: Product,
+		product: UpdateProductDto | any,
 		@TransactionManager() productIngredientRepository: Repository<ProductIngredient>) {
+
+		const ingredientRepository = getCustomRepository(IngredientRepository);
+
 		product.ingredients.forEach(async (productIng) => {
-			if (productIng.quantity && await this.productIngredientBelongsToStore(storeUuid, productIng.uuid)) {
-				const productIngredient = await this
-					.findOne({where: {uuid: productIng.uuid}}) as ProductIngredient;
-				productIngredient.quantity = productIng.quantity;
-				return this.save(productIngredient);
+
+			const ingredientFound = await ingredientRepository.findStoreIngredientByUuid(storeUuid, productIng.ingredientUuid,true);
+
+			if(productIng.quantity && ingredientFound){
+
+				const productIngredientFound = await this.getProductIngredient(productFoundCandidate.id,ingredientFound.id);
+
+				if((Object.keys(productIngredientFound).length !== 0)){
+					return await this.updateProductIngredient(productFoundCandidate.id, ingredientFound.id, productIng.quantity);
+				}else{
+
+					let newProductIngredient = new ProductIngredient();
+					newProductIngredient.quantity = productIng.quantity;
+					newProductIngredient.ingredient = ingredientFound;
+					newProductIngredient.product = productFoundCandidate;
+					return this.save(newProductIngredient);
+				}
+
 			}
 		});
 		return;
@@ -67,5 +85,26 @@ export class ProductIngredientRepository extends Repository<ProductIngredient> i
 			.leftJoin('product.store', 'store')
 			.getRawOne();
 		return store.store_uuid === storeUuid;
+	}
+
+	public async updateProductIngredient(idProduct: number, idIngredient: number, quantity: number){
+
+		return await createQueryBuilder(ProductIngredient, 'productIngredient')
+			.leftJoinAndSelect('productIngredient.product', 'product')
+			.leftJoinAndSelect('productIngredient.ingredient','ingredient')
+			.where('product.id = :idProduct and ingredient.id = :idIngredient', {idProduct, idIngredient})
+			.update(ProductIngredient)
+			.set({quantity})
+			.execute();
+
+	}
+
+	public async getProductIngredient(idProduct: number, idIngredient: number){
+
+		return await createQueryBuilder(ProductIngredient, 'productIngredient')
+			.leftJoinAndSelect('productIngredient.product', 'product')
+			.leftJoinAndSelect('productIngredient.ingredient','ingredient')
+			.where('product.id = :idProduct and ingredient.id = :idIngredient', {idProduct, idIngredient})
+			.execute();
 	}
 }
