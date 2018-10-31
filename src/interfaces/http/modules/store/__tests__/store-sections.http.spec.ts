@@ -11,7 +11,6 @@ import {CommandBus, EventPublisher, EventBus, CQRSModule} from '@nestjs/cqrs';
 import {Store} from '@letseat/domains/store/store.entity';
 import {JwtStrategy} from '@letseat/infrastructure/authorization/strategies/jwt.strategy';
 import {CustomExceptionFilter} from '@letseat/domains/common/exceptions';
-import {Section} from '@letseat/domains/section/section.entity';
 
 describe('Store Sections HTTP Requests', () => {
 	let app: INestApplication;
@@ -117,6 +116,43 @@ describe('Store Sections HTTP Requests', () => {
 				.set('Authorization', `Bearer ${mocks.token}`)
 				.send({oops: 'hello'})
 				.expect(400);
+		});
+
+		describe('GET stores/me/sections/:uuid', () => {
+			it('should return a HTTP 200 status code when successful', () => {
+				return request(app.getHttpServer())
+					.get(`/stores/me/sections/${mocks.sectionRepository.data[0].uuid}`)
+					.set('Authorization', `Bearer ${mocks.token}`)
+					.expect(200);
+			});
+
+			it('should return a HTTP 401 status code when no JWT is present in Authorization header', () => {
+				return request(app.getHttpServer())
+					.get(`/stores/me/sections/${mocks.sectionRepository.data[0].uuid}`)
+					.expect(401);
+			});
+
+			it('should return a HTTP 400 status code when Section query param is not an UUID', () => {
+				return request(app.getHttpServer())
+					.get('/stores/me/sections/hello')
+					.set('Authorization', `Bearer ${mocks.token}`)
+					.expect(400);
+			});
+		});
+
+		describe('GET stores/me/sections', () => {
+			it('should return a HTTP 200 status code when successful', () => {
+				return request(app.getHttpServer())
+					.get('/stores/me/sections')
+					.set('Authorization', `Bearer ${mocks.token}`)
+					.expect(200);
+			});
+
+			it('should return a HTTP 401 status code when no JWT is present in Authorization header', () => {
+				return request(app.getHttpServer())
+					.get('/stores/me/sections')
+					.expect(401);
+			});
 		});
 	});
 

@@ -5,13 +5,11 @@ import {
 	Transaction,
 	TransactionManager, createQueryBuilder, getManager,
 } from 'typeorm';
-import {Store} from '@letseat/domains/store/store.entity';
 import {ResourceRepository} from '@letseat/infrastructure/repository/resource.repository';
 import {omitDeep} from '@letseat/shared/utils';
 import {Ingredient} from '@letseat/domains/ingredient/ingredient.entity';
 import {Product} from '@letseat/domains/product/product.entity';
 import {ProductIngredient} from '@letseat/domains/product-ingredient/product-ingredient.entity';
-import {isNullType} from 'tslint-sonarts/lib/utils/semantics';
 import {CreateProductDto} from '@letseat/domains/product/dtos';
 
 @EntityRepository(ProductIngredient)

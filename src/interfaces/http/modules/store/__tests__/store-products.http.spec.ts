@@ -144,7 +144,7 @@ describe('Store Ingredients HTTP Requests', () => {
 		});
 	});
 
-	describe('GET stores/me/product/:uuid', () => {
+	describe('GET stores/me/products/:uuid', () => {
 		it('should return a HTTP 200 status code when successful', () => {
 			return request(app.getHttpServer())
 				.get(`/stores/${mocks.storeRepository.data[0].uuid}/products/${mocks.productRepository.data[0].uuid}`)
