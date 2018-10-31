@@ -204,6 +204,23 @@ export const mealRepository = {
 	]
 };
 
+export const sectionRepository = {
+	data: [
+		{
+			id: 1,
+			uuid: '5ea74f95-720e-4e79-8e9d-600fe2ead22a',
+			ean13: '501234567890',
+			idStore: 1
+		},
+		{
+			id: 2,
+			uuid: '5ea12f95-720e-4e79-8e9d-600fe2ead22a',
+			name: 'Our Desserts',
+			idStore: 1
+		},
+	]
+};
+
 export const token = jwt.sign({
 	uuid: storeRepository.data[0].uuid,
 	email: storeRepository.data[0].email,
