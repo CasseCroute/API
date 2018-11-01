@@ -1,5 +1,6 @@
-import {EntityRepository, getConnection, ObjectLiteral, Repository, Transaction, TransactionManager} from 'typeorm';
+import {EntityRepository, ObjectLiteral, Repository, Transaction, TransactionManager} from 'typeorm';
 import {Customer} from '@letseat/domains/customer/customer.entity';
+import {omitDeep} from '@letseat/shared/utils';
 
 @EntityRepository(Customer)
 export class CustomerRepository extends Repository<Customer> {
@@ -16,32 +17,20 @@ export class CustomerRepository extends Repository<Customer> {
 		return this.findOne({select: ['password'], where: {id: customer.id}});
 	}
 
-	public async findOneByUuid(uuid: string) {
-		const customer = await this.findOne({where: {uuid}});
-		delete customer!.id;
-		return customer;
+	public async findOneByUuid(uuid: string, selectId = false) {
+		const customer = await this.findOneOrFail({where: {uuid}});
+		return selectId ? customer : omitDeep('id', customer);
 	}
 
 	public async updateCustomer(uuid: string, values: ObjectLiteral) {
-		return getConnection()
-			.createQueryBuilder()
-			.update(Customer)
-			.set(values)
-			.where('uuid = :uuid', {uuid})
-			.execute();
+		return this.update(values, {uuid});
 	}
 
-	@Transaction()
-	public async findOneByPassword(customer: Customer, @TransactionManager() customerRepository: Repository<Customer>) {
-		return customerRepository.findOne(customer);
+	public async deleteCustomerByUuid(uuid: string) {
+		return this.delete({uuid});
 	}
 
-	public static async deleteCustomerByUuid(uuid: string) {
-		return getConnection()
-			.createQueryBuilder()
-			.delete()
-			.from(Customer)
-			.where('uuid = :uuid', {uuid})
-			.execute();
+	public async getCart(uuid: string): Promise<Customer> {
+		return this.findOneOrFail({relations: ['cart', 'cart.products'], where: {uuid}});
 	}
 }

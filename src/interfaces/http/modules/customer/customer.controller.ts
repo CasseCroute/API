@@ -3,12 +3,17 @@ import {
 	UnauthorizedException, UseGuards
 } from '@nestjs/common';
 import {CommandBus} from '@nestjs/cqrs';
-import {customerLoginValidatorOptions,
+import {
+	customerLoginValidatorOptions,
 	customerRegisterValidatorOptions, customerUpdateValidatorOptions
 } from '@letseat/domains/customer/pipes';
 import {AuthService, CryptographerService, JwtPayload} from '@letseat/infrastructure/authorization';
 import {CreateCustomerDto, LoginCustomerDto} from '@letseat/domains/customer/dtos';
-import {CreateCustomerCommand, UpdateCustomerCommand, DeleteCustomerByUuidCommand} from '@letseat/application/commands/customer';
+import {
+	CreateCustomerCommand,
+	UpdateCustomerCommand,
+	DeleteCustomerByUuidCommand
+} from '@letseat/application/commands/customer';
 import {Customer} from '@letseat/domains/customer/customer.entity';
 import {
 	GetCustomerByEmailQuery, GetCustomerByUuidQuery, GetCustomerPasswordQuery
@@ -24,12 +29,6 @@ export class CustomerController {
 	constructor(private readonly commandBus: CommandBus) {
 	}
 
-	@Get('/me')
-	@UseGuards(AuthGuard('jwt'))
-	public async currentUser(@Req() request: any) {
-		return this.commandBus.execute(new GetCustomerByUuidQuery(request.user.uuid));
-	}
-
 	@Get('/')
 	@UseGuards(AuthGuard('headerapikey'))
 	public async getAll() {
@@ -40,19 +39,6 @@ export class CustomerController {
 	@UseGuards(AuthGuard('headerapikey'))
 	public async getOneByUuid(@Param('uuid') uuid: string) {
 		return this.commandBus.execute(new GetCustomerByUuidQuery(uuid));
-	}
-
-	@Patch('/me')
-	@HttpCode(204)
-	@UseGuards(AuthGuard('jwt'))
-	public async updateCurrentUser(
-		@Req() request: any,
-		@Body(new ValidationPipe<Customer>(customerUpdateValidatorOptions)) valuesToUpdate: UpdateCustomerDto) {
-		return request.user.entity === AuthEntities.Customer
-			? this.commandBus.execute(new UpdateCustomerCommand(request.user.uuid, valuesToUpdate))
-			: (() => {
-				throw new UnauthorizedException();
-			})();
 	}
 
 	@Post('/register')
@@ -75,7 +61,33 @@ export class CustomerController {
 		});
 	}
 
-	@Delete('/me')
+}
+
+@Controller('customers/me')
+export class CurrentCustomerController {
+	constructor(private readonly commandBus: CommandBus) {
+	}
+
+	@Get()
+	@UseGuards(AuthGuard('jwt'))
+	public async currentUser(@Req() request: any) {
+		return this.commandBus.execute(new GetCustomerByUuidQuery(request.user.uuid));
+	}
+
+	@Patch()
+	@HttpCode(204)
+	@UseGuards(AuthGuard('jwt'))
+	public async updateCurrentUser(
+		@Req() request: any,
+		@Body(new ValidationPipe<Customer>(customerUpdateValidatorOptions)) valuesToUpdate: UpdateCustomerDto) {
+		return request.user.entity === AuthEntities.Customer
+			? this.commandBus.execute(new UpdateCustomerCommand(request.user.uuid, valuesToUpdate))
+			: (() => {
+				throw new UnauthorizedException();
+			})();
+	}
+
+	@Delete()
 	@HttpCode(204)
 	@UseGuards(AuthGuard('jwt'))
 	public async deleteCurrentUser(@Req() request: any) {
