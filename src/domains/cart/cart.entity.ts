@@ -6,6 +6,7 @@ import {Customer} from '@letseat/domains/customer/customer.entity';
 import {Product} from '@letseat/domains/product/product.entity';
 import {Meal} from '@letseat/domains/meal/meal.entity';
 import {MealSubsectionOptionProduct} from '@letseat/domains/meal/meal-subsection-option-product.entity';
+import {MealSubsectionOptionIngredient} from '@letseat/domains/meal/meal-subsection-option-ingredient.entity';
 
 @Entity()
 export class Cart extends Resource {
@@ -24,6 +25,9 @@ export class Cart extends Resource {
 
 	@OneToMany(() => CartProduct, cartProduct => cartProduct.cart)
 	products: CartProduct[];
+
+	@OneToMany(() => CartMeal, cartMeal => cartMeal.cart)
+	meals: CartMeal[];
 }
 
 @Entity()
@@ -87,9 +91,9 @@ export class CartMealOptionIngredient extends Resource {
 	@JoinColumn({name: 'id_cart_meal'})
 	cartMeal: CartMeal;
 
-	@ManyToOne(type => Product, {eager: true})
-	@JoinColumn({name: 'id_product'})
-	product: Product;
+	@ManyToOne(() => MealSubsectionOptionIngredient, {eager: true})
+	@JoinColumn({name: 'id_meal_option_ingredient'})
+	optionIngredient: MealSubsectionOptionIngredient;
 }
 
 @Entity()
@@ -103,7 +107,7 @@ export class CartMealOptionProduct extends Resource {
 	@JoinColumn({name: 'id_cart_meal'})
 	cartMeal: CartMeal;
 
-	@ManyToOne(type => MealSubsectionOptionProduct, {eager: true})
+	@ManyToOne(() => MealSubsectionOptionProduct, {eager: true})
 	@JoinColumn({name: 'id_meal_option_product'})
 	optionProduct: MealSubsectionOptionProduct;
 }

@@ -1,1 +1,1 @@
-export {AddProductToCartDto} from '@letseat/domains/cart/dtos/add-product-to-cart.dto';
+export {AddProductOrMealToCartDto} from '@letseat/domains/cart/dtos/add-product-or-meal-to-cart.dto';

@@ -1,8 +1,13 @@
 import {IsString, IsUUID, IsNumber, IsOptional} from 'class-validator';
 
-export class AddProductToCartDto {
+export class AddProductOrMealToCartDto {
+	@IsOptional()
 	@IsUUID()
 	readonly productUuid: string;
+
+	@IsOptional()
+	@IsUUID()
+	readonly mealUuid: string;
 
 	@IsNumber()
 	readonly quantity: number;

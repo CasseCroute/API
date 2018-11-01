@@ -1,1 +1,1 @@
-export {AddProductToCartCommand} from '@letseat/application/commands/cart/add-product-to-cart.command';
+export {AddProductOrMealToCartCommand} from '@letseat/application/commands/cart/add-product-or-meal-to-cart.command';
