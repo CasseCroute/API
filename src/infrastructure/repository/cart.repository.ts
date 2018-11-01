@@ -14,14 +14,19 @@ export class CartRepository extends Repository<Cart> {
 	}
 
 	public async createCart(customer: Customer, productUuid: string): Promise<any> {
-		const cart = new Cart();
-		const product = await getManager()
-			.findOneOrFail(Product, {where: {uuid: productUuid}, relations: ['store']});
-		cart.store = product.store;
-		cart.customer = customer;
-		customer.cart = cart;
-		await getManager().save(customer);
-		await this.save(cart).then(res => res);
+		try {
+			const cart = new Cart();
+			const product = await getManager()
+				.findOneOrFail(Product, {where: {uuid: productUuid}, relations: ['store']});
+			cart.store = product.store;
+			cart.customer = customer;
+			customer.cart = cart;
+			await getManager().save(customer);
+			return this.save(cart).then(res => res);
+		} catch (err) {
+			const logger = new LoggerService('Database');
+			logger.error(err.message, err.stack);
+		}
 	}
 
 	public async addProductToCart(cart: Cart, product: AddProductToCartDto, customer?: Customer) {
