@@ -31,6 +31,6 @@ export class CustomerRepository extends Repository<Customer> {
 	}
 
 	public async getCart(uuid: string): Promise<Customer> {
-		return this.findOneOrFail({relations: ['cart', 'cart.products'], where: {uuid}});
+		return this.findOneOrFail({relations: ['cart', 'cart.products', 'cart.store'], where: {uuid}});
 	}
 }

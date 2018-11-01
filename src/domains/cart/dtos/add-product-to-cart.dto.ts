@@ -1,4 +1,4 @@
-import {IsString, IsUUID, IsNumber} from 'class-validator';
+import {IsString, IsUUID, IsNumber, IsOptional} from 'class-validator';
 
 export class AddProductToCartDto {
 	@IsUUID()
@@ -7,6 +7,11 @@ export class AddProductToCartDto {
 	@IsNumber()
 	readonly quantity: number;
 
+	@IsOptional()
 	@IsString()
 	readonly instructions: string;
+
+	@IsOptional()
+	@IsUUID(undefined, {each: true})
+	optionUuids: string[];
 }

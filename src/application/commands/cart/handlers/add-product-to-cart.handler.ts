@@ -22,7 +22,7 @@ export class AddProductToCartHandler implements ICommandHandler<AddProductToCart
 						return cartRepository.addProductToCart(cart, command.product);
 					}).subscribe(cart => resolve(cart))
 					: defer(async () => {
-						return cartRepository.addProductToCart(customer.cart, command.product);
+						return cartRepository.addProductToCart(customer.cart, command.product, customer);
 					}).subscribe(cart => resolve(cart));
 			}
 		});

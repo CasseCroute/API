@@ -32,8 +32,4 @@ export class MealSubsectionOptionIngredient extends Resource {
 	public static register(args: any): MealSubsectionOptionIngredient {
 		return new MealSubsectionOptionIngredient(args);
 	}
-
-	public async belongsToStore(storeUuid: string): Promise<boolean> {
-		return this.ingredient.store.uuid === storeUuid;
-	}
 }
