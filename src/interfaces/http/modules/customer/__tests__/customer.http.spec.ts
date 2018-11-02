@@ -3,12 +3,13 @@ import {Test, TestingModule} from '@nestjs/testing';
 import {INestApplication} from '@nestjs/common';
 import * as mocks from './mocks';
 import {getRepositoryToken} from '@nestjs/typeorm';
-import {CustomerController} from '../customer.controller';
+import {CurrentCustomerController, CustomerController} from '../customer.controller';
 import {CommandBus, EventPublisher, EventBus, CQRSModule} from '@nestjs/cqrs';
 import {AuthService, CryptographerService} from '@letseat/infrastructure/authorization';
 import {Customer} from '@letseat/domains/customer/customer.entity';
 import {JwtStrategy} from '@letseat/infrastructure/authorization/strategies/jwt.strategy';
 import {APIKeyStrategy} from '@letseat/infrastructure/authorization/strategies/api-key.strategy';
+import {LoggerService} from '../../../../../infrastructure/services';
 
 describe('Customer HTTP Requests', () => {
 	let app: INestApplication;
@@ -16,7 +17,7 @@ describe('Customer HTTP Requests', () => {
 
 	beforeAll(async () => {
 		const module: TestingModule = await Test.createTestingModule({
-			controllers: [CustomerController],
+			controllers: [CurrentCustomerController, CustomerController],
 			providers: [
 				CQRSModule,
 				AuthService,
@@ -43,6 +44,8 @@ describe('Customer HTTP Requests', () => {
 			.compile();
 
 		app = module.createNestApplication();
+		const logger = new LoggerService('Server');
+		app.useLogger(logger);
 		commandBus = module.get<CommandBus>(CommandBus);
 		await app.init();
 	});

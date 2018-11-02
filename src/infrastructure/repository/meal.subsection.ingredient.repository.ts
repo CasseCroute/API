@@ -25,8 +25,6 @@ import {Store} from '@letseat/domains/store/store.entity';
 
 @EntityRepository(MealSubsectionOptionIngredient)
 export class MealSubsectionOptionIngredientRepository extends Repository<MealSubsectionOptionIngredient> implements ResourceRepository {
-	@Transaction()
-
 	public async findOneByUuid(mealSubscetionOptionIngredientUuid: string, selectId = false) {
 		const mealSubscetionOptionIngredient = await this.findOne({where: {uuid: mealSubscetionOptionIngredientUuid}});
 		return selectId ? mealSubscetionOptionIngredient : omitDeep('id', mealSubscetionOptionIngredient);
