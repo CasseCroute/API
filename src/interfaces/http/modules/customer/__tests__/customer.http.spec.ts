@@ -3,7 +3,7 @@ import {Test, TestingModule} from '@nestjs/testing';
 import {INestApplication} from '@nestjs/common';
 import * as mocks from './mocks';
 import {getRepositoryToken} from '@nestjs/typeorm';
-import {CustomerController} from '../customer.controller';
+import {CurrentCustomerController, CustomerController} from '../customer.controller';
 import {CommandBus, EventPublisher, EventBus, CQRSModule} from '@nestjs/cqrs';
 import {AuthService, CryptographerService} from '@letseat/infrastructure/authorization';
 import {Customer} from '@letseat/domains/customer/customer.entity';
@@ -16,7 +16,7 @@ describe('Customer HTTP Requests', () => {
 
 	beforeAll(async () => {
 		const module: TestingModule = await Test.createTestingModule({
-			controllers: [CustomerController],
+			controllers: [CurrentCustomerController, CustomerController],
 			providers: [
 				CQRSModule,
 				AuthService,

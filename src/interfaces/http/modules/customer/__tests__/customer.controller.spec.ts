@@ -3,16 +3,17 @@ import * as mocks from './mocks';
 import {getRepositoryToken} from '@nestjs/typeorm';
 import {CommandBus, EventBus} from '@nestjs/cqrs';
 import {AuthService} from '@letseat/infrastructure/authorization';
-import {CustomerController} from '@letseat/interfaces/http/modules/customer/customer.controller';
+import {CustomerController, CurrentCustomerController} from '@letseat/interfaces/http/modules/customer/customer.controller';
 import {Customer} from '@letseat/domains/customer/customer.entity';
 
 describe('Customer Controller', () => {
 	let customerController: CustomerController;
+	let currentCustomerController: CurrentCustomerController;
 	let commandBus: CommandBus;
 
 	beforeAll(async () => {
 		const module = await Test.createTestingModule({
-			controllers: [CustomerController],
+			controllers: [CustomerController, CurrentCustomerController],
 			providers: [CommandBus, AuthService,
 				{
 					provide: getRepositoryToken(Customer),
@@ -32,6 +33,7 @@ describe('Customer Controller', () => {
 			.compile();
 
 		customerController = module.get<CustomerController>(CustomerController);
+		currentCustomerController = module.get<CurrentCustomerController>(CurrentCustomerController);
 		commandBus = module.get<CommandBus>(CommandBus);
 	});
 
@@ -58,7 +60,7 @@ describe('Customer Controller', () => {
 	describe('currentUser()', () => {
 		it('should return a Customer when successful', async () => {
 			jest.spyOn(commandBus, 'execute').mockImplementation(() => mocks.customerRepository.data[0]);
-			expect(await customerController.currentUser({user: mocks.customerRepository.data[0]})).toBe(mocks.customerRepository.data[0]);
+			expect(await currentCustomerController.currentUser({user: mocks.customerRepository.data[0]})).toBe(mocks.customerRepository.data[0]);
 		});
 	});
 

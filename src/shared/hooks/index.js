@@ -1,4 +1,5 @@
 require('dotenv').config();
+const fetch = require('node-fetch');
 const env = process.env;
 const hooks = require('hooks');
 const {Client} = require('pg');
@@ -9,6 +10,19 @@ const client = new Client({
 	password: env.TEST_DB_PASSWORD,
 	port: env.TEST_DB_PORT
 });
+
+const createStoreDto = {
+	name: 'Let\'s Eat Me',
+	email: Math.random().toString(36).substring(2,11) + '@domain.com',
+	phoneNumber: '1234567890',
+	password: 'password',
+	address: {
+		street: '22, rue du Beauvais',
+		city: 'Paris',
+		zipCode: '75006',
+		country: 'France'
+	}
+};
 
 hooks.beforeAll((transactions, done) => {
 	client.connect()
@@ -106,6 +120,32 @@ hooks.before('Stores > Current Store Profile > Retrieve Profile of the current S
 hooks.before('Stores > Current Store Profile > Delete Account of the current Store', (transaction, done) => {
 	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
 	done();
+});
+
+hooks.after('Stores > Current Store Profile > Delete Account of the current Store', (transaction, done) => {
+	fetch('http://127.0.0.1:8080/stores/register', {
+		method: 'POST',
+		body: JSON.stringify(createStoreDto),
+		headers: {'Content-Type': 'application/json'},
+	}).then(res => res.json())
+		.then(json => {
+			store['jwt'] = json.data.jwt;
+			fetch('http://127.0.0.1:8080/stores/me/products', {
+				method: 'POST',
+				body: JSON.stringify({reference: 'BURG', name: 'Burger', price: '12'}),
+				headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${store.jwt}`},
+			}).then(res => res.json())
+				.then(json => {
+					client.query('SELECT * from product')
+						.then(res => {
+							product['uuid'] = res.rows[0].uuid;
+							done();
+						})
+						.catch(err => {
+							return done(err);
+						})
+				})
+		});
 });
 
 // Before adding a Kiosk
@@ -324,6 +364,15 @@ hooks.before('Stores > Current Store Sections > Retrieve Sections', (transaction
 	done();
 });
 
+hooks.before('Customers > Add to Current Customer Cart > Add Product or Meal to Cart', (transaction, done) => {
+	transaction.request.headers.Authorization = `Bearer ${customer.jwt}`;
+	const body = JSON.parse(transaction.request.body);
+	body.productUuid = product.uuid;
+	delete body.mealUuid;
+	transaction.request.body = JSON.stringify(body);
+	done();
+});
+
 hooks.before('Stores > Current Store Section > Retrieve a Section by UUID', (transaction, done) => {
 	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
 	transaction.request.uri = `/stores/me/sections/${section.uuid}`;
@@ -337,6 +386,7 @@ hooks.afterAll((transactions, done) => {
 		'TRUNCATE TABLE ingredient CASCADE;' +
 		'TRUNCATE TABLE product CASCADE;' +
 		'TRUNCATE TABLE meal CASCADE;' +
+		'TRUNCATE TABLE cart CASCADE;' +
 		'TRUNCATE TABLE product_ingredient CASCADE;' +
 		'TRUNCATE TABLE address CASCADE;' +
 		'TRUNCATE TABLE kiosk CASCADE;')

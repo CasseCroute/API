@@ -1,6 +1,6 @@
 import {Module, OnModuleInit} from '@nestjs/common';
 import {TypeOrmModule} from '@nestjs/typeorm';
-import {CustomerController} from './customer.controller';
+import {CurrentCustomerController, CustomerController} from './customer.controller';
 import {CommandBus, CQRSModule, EventBus} from '@nestjs/cqrs';
 import {ModuleRef} from '@nestjs/core';
 import {CustomerCommandHandlers} from '@letseat/application/commands/customer/handlers';
@@ -8,6 +8,8 @@ import {Customer} from '@letseat/domains/customer/customer.entity';
 import {CustomerRepository} from '@letseat/infrastructure/repository/customer.repository';
 import {CustomerQueryHandlers} from '@letseat/application/queries/customer/handlers';
 import {JwtStrategy} from '@letseat/infrastructure/authorization/strategies/jwt.strategy';
+import {CurrentCustomerCartController} from '@letseat/interfaces/http/modules/customer/customer.cart.controller';
+import {CartCommandHandlers} from '@letseat/application/commands/cart/handlers';
 
 @Module({
 	imports: [
@@ -16,10 +18,15 @@ import {JwtStrategy} from '@letseat/infrastructure/authorization/strategies/jwt.
 	],
 	providers: [
 		JwtStrategy,
+		...CartCommandHandlers,
 		...CustomerCommandHandlers,
 		...CustomerQueryHandlers
 	],
-	controllers: [CustomerController]
+	controllers: [
+		CurrentCustomerController,
+		CustomerController,
+		CurrentCustomerCartController
+	]
 })
 export class CustomerModule implements OnModuleInit {
 	constructor(
@@ -34,5 +41,6 @@ export class CustomerModule implements OnModuleInit {
 
 		this.command$.register(CustomerCommandHandlers);
 		this.command$.register(CustomerQueryHandlers);
+		this.command$.register(CartCommandHandlers);
 	}
 }
