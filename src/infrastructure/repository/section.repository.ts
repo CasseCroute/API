@@ -35,4 +35,14 @@ export class SectionRepository extends Repository<Section> implements ResourceRe
 			.getOne();
 		return selectId ? storeProduct : omitDeep('id', storeProduct);
 	}
+
+	public async deleteSectionByUuid(storeUuid: string, sectionUuid: string) {
+		return this.createQueryBuilder('sections')
+			.select()
+			.leftJoinAndSelect('sections.store', 'store')
+			.where('store.uuid = :storeUuid', {storeUuid})
+			.delete()
+			.where({uuid: sectionUuid})
+			.execute();
+	}
 }
