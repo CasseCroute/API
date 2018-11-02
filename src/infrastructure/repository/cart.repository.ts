@@ -47,9 +47,8 @@ export class CartRepository extends Repository<Cart> {
 	public async addProductToCart(cart: Cart, product: AddProductOrMealToCartDto, customer: Customer) {
 		if (product.productUuid) {
 			return this.saveCartProduct(cart, product as any, customer);
-		} else {
-			return this.saveCartMeal(cart, product as any, customer);
 		}
+		return this.saveCartMeal(cart, product as any, customer);
 	}
 
 	public async saveCartProduct(cart: Cart, product: AddProductOrMealToCartDto & Product, customer: Customer) {
@@ -59,8 +58,8 @@ export class CartRepository extends Repository<Cart> {
 			// If Customer tries to add a Product from another Store, destroy the old one and create a new one
 			if (!cartProductStore) {
 				return this.destroyCart(cart).then(async () => {
-					await this.createCart(customer as Customer, product);
-					return this.saveCartProduct(customer!.cart, product, customer);
+					await this.createCart(customer, product);
+					return this.saveCartProduct(customer.cart, product, customer);
 				});
 			}
 			cartProduct.product = cartProductStore;
@@ -91,8 +90,8 @@ export class CartRepository extends Repository<Cart> {
 			// If Customer tries to add a Product from another Store, destroy the old one and create a new one
 			if (!cartMealStore) {
 				return this.destroyCart(cart).then(async () => {
-					await this.createCart(customer as Customer, product);
-					return this.saveCartMeal(customer!.cart, product, customer);
+					await this.createCart(customer, product);
+					return this.saveCartMeal(customer.cart, product, customer);
 				});
 			}
 			cartMeal.meal = cartMealStore;
@@ -135,14 +134,14 @@ export class CartRepository extends Repository<Cart> {
 					.where('ingredient.uuid = :mealOptionUuid or product.uuid = :mealOptionUuid', {mealOptionUuid})
 					.getOne();
 
-				if (option && option!.ingredients && option!.ingredients.length > 0) {
+				if (option && option.ingredients && option.ingredients.length > 0) {
 					const cartMealOptionIngredient = new CartMealOptionIngredient();
-					cartMealOptionIngredient.optionIngredient = option!.ingredients[0];
+					cartMealOptionIngredient.optionIngredient = option.ingredients[0];
 					cartMealOptionIngredient.cartMeal = cartMeal;
 					await getRepository(CartMealOptionIngredient).save(cartMealOptionIngredient);
-				} else if (option && option!.products && option!.products.length > 0) {
+				} else if (option && option.products && option.products.length > 0) {
 					const cartMealOptionProduct = new CartMealOptionProduct();
-					cartMealOptionProduct.optionProduct = option!.products[0];
+					cartMealOptionProduct.optionProduct = option.products[0];
 					cartMealOptionProduct.cartMeal = cartMeal;
 					await getRepository(CartMealOptionProduct).save(cartMealOptionProduct);
 				}

@@ -15,7 +15,7 @@ export class Cart extends Resource {
 		return Object.assign(this, args);
 	}
 
-	@OneToOne(() => Customer, customer => customer.cart)
+	@OneToOne(() => Customer, customer => customer.cart, {onDelete: 'CASCADE'})
 	@JoinColumn({name: 'id_customer'})
 	customer: Customer;
 
