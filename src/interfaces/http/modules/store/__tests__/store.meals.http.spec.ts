@@ -13,6 +13,7 @@ import {Store} from '@letseat/domains/store/store.entity';
 import {JwtStrategy} from '@letseat/infrastructure/authorization/strategies/jwt.strategy';
 import {CustomExceptionFilter} from '@letseat/domains/common/exceptions';
 import {Meal} from '@letseat/domains/meal/meal.entity';
+import {LoggerService} from '../../../../../infrastructure/services';
 
 describe('Store Meals HTTP Requests', () => {
 	let app: INestApplication;
@@ -52,6 +53,8 @@ describe('Store Meals HTTP Requests', () => {
 
 		app = module.createNestApplication();
 		app.useGlobalFilters(new CustomExceptionFilter());
+		const logger = new LoggerService('Server');
+		app.useLogger(logger);
 		await app.init();
 	});
 

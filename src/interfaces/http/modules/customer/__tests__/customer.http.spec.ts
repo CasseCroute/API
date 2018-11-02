@@ -9,6 +9,7 @@ import {AuthService, CryptographerService} from '@letseat/infrastructure/authori
 import {Customer} from '@letseat/domains/customer/customer.entity';
 import {JwtStrategy} from '@letseat/infrastructure/authorization/strategies/jwt.strategy';
 import {APIKeyStrategy} from '@letseat/infrastructure/authorization/strategies/api-key.strategy';
+import {LoggerService} from '../../../../../infrastructure/services';
 
 describe('Customer HTTP Requests', () => {
 	let app: INestApplication;
@@ -43,6 +44,8 @@ describe('Customer HTTP Requests', () => {
 			.compile();
 
 		app = module.createNestApplication();
+		const logger = new LoggerService('Server');
+		app.useLogger(logger);
 		commandBus = module.get<CommandBus>(CommandBus);
 		await app.init();
 	});

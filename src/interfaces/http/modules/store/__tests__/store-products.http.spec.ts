@@ -12,6 +12,8 @@ import {Store} from '@letseat/domains/store/store.entity';
 import {JwtStrategy} from '@letseat/infrastructure/authorization/strategies/jwt.strategy';
 import {Product} from '@letseat/domains/product/product.entity';
 import {CustomExceptionFilter} from '@letseat/domains/common/exceptions';
+import {LoggerService} from '../../../../../infrastructure/services';
+import {StoreRepository} from '../../../../../infrastructure/repository/store.repository';
 
 describe('Store Ingredients HTTP Requests', () => {
 	let app: INestApplication;
@@ -52,6 +54,8 @@ describe('Store Ingredients HTTP Requests', () => {
 
 		app = module.createNestApplication();
 		app.useGlobalFilters(new CustomExceptionFilter());
+		const logger = new LoggerService('Server');
+		app.useLogger(logger);
 		await app.init();
 	});
 
