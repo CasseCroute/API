@@ -12,6 +12,7 @@ import {Store} from '@letseat/domains/store/store.entity';
 import {JwtStrategy} from '@letseat/infrastructure/authorization/strategies/jwt.strategy';
 import {CustomExceptionFilter} from '@letseat/domains/common/exceptions';
 import {LoggerService} from '../../../../../infrastructure/services';
+import {GetStoreSectionByUuidHandler} from '../../../../../application/queries/store/handlers';
 
 describe('Store Sections HTTP Requests', () => {
 	let app: INestApplication;

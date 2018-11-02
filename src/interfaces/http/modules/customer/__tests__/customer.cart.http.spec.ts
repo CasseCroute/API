@@ -114,6 +114,57 @@ describe('Customer Cart HTTP Requests', () => {
 		});
 	});
 
+	describe('POST /remove', () => {
+		it('should return a HTTP 200 status code when successful with Product', () => {
+			return request(app.getHttpServer())
+				.post('/customers/me/cart/remove')
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.send({productUuid: 'd7499e55-e191-4a93-947f-3d37f26ec55c'})
+				.expect(200);
+		});
+
+		it('should return a HTTP 200 status code when successful with Meal', () => {
+			return request(app.getHttpServer())
+				.post('/customers/me/cart/remove')
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.send({mealUuid: '7cc03c19-8029-4a7d-ada8-edc5e741b6e2'})
+				.expect(200);
+		});
+
+		it('should return a HTTP 400 status code when mealUuid and productUuid are provided', () => {
+			return request(app.getHttpServer())
+				.post('/customers/me/cart/remove')
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.send({mealUuid: 'd7499e55-e191-4a93-947f-3d37f26ec55c', productUuid: '2911d618-ef48-4a50-b388-2fbf081bf1fc'})
+				.expect(400);
+		});
+
+		it('should return a HTTP 401 status code when no Token is set in Authorization Header', () => {
+			return request(app.getHttpServer())
+				.post('/customers/me/cart/remove')
+				.send({productUuid: '2911d618-ef48-4a50-b388-2fbf081bf1fc'})
+				.expect(401);
+		});
+
+		it('should return a HTTP 400 status code when incorrect data is sent', () => {
+			return request(app.getHttpServer())
+				.post('/customers/me/cart/remove')
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.send({zz: '2911d618-ef48-4a50-b388-2fbf081bf1fc'})
+				.expect(400);
+		});
+
+		it('should return a no empty body when successful', () => {
+			return request(app.getHttpServer())
+				.post('/customers/me/cart/add')
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.send({productUuid: '2911d618-ef48-4a50-b388-2fbf081bf1fc', quantity: 2})
+				.expect(res => {
+					return res.body !== null;
+				});
+		});
+	});
+
 	afterAll(async () => {
 		await app.close();
 	});

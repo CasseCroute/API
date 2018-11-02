@@ -69,8 +69,8 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 	}
 
 	public async getAddress(storeUuid: string) {
-		return getManager()
-			.createQueryBuilder(Store, 'store')
+		return this
+			.createQueryBuilder('store')
 			.leftJoinAndSelect('store.address', 'address')
 			.where('store.uuid = :uuid', {uuid: storeUuid})
 			.getOne();
