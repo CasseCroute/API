@@ -10,10 +10,11 @@ import {JwtStrategy} from '@letseat/infrastructure/authorization/strategies/jwt.
 import {APIKeyStrategy} from '@letseat/infrastructure/authorization/strategies/api-key.strategy';
 import {CurrentCustomerCartController} from '../customer.cart.controller';
 import {CustomExceptionFilter} from '../../../../../domains/common/exceptions';
+import {Cart} from '@letseat/domains/cart/cart.entity';
+import {LoggerService} from '../../../../../infrastructure/services';
 
 describe('Customer Cart HTTP Requests', () => {
 	let app: INestApplication;
-	let commandBus: CommandBus;
 
 	beforeAll(async () => {
 		const module: TestingModule = await Test.createTestingModule({
@@ -26,6 +27,10 @@ describe('Customer Cart HTTP Requests', () => {
 				EventBus,
 				{
 					provide: getRepositoryToken(Customer),
+					useValue: mocks.customerRepository,
+				},
+				{
+					provide: getRepositoryToken(Cart),
 					useValue: mocks.customerRepository,
 				},
 			]
@@ -45,7 +50,8 @@ describe('Customer Cart HTTP Requests', () => {
 
 		app = module.createNestApplication();
 		app.useGlobalFilters(new CustomExceptionFilter());
-		commandBus = module.get<CommandBus>(CommandBus);
+		const logger = new LoggerService('Server');
+		app.useLogger(logger);
 		await app.init();
 	});
 

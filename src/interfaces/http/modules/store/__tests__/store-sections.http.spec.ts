@@ -11,6 +11,7 @@ import {CommandBus, EventPublisher, EventBus, CQRSModule} from '@nestjs/cqrs';
 import {Store} from '@letseat/domains/store/store.entity';
 import {JwtStrategy} from '@letseat/infrastructure/authorization/strategies/jwt.strategy';
 import {CustomExceptionFilter} from '@letseat/domains/common/exceptions';
+import {LoggerService} from '../../../../../infrastructure/services';
 
 describe('Store Sections HTTP Requests', () => {
 	let app: INestApplication;
@@ -46,6 +47,8 @@ describe('Store Sections HTTP Requests', () => {
 
 		app = module.createNestApplication();
 		app.useGlobalFilters(new CustomExceptionFilter());
+		const logger = new LoggerService('Server');
+		app.useLogger(logger);
 		await app.init();
 	});
 

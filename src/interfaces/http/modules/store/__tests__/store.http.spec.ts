@@ -9,6 +9,7 @@ import {CommandBus, EventPublisher, EventBus, CQRSModule} from '@nestjs/cqrs';
 import {Store} from '@letseat/domains/store/store.entity';
 import {JwtStrategy} from '@letseat/infrastructure/authorization/strategies/jwt.strategy';
 import {CustomExceptionFilter} from '@letseat/domains/common/exceptions';
+import {LoggerService} from '../../../../../infrastructure/services';
 
 describe('Store HTTP Requests', () => {
 	let app: INestApplication;
@@ -45,6 +46,8 @@ describe('Store HTTP Requests', () => {
 
 		app = module.createNestApplication();
 		app.useGlobalFilters(new CustomExceptionFilter());
+		const logger = new LoggerService('Server');
+		app.useLogger(logger);
 		commandBus = module.get<CommandBus>(CommandBus);
 		await app.init();
 	});
