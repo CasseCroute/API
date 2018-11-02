@@ -95,9 +95,6 @@
       "default",
       "jest-junit"
     ],
-    "coveragePathIgnorePatterns": [
-      ".repository.ts"
-    ],
     "moduleNameMapper": {
       "@letseat/application/(.*)": "<rootDir>/application/$1",
       "@letseat/domains/(.*)": "<rootDir>/domains/$1",
