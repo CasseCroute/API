@@ -1,7 +1,7 @@
 import {Module, OnModuleInit} from '@nestjs/common';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import {CurrentCustomerController, CustomerController} from './customer.controller';
-import {CommandBus, CQRSModule, EventBus} from '@nestjs/cqrs';
+import {CommandBus, CQRSModule} from '@nestjs/cqrs';
 import {ModuleRef} from '@nestjs/core';
 import {CustomerCommandHandlers} from '@letseat/application/commands/customer/handlers';
 import {Customer} from '@letseat/domains/customer/customer.entity';
@@ -32,12 +32,10 @@ export class CustomerModule implements OnModuleInit {
 	constructor(
 		private readonly moduleRef: ModuleRef,
 		private readonly command$: CommandBus,
-		private readonly event$: EventBus,
 	) {}
 
 	onModuleInit() {
 		this.command$.setModuleRef(this.moduleRef);
-		this.event$.setModuleRef(this.moduleRef);
 
 		this.command$.register(CustomerCommandHandlers);
 		this.command$.register(CustomerQueryHandlers);

@@ -8,12 +8,12 @@ import {
 import * as mocks from './mocks';
 import {getRepositoryToken} from '@nestjs/typeorm';
 import {AuthService} from '@letseat/infrastructure/authorization';
-import {CommandBus, EventPublisher, EventBus, CQRSModule} from '@nestjs/cqrs';
+import {CommandBus, CQRSModule} from '@nestjs/cqrs';
 import {Store} from '@letseat/domains/store/store.entity';
 import {JwtStrategy} from '@letseat/infrastructure/authorization/strategies/jwt.strategy';
 import {CustomExceptionFilter} from '@letseat/domains/common/exceptions';
 import {Meal} from '@letseat/domains/meal/meal.entity';
-import {LoggerService} from '../../../../../infrastructure/services';
+import {LoggerService} from '@letseat/infrastructure/services';
 
 describe('Store Meals HTTP Requests', () => {
 	let app: INestApplication;
@@ -27,8 +27,6 @@ describe('Store Meals HTTP Requests', () => {
 				CQRSModule,
 				AuthService,
 				CommandBus,
-				EventPublisher,
-				EventBus,
 				{
 					provide: getRepositoryToken(Store),
 					useValue: mocks.storeRepository,
@@ -40,10 +38,6 @@ describe('Store Meals HTTP Requests', () => {
 			]
 		})
 			.overrideProvider(AuthService).useValue(mocks.authService)
-			.overrideProvider(EventBus).useValue({
-				setModuleRef: jest.fn(),
-				publish: jest.fn()
-			})
 			.overrideProvider(CommandBus).useValue({
 				register: jest.fn(),
 				execute: jest.fn()

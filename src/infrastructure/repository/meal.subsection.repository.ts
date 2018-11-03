@@ -21,8 +21,6 @@ import {MealSubsectionOptionIngredientRepository} from '@letseat/infrastructure/
 
 @EntityRepository(MealSubsection)
 export class MealSubsectionRepository extends Repository<MealSubsection> implements ResourceRepository {
-	@Transaction()
-
 	public async findOneByUuid(mealSubscetionUuid: string) {
 		return this.findOne({where: {uuid: mealSubscetionUuid}});
 	}

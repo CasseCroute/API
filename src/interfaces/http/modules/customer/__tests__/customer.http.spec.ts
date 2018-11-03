@@ -4,12 +4,12 @@ import {INestApplication} from '@nestjs/common';
 import * as mocks from './mocks';
 import {getRepositoryToken} from '@nestjs/typeorm';
 import {CurrentCustomerController, CustomerController} from '../customer.controller';
-import {CommandBus, EventPublisher, EventBus, CQRSModule} from '@nestjs/cqrs';
+import {CommandBus, CQRSModule} from '@nestjs/cqrs';
 import {AuthService, CryptographerService} from '@letseat/infrastructure/authorization';
 import {Customer} from '@letseat/domains/customer/customer.entity';
 import {JwtStrategy} from '@letseat/infrastructure/authorization/strategies/jwt.strategy';
 import {APIKeyStrategy} from '@letseat/infrastructure/authorization/strategies/api-key.strategy';
-import {LoggerService} from '../../../../../infrastructure/services';
+import {LoggerService} from '@letseat/infrastructure/services';
 
 describe('Customer HTTP Requests', () => {
 	let app: INestApplication;
@@ -22,8 +22,6 @@ describe('Customer HTTP Requests', () => {
 				CQRSModule,
 				AuthService,
 				CommandBus,
-				EventPublisher,
-				EventBus,
 				{
 					provide: getRepositoryToken(Customer),
 					useValue: mocks.customerRepository,
@@ -31,10 +29,6 @@ describe('Customer HTTP Requests', () => {
 			]
 		})
 			.overrideProvider(AuthService).useValue(mocks.authService)
-			.overrideProvider(EventBus).useValue({
-				setModuleRef: jest.fn(),
-				publish: jest.fn()
-			})
 			.overrideProvider(CommandBus).useValue({
 				register: jest.fn(),
 				execute: jest.fn()

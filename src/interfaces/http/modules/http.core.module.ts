@@ -10,6 +10,7 @@ import {
 } from '@letseat/application/queries/common/interceptors';
 import {APIKeyStrategy} from '@letseat/infrastructure/authorization/strategies/api-key.strategy';
 import {IngredientModule} from '@letseat/interfaces/http/modules/ingredient/ingredient.module';
+import {CuisineModule} from '@letseat/interfaces/http/modules/cuisine/cuisine.module';
 
 @Module({
 	imports: [
@@ -17,6 +18,7 @@ import {IngredientModule} from '@letseat/interfaces/http/modules/ingredient/ingr
 		StoreModule,
 		CustomerModule,
 		IngredientModule,
+		CuisineModule,
 		APIKeyStrategy,
 	],
 	providers: [

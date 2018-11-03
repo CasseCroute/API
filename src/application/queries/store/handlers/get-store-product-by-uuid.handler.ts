@@ -1,3 +1,4 @@
+/* tslint:disable:strict-type-predicates */
 import {ICommandHandler, CommandHandler} from '@nestjs/cqrs';
 import {getCustomRepository} from 'typeorm';
 import {GetStoreProductByUuidQuery} from '@letseat/application/queries/store';
@@ -6,12 +7,12 @@ import {NotFoundException} from '@nestjs/common';
 
 @CommandHandler(GetStoreProductByUuidQuery)
 export class GetStoreProductByUuidHandler implements ICommandHandler<GetStoreProductByUuidQuery> {
-	async execute(command: GetStoreProductByUuidQuery, resolve: (value?) => void) {
+	async execute(query: GetStoreProductByUuidQuery, resolve: (value?) => void) {
 		const productRepository = getCustomRepository(ProductRepository);
 		try {
-			const product = command.isPublic
-				? await productRepository.findStoreProductByUuidPublic(command.storeUuid, command.productUuid)
-				: await productRepository.findStoreProductByUuid(command.storeUuid, command.productUuid);
+			const product = query.isPublic
+				? await productRepository.findStoreProductByUuidPublic(query.storeUuid, query.productUuid)
+				: await productRepository.findStoreProductByUuid(query.storeUuid, query.productUuid);
 
 			if (typeof product === undefined) {
 				resolve(Promise.reject(new NotFoundException('Product not found')));

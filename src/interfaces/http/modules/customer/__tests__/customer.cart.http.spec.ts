@@ -3,15 +3,15 @@ import {Test, TestingModule} from '@nestjs/testing';
 import {INestApplication} from '@nestjs/common';
 import * as mocks from './mocks';
 import {getRepositoryToken} from '@nestjs/typeorm';
-import {CommandBus, EventPublisher, EventBus, CQRSModule} from '@nestjs/cqrs';
+import {CommandBus, CQRSModule} from '@nestjs/cqrs';
 import {AuthService} from '@letseat/infrastructure/authorization';
 import {Customer} from '@letseat/domains/customer/customer.entity';
 import {JwtStrategy} from '@letseat/infrastructure/authorization/strategies/jwt.strategy';
 import {APIKeyStrategy} from '@letseat/infrastructure/authorization/strategies/api-key.strategy';
 import {CurrentCustomerCartController} from '../customer.cart.controller';
-import {CustomExceptionFilter} from '../../../../../domains/common/exceptions';
+import {CustomExceptionFilter} from '@letseat/domains/common/exceptions';
 import {Cart} from '@letseat/domains/cart/cart.entity';
-import {LoggerService} from '../../../../../infrastructure/services';
+import {LoggerService} from '@letseat/infrastructure/services';
 
 describe('Customer Cart HTTP Requests', () => {
 	let app: INestApplication;
@@ -23,8 +23,6 @@ describe('Customer Cart HTTP Requests', () => {
 				CQRSModule,
 				AuthService,
 				CommandBus,
-				EventPublisher,
-				EventBus,
 				{
 					provide: getRepositoryToken(Customer),
 					useValue: mocks.customerRepository,
@@ -36,10 +34,6 @@ describe('Customer Cart HTTP Requests', () => {
 			]
 		})
 			.overrideProvider(AuthService).useValue(mocks.authService)
-			.overrideProvider(EventBus).useValue({
-				setModuleRef: jest.fn(),
-				publish: jest.fn()
-			})
 			.overrideProvider(CommandBus).useValue({
 				register: jest.fn(),
 				execute: jest.fn()
