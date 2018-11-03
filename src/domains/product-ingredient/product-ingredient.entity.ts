@@ -12,7 +12,7 @@ export class ProductIngredient extends Resource {
 		return Object.assign(this, args);
 	}
 
-	@Column({type: 'int', name: 'ingredient_quantity'})
+	@Column({type: 'smallint', name: 'ingredient_quantity', unsigned: true})
 	quantity: number;
 
 	@ManyToOne(type => Product, product => product.ingredients, {cascade: ['insert'], onDelete: 'CASCADE'})

@@ -14,7 +14,7 @@ export class Ingredient extends Resource {
 	@Column({length: 128})
 	name: string;
 
-	@Column({type: 'int'})
+	@Column({type: 'int', unsigned: true})
 	quantity: number;
 
 	@ManyToOne(type => Store, store => store.ingredients, {onDelete: 'CASCADE'})

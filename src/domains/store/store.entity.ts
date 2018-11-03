@@ -1,5 +1,5 @@
 /* tslint:disable:no-unused */
-import {Entity, Column, Unique, OneToMany, ManyToOne, JoinColumn, OneToOne} from 'typeorm';
+import {Entity, Column, Unique, OneToMany, ManyToOne, JoinColumn, ManyToMany} from 'typeorm';
 import {Resource} from '@letseat/domains/resource/resource';
 import {Kiosk} from '@letseat/domains/kiosk/kiosk.entity';
 import {Address} from '@letseat/domains/address/address.entity';
@@ -7,6 +7,7 @@ import {Ingredient} from '@letseat/domains/ingredient/ingredient.entity';
 import {Product} from '@letseat/domains/product/product.entity';
 import {Meal} from '@letseat/domains/meal/meal.entity';
 import {Section} from '@letseat/domains/section/section.entity';
+import {Cuisine} from '@letseat/domains/cuisine/cuisine.entity';
 
 @Entity()
 @Unique(['email'])
@@ -52,6 +53,9 @@ export class Store extends Resource {
 
 	@OneToMany(type => Section, section => section.store, {cascade: ['insert']})
 	sections: Section[];
+
+	@ManyToMany(() => Cuisine, cuisine => cuisine.stores)
+	cuisines: Cuisine[];
 
 	public static register(args: any): Store {
 		return new Store(args);

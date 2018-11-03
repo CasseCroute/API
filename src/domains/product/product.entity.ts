@@ -5,6 +5,7 @@ import {Store} from '@letseat/domains/store/store.entity';
 import {ProductIngredient} from '@letseat/domains/product-ingredient/product-ingredient.entity';
 import {Meal} from '@letseat/domains/meal/meal.entity';
 import {Section} from '@letseat/domains/section/section.entity';
+import {Cuisine} from '@letseat/domains/cuisine/cuisine.entity';
 
 @Entity()
 export class Product extends Resource {
@@ -40,6 +41,10 @@ export class Product extends Resource {
 
 	@ManyToMany(type => Section, section => section.products)
 	sections: Section[];
+
+	@ManyToOne(() => Cuisine, cuisine => cuisine.stores)
+	@JoinColumn({name: 'id_cuisine'})
+	cuisine: Cuisine;
 
 	public static register(args: any): Product {
 		return new Product(args);
