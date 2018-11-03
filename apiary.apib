@@ -27,7 +27,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhNnZoQW8zR
 
 ### Public Claims
 
-+ `uuid` - The uuid ( *Universal Unique Indentifier* ) claim identifies the uuid of resource.
++ `uuid` - The uuid ( *Universal Unique Identifier* ) claim identifies the uuid of resource.
 + `email` - The email claim identifies the email of resource.
 
 ### Private Claims
@@ -121,6 +121,7 @@ This API returns both, machine-readable error codes and human-readable error mes
         + email: `hello@letseat.co` (string, required) - Email of the store.
         + phoneNumber: `0134724336` (string, required) - Phone number of the store.
         + password: `f8e2cfacc6` (string, required) - Password of the store.
+        + cuisineUuids: `add6dfd0-b82f-40ea-b677-c6abd003abc7` (array[string], required) - UUIDs of the Cuisine 
         + address (object)
             + street: `24, rue des Beauxchamps` (string, required) - Street name where the store is located.
             + city: `Paris` (string, required) - City where the store belongs to.
@@ -240,6 +241,7 @@ Allows Stores to create a Product.
         + name: `Burger` (string, required) - Name of the Product.
         + price: `9.70` (string, required) - Price of the Product.
         + description: `A delicious burger with tasty hot sauce` (string, optional) - Description of the Product.
+        + cuisineUuid: `add6dfd0-b82f-40ea-b677-c6abd003abc7` (string, optional) - UUIDs of the Product Cuisine.
         + ingredients (array, optional)
             + (object)
                 + ingredientUuid: `f5b06da6-e619-4e97-a30e-116872204e11` (string, required) - UUID of the Ingredient included in the Product.

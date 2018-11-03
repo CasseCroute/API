@@ -18,6 +18,9 @@ export class Cuisine {
 	@Column({length: 128})
 	name: string;
 
+	@Column({length: 128, nullable: true})
+	slug: string;
+
 	@Column({name: 'image_url', length: 256, nullable: true})
 	imageUrl?: string;
 

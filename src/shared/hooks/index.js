@@ -11,16 +11,19 @@ const client = new Client({
 	port: env.TEST_DB_PORT
 });
 
-const createStoreDto = {
-	name: 'Let\'s Eat Me',
-	email: Math.random().toString(36).substring(2,11) + '@domain.com',
-	phoneNumber: '1234567890',
-	password: 'password',
-	address: {
-		street: '22, rue du Beauvais',
-		city: 'Paris',
-		zipCode: '75006',
-		country: 'France'
+const createStoreDto = function () {
+	return {
+		name: 'Let\'s Eat Me',
+		email: Math.random().toString(36).substring(2, 11) + '@domain.com',
+		phoneNumber: '1234567890',
+		password: 'password',
+		address: {
+			street: '22, rue du Beauvais',
+			city: 'Paris',
+			zipCode: '75006',
+			country: 'France'
+		},
+		cuisineUuids: []
 	}
 };
 
@@ -89,6 +92,23 @@ hooks.before('Customers > Current Customer Profile > Delete Account of the curre
 
 // STORE
 const store = {};
+const cuisine = {};
+
+// Before Store Registration
+hooks.before('Stores > Store Registration > Register a new Store', (transaction, done) => {
+	client.query('SELECT * from cuisine')
+		.then(res => {
+			cuisine['uuid'] = res.rows[0].uuid;
+			const body = JSON.parse(transaction.request.body);
+			body.cuisineUuids.push(cuisine.uuid);
+			transaction.request.body = JSON.stringify(body);
+			done();
+		})
+		.catch(err => {
+			return done(err);
+		});
+});
+
 // After Store Registration
 hooks.after('Stores > Store Registration > Register a new Store', (transaction, done) => {
 	const response = JSON.parse(transaction.real.body);
@@ -125,7 +145,7 @@ hooks.before('Stores > Current Store Profile > Delete Account of the current Sto
 hooks.after('Stores > Current Store Profile > Delete Account of the current Store', (transaction, done) => {
 	fetch('http://127.0.0.1:8080/stores/register', {
 		method: 'POST',
-		body: JSON.stringify(createStoreDto),
+		body: JSON.stringify(createStoreDto()),
 		headers: {'Content-Type': 'application/json'},
 	}).then(res => res.json())
 		.then(json => {
@@ -163,6 +183,10 @@ hooks.before('Stores > Current Store Profile > Update Profile of the current Sto
 // Before adding a Product
 hooks.before('Stores > Current Store Products > Create a new Product', (transaction, done) => {
 	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
+	const body = JSON.parse(transaction.request.body);
+	body.cuisineUuid = cuisine.uuid;
+	delete body.ingredients;
+	transaction.request.body = JSON.stringify(body);
 	done();
 });
 
@@ -365,13 +389,36 @@ hooks.before('Stores > Current Store Sections > Retrieve Sections', (transaction
 });
 
 hooks.before('Customers > Add Product to Current Customer Cart > Add Product or Meal to Cart', (transaction, done) => {
-	transaction.request.headers.Authorization = `Bearer ${customer.jwt}`;
-	const body = JSON.parse(transaction.request.body);
-	body.productUuid = product.uuid;
-	delete body.mealUuid;
-	transaction.request.body = JSON.stringify(body);
-	done();
+	fetch('http://127.0.0.1:8080/stores/register', {
+		method: 'POST',
+		body: JSON.stringify(createStoreDto()),
+		headers: {'Content-Type': 'application/json'},
+	}).then(res => res.json())
+		.then(json => {
+			fetch('http://127.0.0.1:8080/stores/me/products', {
+				method: 'POST',
+				body: JSON.stringify({reference: 'BURGER', name: 'Burger', price: '12'}),
+				headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${json.data.jwt}`},
+			}).then(res => res.json())
+				.then(json => {
+					console.log(json)
+					client.query('SELECT * from product')
+						.then(res => {
+							transaction.request.headers.Authorization = `Bearer ${customer.jwt}`;
+							const body = JSON.parse(transaction.request.body);
+							body.productUuid = res.rows[0].uuid;
+							delete body.mealUuid;
+							delete body.optionUuids;
+							transaction.request.body = JSON.stringify(body);
+							done();
+						})
+						.catch(err => {
+							return done(err);
+						})
+				})
+		})
 });
+
 
 hooks.before('Customers > Remove Product from Current Customer Cart > Remove Product or Meal from Cart', (transaction, done) => {
 	transaction.request.headers.Authorization = `Bearer ${customer.jwt}`;

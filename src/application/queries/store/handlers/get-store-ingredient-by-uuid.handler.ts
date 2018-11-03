@@ -1,4 +1,3 @@
-/* tslint:disable:strict-type-predicates */
 import {ICommandHandler, CommandHandler} from '@nestjs/cqrs';
 import {getCustomRepository} from 'typeorm';
 import {GetStoreIngredientByUuidQuery} from '@letseat/application/queries/store';

@@ -1,4 +1,3 @@
-/* tslint:disable:no-unused */
 import {ICommandHandler, CommandHandler} from '@nestjs/cqrs';
 import {getCustomRepository} from 'typeorm';
 import {BadRequestException} from '@nestjs/common';
@@ -12,7 +11,7 @@ export class DeleteIngredientByUuidHandler implements ICommandHandler<DeleteIngr
 		const ingredientRepository = getCustomRepository(IngredientRepository);
 		const storeRepository = getCustomRepository(StoreRepository);
 		try {
-			const storeFound = await storeRepository.findOneByUuid(command.storeUuid, true);
+			const storeFound = await storeRepository.findOneByUuid(command.storeUuid);
 			await ingredientRepository.deleteStoreIngredientByUuid(storeFound.id, command.ingredientUuid);
 			resolve();
 		} catch (err) {

@@ -1,4 +1,3 @@
-/*tslint:disable*/
 import {ICommandHandler, CommandHandler} from '@nestjs/cqrs';
 import {getCustomRepository} from 'typeorm';
 import {NotFoundException} from '@nestjs/common';
