@@ -3,10 +3,11 @@ defaults: &defaults
     - image: circleci/node:10.6
       environment:
         NODE_ENV: test
+        CI: true
     - image: circleci/postgres:10.5-alpine-postgis
       environment:
-        POSTGRES_USER: circleci
-        POSTGRES_DB: test_circleci
+        POSTGRES_USER: postgres
+        POSTGRES_DB: test_letseat
     - image: circleci/redis:latest
   working_directory:  ~/letseat/api
 
@@ -107,6 +108,12 @@ jobs:
       - run:
           name: Install packages
           command: yarn install
+
+      - run:
+          name: Install Postgres Client
+          command: |
+            sudo apt-get update
+            sudo apt-get install postgresql-client
 
       - run:
           name: Install Redis-CLI

@@ -3,7 +3,8 @@ const fetch = require('node-fetch');
 const env = process.env;
 const hooks = require('hooks');
 const {Client} = require('pg');
-const client = new Client({
+const exec = require('child_process').exec;
+client = new Client({
 	user: env.TEST_DB_USERNAME,
 	host: env.TEST_DB_HOST,
 	database: env.TEST_DB_NAME,
@@ -30,7 +31,17 @@ const createStoreDto = function () {
 hooks.beforeAll((transactions, done) => {
 	client.connect()
 		.then(() => {
-			done()
+			if (env.CI) {
+				exec('psql --host localhost -U postgres -d test_letseat < ~/letseat/api/.circleci/seed.sql',
+					(error, stdout, stderr) => {
+					if (error !== null) {
+						console.log(`exec error: ${error}`);
+					}
+					console.log(`${stdout}`);
+					console.log(`${stderr}`);
+					done();
+				});
+			}
 		})
 		.catch(err => {
 			console.log(err);
