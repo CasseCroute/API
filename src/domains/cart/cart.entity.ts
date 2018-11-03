@@ -37,7 +37,7 @@ export class CartProduct extends Resource {
 		return Object.assign(this, args);
 	}
 
-	@Column('int2', {default: 1})
+	@Column('smallint', {default: 1, unsigned: true})
 	quantity: number;
 
 	@Column('text', {nullable: true})

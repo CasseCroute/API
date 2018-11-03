@@ -8,7 +8,6 @@ import {
 	TransactionManager
 } from 'typeorm';
 import {ResourceRepository} from '@letseat/infrastructure/repository/resource.repository';
-import {omitDeep} from '@letseat/shared/utils';
 import {Address} from '@letseat/domains/address/address.entity';
 
 @EntityRepository(Address)
@@ -19,8 +18,7 @@ export class AddressRepository extends Repository<Address> implements ResourceRe
 	}
 
 	public async findOneByUuid(addressUuid: string) {
-		const address = await this.findOne({where: {uuid: addressUuid}});
-		return omitDeep('id', address);
+		return this.findOne({where: {uuid: addressUuid}});
 	}
 
 	public async updateAddress(address: any, values: ObjectLiteral) {

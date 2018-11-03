@@ -3,10 +3,14 @@ import {TypeOrmModule} from '@nestjs/typeorm';
 import {APP_INTERCEPTOR} from '@nestjs/core';
 import {StoreModule} from '@letseat/interfaces/http/modules/store/store.module';
 import {CustomerModule} from '@letseat/interfaces/http/modules/customer/customer.module';
-import {TimeoutInterceptor} from '@letseat/application/queries/common/interceptors/timeout.interceptor';
-import {TransformInterceptor} from '@letseat/application/queries/common/interceptors/transform.interceptor';
+import {
+	ExcludeIdInterceptor,
+	TimeoutInterceptor,
+	TransformInterceptor
+} from '@letseat/application/queries/common/interceptors';
 import {APIKeyStrategy} from '@letseat/infrastructure/authorization/strategies/api-key.strategy';
 import {IngredientModule} from '@letseat/interfaces/http/modules/ingredient/ingredient.module';
+import {CuisineModule} from '@letseat/interfaces/http/modules/cuisine/cuisine.module';
 
 @Module({
 	imports: [
@@ -14,6 +18,7 @@ import {IngredientModule} from '@letseat/interfaces/http/modules/ingredient/ingr
 		StoreModule,
 		CustomerModule,
 		IngredientModule,
+		CuisineModule,
 		APIKeyStrategy,
 	],
 	providers: [
@@ -23,8 +28,12 @@ import {IngredientModule} from '@letseat/interfaces/http/modules/ingredient/ingr
 		},
 		{
 			provide: APP_INTERCEPTOR,
-			useClass: TransformInterceptor,
+			useClass: ExcludeIdInterceptor
 		},
+		{
+			provide: APP_INTERCEPTOR,
+			useClass: TransformInterceptor,
+		}
 	],
 })
 export class HTTPCoreModule {

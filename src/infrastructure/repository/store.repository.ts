@@ -12,7 +12,7 @@ import {
 import {Store} from '@letseat/domains/store/store.entity';
 import {ResourceRepository} from '@letseat/infrastructure/repository/resource.repository';
 import {CreateKioskCommand} from '@letseat/application/commands/store/create-kiosk.command';
-import {isObjectEmpty, omitDeep} from '@letseat/shared/utils';
+import {isObjectEmpty} from '@letseat/shared/utils';
 import {Ingredient} from '@letseat/domains/ingredient/ingredient.entity';
 import {Product} from '@letseat/domains/product/product.entity';
 import {LoggerService} from '@letseat/infrastructure/services';
@@ -22,22 +22,49 @@ import {UpdateMealDto} from '@letseat/domains/meal/dtos';
 import {MealRepository} from '@letseat/infrastructure/repository/meal.repository';
 import {Section} from '@letseat/domains/section/section.entity';
 import {CreateSectionDto} from '@letseat/domains/section/dtos/create-section.dto';
+import {Cuisine} from '@letseat/domains/cuisine/cuisine.entity';
+import {CreateProductDto} from '@letseat/domains/product/dtos';
+import {BadRequestException} from '@nestjs/common';
+import {CreateStoreDto} from '@letseat/domains/store/dtos';
 
 @EntityRepository(Store)
 export class StoreRepository extends Repository<Store> implements ResourceRepository {
-	@Transaction()
-	public async saveStore(store: Store, @TransactionManager() storeRepository: Repository<Store>) {
-		return storeRepository.save(store);
+	public async saveStore(store: Store & CreateStoreDto) {
+		const queryRunner = getConnection().createQueryRunner();
+		await queryRunner.startTransaction();
+		try {
+
+			const cuisines = store.cuisineUuids.map(async cuisineUuid => {
+				return await queryRunner.manager
+					.getRepository(Cuisine)
+					.findOneOrFail({where: {uuid: cuisineUuid}});
+			});
+
+			store.cuisines = await Promise.all(cuisines);
+
+			return this.save(store);
+
+		} catch (err) {
+			const logger = new LoggerService('Database');
+			logger.error(err.message, err.stack);
+
+			await queryRunner.rollbackTransaction();
+			await queryRunner.release();
+
+			throw new BadRequestException();
+		}
+
 	}
 
 	public async findOneByEmail(storeEmail: string) {
 		return this.findOne({where: {email: storeEmail}});
 	}
 
-	public async findByQueryParams(queryParams: any, selectId: boolean = false) {
-		const stores = await this.findOneOrFail({
+	public async findByQueryParams(queryParams: any) {
+		return this.find({
 			where: queryParams,
 			relations: [
+				'cuisines',
 				'sections',
 				'sections.meals',
 				'sections.meals.product',
@@ -46,13 +73,13 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 				'sections.products'
 			]
 		});
-		return selectId ? stores : omitDeep('id', stores);
 	}
 
-	public async findOneByUuid(storeUuid: string, selectId: boolean = false) {
-		const store = await this.findOneOrFail({
+	public async findOneByUuid(storeUuid: string) {
+		return this.findOneOrFail({
 			where: {uuid: storeUuid},
 			relations: [
+				'cuisines',
 				'sections',
 				'sections.meals',
 				'sections.meals.product',
@@ -61,7 +88,6 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 				'sections.products'
 			]
 		});
-		return selectId ? store : omitDeep('id', store);
 	}
 
 	public async getPassword(store: Store) {
@@ -117,23 +143,34 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 		return storeRepository.save(store as Store);
 	}
 
-	public async saveStoreProduct(storeUuid: string, productData: Product): Promise<any> {
+	public async saveStoreProduct(storeUuid: string, product: Product & CreateProductDto): Promise<any> {
 		const queryRunner = getConnection().createQueryRunner();
 		await queryRunner.startTransaction();
 		try {
-			const product = new Product({...productData});
+			const {cuisineUuid, ...data} = product;
+			const newProduct = new Product({...data});
 			const store = await this.findOneOrFail({where: {uuid: storeUuid}, relations: ['products']});
-			store!.products.push(product);
-			return queryRunner.manager.save([store as Store, product]).then(async (res) => {
-				await queryRunner.commitTransaction();
-				await queryRunner.release();
-				return res[1];
-			});
+
+			if (cuisineUuid) {
+				newProduct.cuisine = await queryRunner.manager
+					.getRepository(Cuisine)
+					.findOneOrFail({where: {uuid: cuisineUuid}});
+			}
+
+			store.products.push(newProduct);
+
+			return queryRunner.manager
+				.save([store, newProduct])
+				.then(async () => {
+					await queryRunner.commitTransaction();
+					await queryRunner.release();
+				});
 		} catch (err) {
 			const logger = new LoggerService('Database');
 			logger.error(err.message, err.stack);
 			await queryRunner.rollbackTransaction();
 			await queryRunner.release();
+			throw new BadRequestException();
 		}
 	}
 

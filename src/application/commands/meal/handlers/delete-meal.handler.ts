@@ -13,7 +13,7 @@ export class DeleteMealHandler implements ICommandHandler<DeleteMealCommand> {
 		const mealProductUuid = command.mealUuid;
 		const storeUuid = command.storeUuid;
 		try {
-			const storeFound = await storeRepository.findOneByUuid(storeUuid, true);
+			const storeFound = await storeRepository.findOneByUuid(storeUuid);
 			await mealRepository.deleteStoreMealByUuid(storeFound.id, mealProductUuid);
 			resolve();
 		} catch (err) {

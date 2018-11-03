@@ -9,7 +9,6 @@ import {
 } from '@letseat/domains/cart/cart.entity';
 import {AddProductOrMealToCartDto} from '@letseat/domains/cart/dtos/add-product-or-meal-to-cart.dto';
 import {Product} from '@letseat/domains/product/product.entity';
-import {omitDeep} from '@letseat/shared/utils';
 import {LoggerService} from '@letseat/infrastructure/services';
 import {Meal} from '@letseat/domains/meal/meal.entity';
 import {NotFoundException} from '@nestjs/common';
@@ -28,9 +27,8 @@ export class CartRepository extends Repository<Cart> {
 		'store'
 	];
 
-	public async findOneByUuid(uuid: string, relations?: string[], selectId = false) {
-		const cart = await this.findOneOrFail({where: {uuid}, relations});
-		return selectId ? cart : omitDeep('id', cart);
+	public async findOneByUuid(uuid: string, relations?: string[]) {
+		return this.findOneOrFail({where: {uuid}, relations});
 	}
 
 	public async createCart(customer: Customer, productDto: AddProductOrMealToCartDto): Promise<any> {

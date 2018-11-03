@@ -75,7 +75,8 @@ export const storeCreateDto: CreateStoreDto = {
 		city: 'Paris',
 		zipCode: '75006',
 		country: 'France'
-	}
+	},
+	cuisineUuids: ['a6f44fc0-d0bf-478d-bf5b-fd6e3702a59a']
 };
 
 export const storeLoginDto: any = {
