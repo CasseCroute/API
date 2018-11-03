@@ -103,6 +103,44 @@ This API returns both, machine-readable error codes and human-readable error mes
 }
 ```
 
+
+# Group Cuisines
+
+## Cuisines [/cuisines]
+
+### Retrieve list of Cuisines [GET]
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+|-------------------------|----------------------|
+| No                      | No                   |
+
++ Request (application/json; charset=utf-8)
+
++ Response 200 (application/json; charset=utf-8)
+    + Attributes (object)
+        + data (array[Cuisine])
+
+## Cuisine [/cuisines/{cuisineSlug}]
+
++ Parameters
+    + cuisineSlug: `american` (string) - Slug of the Cuisine.
+    
+### Retrieve list of Cuisine Stores [POST]
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+|-------------------------|----------------------|
+| No                      | No                   |
+
++ Request (application/json; charset=utf-8)
+
++ Response 200 (application/json; charset=utf-8)
+    + Attributes (object)
+        + data (object)
+ 
 # Group Stores
 
 ## Store Registration [/stores/register]
@@ -1022,8 +1060,14 @@ Delete the current Customer account.
         + quantity: `3` (number, required) - Ingredient quantity needed for the product.
         
 ### Ingredient (Resource)
-+ name: `Avocado` (string, required) - Name of the ingredient.
-+ quantity: `20` (number, required) - Quantity available for the ingredient.
++ name: `Avocado` (string, required) - Name of the Ingredient.
++ quantity: `20` (number, required) - Quantity available for the Ingredient.
+
+### Cuisine
++ uuid (string, required): `88d2fff7-92ba-462a-adda-aba05e646dde` - Universal Unique Identifier.
++ name: `Pizza` (string, required) - Name of the Cuisine.
++ slug: `pizza` (string, required) - Slug of the Cuisine
++ imageUrl: `http://cdn.images/pizza.png` (string, optional) - Image URL of the Cuisine.
 
 ### Customer (Resource)
 + firstName: `John` (string, required) - First name of the customer.

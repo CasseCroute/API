@@ -99,6 +99,7 @@ hooks.before('Stores > Store Registration > Register a new Store', (transaction,
 	client.query('SELECT * from cuisine')
 		.then(res => {
 			cuisine['uuid'] = res.rows[0].uuid;
+			cuisine['slug'] = res.rows[0].slug;
 			const body = JSON.parse(transaction.request.body);
 			body.cuisineUuids.push(cuisine.uuid);
 			transaction.request.body = JSON.stringify(body);
@@ -401,7 +402,6 @@ hooks.before('Customers > Add Product to Current Customer Cart > Add Product or 
 				headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${json.data.jwt}`},
 			}).then(res => res.json())
 				.then(json => {
-					console.log(json)
 					client.query('SELECT * from product')
 						.then(res => {
 							transaction.request.headers.Authorization = `Bearer ${customer.jwt}`;
@@ -435,6 +435,20 @@ hooks.before('Stores > Current Store Section > Retrieve a Section by UUID', (tra
 	transaction.fullPath = `/stores/me/sections/${section.uuid}`;
 	done();
 });
+
+
+hooks.before('Cuisines > Cuisine > Retrieve list of Cuisine Stores', (transaction, done) => {
+	client.query('SELECT * from cuisine')
+		.then(res => {
+			transaction.request.uri = `/cuisines/${res.rows[0].slug}`;
+			transaction.fullPath = `/cuisines/${res.rows[0].slug}`;
+			done();
+		})
+		.catch(err => {
+			return done(err);
+		})
+});
+
 hooks.afterAll((transactions, done) => {
 	client.query(
 		'TRUNCATE TABLE store CASCADE;' +

@@ -10,14 +10,9 @@ export class CuisineRepository extends Repository<Cuisine> {
 	public async findCuisineStoresByCuisineSlug(cuisineSlug: string) {
 		return this.createQueryBuilder('cuisine')
 			.leftJoinAndSelect('cuisine.stores', 'stores')
-			.leftJoinAndSelect('stores.sections', 'sections')
-			.leftJoinAndSelect('sections.meals', 'meals')
-			.leftJoinAndSelect('meals.product', 'product')
-			.leftJoinAndSelect('meals.subsections', 'subsections')
-			.leftJoinAndSelect('subsections.options', 'options')
-			.leftJoinAndSelect('sections.products', 'products')
+			.leftJoinAndSelect('stores.address', 'sections')
 			.where('cuisine.slug = :cuisineSlug', {cuisineSlug})
-			.getMany();
+			.getOne();
 	}
 
 }
