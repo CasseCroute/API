@@ -364,7 +364,16 @@ hooks.before('Stores > Current Store Sections > Retrieve Sections', (transaction
 	done();
 });
 
-hooks.before('Customers > Add to Current Customer Cart > Add Product or Meal to Cart', (transaction, done) => {
+hooks.before('Customers > Add Product to Current Customer Cart > Add Product or Meal to Cart', (transaction, done) => {
+	transaction.request.headers.Authorization = `Bearer ${customer.jwt}`;
+	const body = JSON.parse(transaction.request.body);
+	body.productUuid = product.uuid;
+	delete body.mealUuid;
+	transaction.request.body = JSON.stringify(body);
+	done();
+});
+
+hooks.before('Customers > Remove Product from Current Customer Cart > Remove Product or Meal from Cart', (transaction, done) => {
 	transaction.request.headers.Authorization = `Bearer ${customer.jwt}`;
 	const body = JSON.parse(transaction.request.body);
 	body.productUuid = product.uuid;

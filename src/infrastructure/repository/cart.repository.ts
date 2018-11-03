@@ -14,9 +14,20 @@ import {LoggerService} from '@letseat/infrastructure/services';
 import {Meal} from '@letseat/domains/meal/meal.entity';
 import {NotFoundException} from '@nestjs/common';
 import {MealSubsectionOption} from '@letseat/domains/meal/meal-subsection-option.entity';
+import {RemoveProductOrMealToCartDto} from '@letseat/domains/cart/dtos/remove-product-or-meal-to-cart.dto';
 
 @EntityRepository(Cart)
 export class CartRepository extends Repository<Cart> {
+	private readonly selectRelations: string[] = [
+		'products',
+		'products.product',
+		'meals',
+		'meals.meal',
+		'meals.ingredientOptions',
+		'meals.productOptions',
+		'store'
+	];
+
 	public async findOneByUuid(uuid: string, relations?: string[], selectId = false) {
 		const cart = await this.findOneOrFail({where: {uuid}, relations});
 		return selectId ? cart : omitDeep('id', cart);
@@ -67,15 +78,7 @@ export class CartRepository extends Repository<Cart> {
 			cart.products && cart.products.length > 0
 				? cart.products.push(cartProduct) : cart.products = [cartProduct];
 			await this.save(cart);
-			return this.findOneByUuid(cart.uuid, [
-				'products',
-				'products.product',
-				'meals',
-				'meals.meal',
-				'meals.ingredientOptions',
-				'meals.productOptions',
-				'store'
-			]);
+			return this.findOneByUuid(cart.uuid, this.selectRelations);
 		} catch (err) {
 			const logger = new LoggerService('Database');
 			logger.error(err.message, err.stack);
@@ -104,15 +107,7 @@ export class CartRepository extends Repository<Cart> {
 			}
 
 			await this.save(cart);
-			return this.findOneByUuid(cart.uuid, [
-				'products',
-				'products.product',
-				'meals',
-				'meals.meal',
-				'meals.ingredientOptions',
-				'meals.productOptions',
-				'store'
-			]);
+			return this.findOneByUuid(cart.uuid, this.selectRelations);
 		} catch (err) {
 			const logger = new LoggerService('Database');
 			logger.error(err.message, err.stack);
@@ -151,6 +146,20 @@ export class CartRepository extends Repository<Cart> {
 			logger.error(err.message, err.stack);
 		}
 		return;
+	}
+
+	public async removeProductToCart(cart: Cart, product: RemoveProductOrMealToCartDto) {
+		try {
+			if (product.productUuid) {
+				await getRepository(CartProduct).delete({uuid: product.productUuid});
+			} else if (product.mealUuid) {
+				await getRepository(CartMeal).delete({uuid: product.mealUuid});
+			}
+			return this.findOneByUuid(cart.uuid, this.selectRelations);
+		} catch (err) {
+			const logger = new LoggerService('Database');
+			logger.error(err.message, err.stack);
+		}
 	}
 
 	public async findCartProductStore(productUuid: string, cart: Cart): Promise<any> {

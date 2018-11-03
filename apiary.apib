@@ -846,7 +846,7 @@ Retrieve the details of an existing Customer.
             (Customer)
 
 
-## Add to Current Customer Cart [/customers/me/cart/add]
+## Add Product to Current Customer Cart [/customers/me/cart/add]
 
 ### Add Product or Meal to Cart [POST]
 
@@ -868,6 +868,29 @@ Add Product to Cart or Meal to Cart. Note that `productUuid` and `mealUuid` cann
         + mealUuid: `545a0db2-9298-4660-93c8-5e0ba94139b0` (string, optional) - UUID of the Meal to add to Cart.
         + quantity: `2` (number, required)
         + optionUuids: `55a724d7-5106-42bc-8183-fcc85717a230` (array[string], optional) - A set of string values corresponding to options UUIDs.
+
++ Response 200 (application/json; charset=utf-8)
+
+## Remove Product from Current Customer Cart [/customers/me/cart/remove]
+
+### Remove Product or Meal from Cart [POST]
+
+Remove Product or Meal from Cart. Note: `productUuid` and `mealUuid` cannot be used at the same time. Only one attribute MUST be provided
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+| ----------------------- | -------------------- |
+| Yes (JWT)               | No                   |
+
++ Request (application/json; charset=utf-8)
+    + Headers
+
+            Authorization: Bearer <JWT>
+            
+    + Attributes
+        + productUuid: `2911d618-ef48-4a50-b388-2fbf081bf1fc` (string, optional) - UUID of the Product to add to Cart.
+        + mealUuid: `545a0db2-9298-4660-93c8-5e0ba94139b0` (string, optional) - UUID of the Meal to add to Cart.
 
 + Response 200 (application/json; charset=utf-8)
 
