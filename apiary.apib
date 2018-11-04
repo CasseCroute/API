@@ -27,7 +27,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhNnZoQW8zR
 
 ### Public Claims
 
-+ `uuid` - The uuid ( *Universal Unique Indentifier* ) claim identifies the uuid of resource.
++ `uuid` - The uuid ( *Universal Unique Identifier* ) claim identifies the uuid of resource.
 + `email` - The email claim identifies the email of resource.
 
 ### Private Claims
@@ -103,6 +103,44 @@ This API returns both, machine-readable error codes and human-readable error mes
 }
 ```
 
+
+# Group Cuisines
+
+## Cuisines [/cuisines]
+
+### Retrieve list of Cuisines [GET]
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+|-------------------------|----------------------|
+| No                      | No                   |
+
++ Request (application/json; charset=utf-8)
+
++ Response 200 (application/json; charset=utf-8)
+    + Attributes (object)
+        + data (array[Cuisine])
+
+## Cuisine [/cuisines/{cuisineSlug}]
+
++ Parameters
+    + cuisineSlug: `american` (string) - Slug of the Cuisine.
+    
+### Retrieve list of Cuisine Stores [POST]
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+|-------------------------|----------------------|
+| No                      | No                   |
+
++ Request (application/json; charset=utf-8)
+
++ Response 200 (application/json; charset=utf-8)
+    + Attributes (object)
+        + data (object)
+ 
 # Group Stores
 
 ## Store Registration [/stores/register]
@@ -121,6 +159,7 @@ This API returns both, machine-readable error codes and human-readable error mes
         + email: `hello@letseat.co` (string, required) - Email of the store.
         + phoneNumber: `0134724336` (string, required) - Phone number of the store.
         + password: `f8e2cfacc6` (string, required) - Password of the store.
+        + cuisineUuids: `add6dfd0-b82f-40ea-b677-c6abd003abc7` (array[string], required) - UUIDs of the Cuisine 
         + address (object)
             + street: `24, rue des Beauxchamps` (string, required) - Street name where the store is located.
             + city: `Paris` (string, required) - City where the store belongs to.
@@ -240,6 +279,7 @@ Allows Stores to create a Product.
         + name: `Burger` (string, required) - Name of the Product.
         + price: `9.70` (string, required) - Price of the Product.
         + description: `A delicious burger with tasty hot sauce` (string, optional) - Description of the Product.
+        + cuisineUuid: `add6dfd0-b82f-40ea-b677-c6abd003abc7` (string, optional) - UUIDs of the Product Cuisine.
         + ingredients (array, optional)
             + (object)
                 + ingredientUuid: `f5b06da6-e619-4e97-a30e-116872204e11` (string, required) - UUID of the Ingredient included in the Product.
@@ -1020,8 +1060,14 @@ Delete the current Customer account.
         + quantity: `3` (number, required) - Ingredient quantity needed for the product.
         
 ### Ingredient (Resource)
-+ name: `Avocado` (string, required) - Name of the ingredient.
-+ quantity: `20` (number, required) - Quantity available for the ingredient.
++ name: `Avocado` (string, required) - Name of the Ingredient.
++ quantity: `20` (number, required) - Quantity available for the Ingredient.
+
+### Cuisine
++ uuid (string, required): `88d2fff7-92ba-462a-adda-aba05e646dde` - Universal Unique Identifier.
++ name: `Pizza` (string, required) - Name of the Cuisine.
++ slug: `pizza` (string, required) - Slug of the Cuisine
++ imageUrl: `http://cdn.images/pizza.png` (string, optional) - Image URL of the Cuisine.
 
 ### Customer (Resource)
 + firstName: `John` (string, required) - First name of the customer.

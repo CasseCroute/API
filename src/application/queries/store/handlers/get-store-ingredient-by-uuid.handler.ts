@@ -7,12 +7,12 @@ import {NotFoundException} from '@nestjs/common';
 
 @CommandHandler(GetStoreIngredientByUuidQuery)
 export class GetStoreIngredientByUuidHandler implements ICommandHandler<GetStoreIngredientByUuidQuery> {
-	async execute(command: GetStoreIngredientByUuidQuery, resolve: (value?) => void) {
+	async execute(query: GetStoreIngredientByUuidQuery, resolve: (value?) => void) {
 		const ingredientRepository = getCustomRepository(IngredientRepository);
 		try {
-			const ingredient = command.isPublic
-				? await ingredientRepository.findStoreIngredientByUuidPublic(command.storeUuid, command.ingredientUuid)
-				: await ingredientRepository.findStoreIngredientByUuid(command.storeUuid, command.ingredientUuid);
+			const ingredient = query.isPublic
+				? await ingredientRepository.findStoreIngredientByUuidPublic(query.storeUuid, query.ingredientUuid)
+				: await ingredientRepository.findStoreIngredientByUuid(query.storeUuid, query.ingredientUuid);
 
 			if (typeof ingredient === undefined) {
 				resolve(Promise.reject(new NotFoundException('Ingredient not found')));

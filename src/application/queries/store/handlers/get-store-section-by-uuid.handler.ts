@@ -1,4 +1,4 @@
-/*tslint:disable*/
+/* tslint:disable:strict-type-predicates */
 import {ICommandHandler, CommandHandler} from '@nestjs/cqrs';
 import {getCustomRepository} from 'typeorm';
 import {NotFoundException} from '@nestjs/common';
@@ -7,10 +7,10 @@ import {GetStoreSectionByUuidQuery} from '@letseat/application/queries/store/get
 
 @CommandHandler(GetStoreSectionByUuidQuery)
 export class GetStoreSectionByUuidHandler implements ICommandHandler<GetStoreSectionByUuidQuery> {
-	async execute(command: GetStoreSectionByUuidQuery, resolve: (value?) => void) {
+	async execute(query: GetStoreSectionByUuidQuery, resolve: (value?) => void) {
 		const sectionRepository = getCustomRepository(SectionRepository);
 		try {
-			const section = await sectionRepository.findStoreSectionByUuid(command.storeUuid, command.sectionUuid);
+			const section = await sectionRepository.findStoreSectionByUuid(query.storeUuid, query.sectionUuid);
 			typeof section === undefined
 				? resolve(Promise.reject(new NotFoundException('Section not found')))
 				: resolve(section);

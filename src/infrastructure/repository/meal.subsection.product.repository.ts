@@ -1,35 +1,22 @@
 /* tslint:disable:no-unused */
 import {
-	EntityRepository, getConnection, getManager, getRepository,
+	EntityRepository,
 	Repository,
 	Transaction,
 } from 'typeorm';
 import {ResourceRepository} from '@letseat/infrastructure/repository/resource.repository';
-import {omitDeep} from '@letseat/shared/utils';
-import {Meal} from '@letseat/domains/meal/meal.entity';
-import {MealSubsection} from '@letseat/domains/meal/meal-subsection.entity';
 import {LoggerService} from '@letseat/infrastructure/services';
 import {MealSubsectionOptionProduct} from '@letseat/domains/meal/meal-subsection-option-product.entity';
-import {MealSubsectionOption} from '@letseat/domains/meal/meal-subsection-option.entity';
-import {Product} from '@letseat/domains/product/product.entity';
-import {Ingredient} from '@letseat/domains/ingredient/ingredient.entity';
-import {MealSubsectionOptionIngredient} from '@letseat/domains/meal/meal-subsection-option-ingredient.entity';
 import {
-	CreateMealSubsectionOptionIngredientDto,
-	CreateMealSubsectionOptionProductDto,
-	UpdateMealSubsectionDto,
-	UpdateMealSubsectionOptionIngredientDto,
 	UpdateMealSubsectionOptionProductDto
 } from '@letseat/domains/meal/dtos';
-import {Store} from '@letseat/domains/store/store.entity';
 
 @EntityRepository(MealSubsectionOptionProduct)
 export class MealSubsectionOptionProductRepository extends Repository<MealSubsectionOptionProduct> implements ResourceRepository {
 	@Transaction()
 
-	public async findOneByUuid(mealSubscetionOptionProductUuid: string, selectId = false) {
-		const mealSubscetionOptionProduct = await this.findOne({where: {uuid: mealSubscetionOptionProductUuid}});
-		return selectId ? mealSubscetionOptionProduct : omitDeep('id', mealSubscetionOptionProduct);
+	public async findOneByUuid(mealSubscetionOptionProductUuid: string) {
+		return this.findOne({where: {uuid: mealSubscetionOptionProductUuid}});
 	}
 
 	/**

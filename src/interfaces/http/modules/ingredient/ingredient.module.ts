@@ -1,6 +1,6 @@
 import {Module, OnModuleInit} from '@nestjs/common';
 import {TypeOrmModule} from '@nestjs/typeorm';
-import {CommandBus, CQRSModule, EventBus} from '@nestjs/cqrs';
+import {CommandBus, CQRSModule} from '@nestjs/cqrs';
 import {ModuleRef} from '@nestjs/core';
 import {IngredientRepository} from '@letseat/infrastructure/repository/ingredient.repository';
 import {Ingredient} from '@letseat/domains/ingredient/ingredient.entity';
@@ -27,12 +27,10 @@ export class IngredientModule implements OnModuleInit {
 	constructor(
 		private readonly moduleRef: ModuleRef,
 		private readonly command$: CommandBus,
-		private readonly event$: EventBus,
 	) {}
 
 	onModuleInit() {
 		this.command$.setModuleRef(this.moduleRef);
-		this.event$.setModuleRef(this.moduleRef);
 
 		this.command$.register(IngredientCommandHandlers);
 		this.command$.register(ResourceQueryHandlers);

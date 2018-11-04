@@ -21,13 +21,13 @@ export class Section extends Resource {
 
 	@ManyToMany(type => Product, product => product.sections)
 	@JoinTable({
-		name: 'sections_products', joinColumns: [{name: 'section_id'}], inverseJoinColumns: [{name: 'product_id'}]
+		name: 'sections_products', joinColumns: [{name: 'id_section'}], inverseJoinColumns: [{name: 'id_product'}]
 	})
 	products: Product[];
 
 	@ManyToMany(type => Meal, meal => meal.sections)
 	@JoinTable({
-		name: 'sections_meals', joinColumns: [{name: 'section_id'}], inverseJoinColumns: [{name: 'meal_id'}]
+		name: 'sections_meals', joinColumns: [{name: 'id_section'}], inverseJoinColumns: [{name: 'id_meal'}]
 	})
 	meals: Meal[];
 

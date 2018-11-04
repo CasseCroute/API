@@ -6,7 +6,6 @@ import {
 	TransactionManager, createQueryBuilder, getManager, getCustomRepository,
 } from 'typeorm';
 import {ResourceRepository} from '@letseat/infrastructure/repository/resource.repository';
-import {omitDeep} from '@letseat/shared/utils';
 import {Ingredient} from '@letseat/domains/ingredient/ingredient.entity';
 import {Product} from '@letseat/domains/product/product.entity';
 import {ProductIngredient} from '@letseat/domains/product-ingredient/product-ingredient.entity';
@@ -18,9 +17,8 @@ import {IngredientRepository} from "@letseat/infrastructure/repository/ingredien
 export class ProductIngredientRepository extends Repository<ProductIngredient> implements ResourceRepository {
 	@Transaction()
 
-	public async findOneByUuid(productIngredientUuid: string, selectId: boolean = false) {
-		const productIngredient = await this.findOne({where: {uuid: productIngredientUuid}}) as ProductIngredient;
-		return selectId ? productIngredient : omitDeep('id', productIngredient);
+	public async findOneByUuid(productIngredientUuid: string) {
+		return this.findOne({where: {uuid: productIngredientUuid}});
 	}
 
 	@Transaction()
@@ -55,7 +53,7 @@ export class ProductIngredientRepository extends Repository<ProductIngredient> i
 
 		product.ingredients.forEach(async (productIng) => {
 
-			const ingredientFound = await ingredientRepository.findStoreIngredientByUuid(storeUuid, productIng.ingredientUuid,true);
+			const ingredientFound = await ingredientRepository.findStoreIngredientByUuid(storeUuid, productIng.ingredientUuid);
 
 			if(productIng.quantity && ingredientFound){
 

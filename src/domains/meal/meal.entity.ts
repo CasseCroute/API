@@ -26,7 +26,7 @@ export class Meal extends Resource {
 	@Column('decimal', {precision: 10, scale: 2, unsigned: true})
 	price: number;
 
-	@Column('int', {default: 1, name: 'product_quantity', unsigned: true})
+	@Column('smallint', {default: 1, name: 'product_quantity', unsigned: true})
 	productQuantity: number;
 
 	@ManyToOne(type => Store, store => store.meals, {nullable: false, cascade: ['insert'], onDelete: 'CASCADE'})

@@ -1,4 +1,3 @@
-/* tslint:disable:no-unused */
 import {ICommandHandler, CommandHandler} from '@nestjs/cqrs';
 import {getCustomRepository} from 'typeorm';
 import {BadRequestException} from '@nestjs/common';
@@ -13,7 +12,7 @@ export class UpdateIngredientHandler implements ICommandHandler<UpdateIngredient
 		const storeRepository = getCustomRepository(StoreRepository);
 
 		try {
-			const storeFound = await storeRepository.findOneByUuid(command.storeUuid, true);
+			const storeFound = await storeRepository.findOneByUuid(command.storeUuid);
 			const updatedIngredient = await ingredientRepository.updateIngredient(storeFound.id, command.ingredientUuid, command.ingredient);
 			resolve();
 			return updatedIngredient;
