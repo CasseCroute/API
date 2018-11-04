@@ -1,22 +1,23 @@
 import {ICommandHandler, CommandHandler} from '@nestjs/cqrs';
 import {CreateStoreCommand} from '../create-store.command';
-import {getCustomRepository} from 'typeorm';
+import {InjectRepository} from '@nestjs/typeorm';
 import {BadRequestException} from '@nestjs/common';
-import slugify from 'slugify';
 import {StoreRepository} from '@letseat/infrastructure/repository/store.repository';
 import {AuthService, CryptographerService} from '@letseat/infrastructure/authorization';
-import {cryptoRandomString} from '@letseat/shared/utils';
+import {slugify} from '@letseat/shared/utils';
 import {Store} from '@letseat/domains/store/store.entity';
 
 @CommandHandler(CreateStoreCommand)
 export class CreateStoreHandler implements ICommandHandler<CreateStoreCommand> {
+	constructor(@InjectRepository(StoreRepository) private readonly storeRepository: StoreRepository) {
+	}
+
 	async execute(command: CreateStoreCommand, resolve: (value?) => void) {
-		const storeRepository = getCustomRepository(StoreRepository);
 		command.password = await CryptographerService.hashPassword(command.password);
-		command.slug = `${slugify(command.name, {replacement: '-', lower: true})}-${cryptoRandomString(10)}`;
+		command.slug = slugify(command.name);
 
 		try {
-			const storeSaved = await storeRepository.saveStore(command as any);
+			const storeSaved = await this.storeRepository.saveStore(command as any);
 			const jwt = AuthService.createToken<Store>(storeSaved);
 			resolve(jwt);
 		} catch (err) {

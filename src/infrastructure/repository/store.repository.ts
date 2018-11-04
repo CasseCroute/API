@@ -53,7 +53,10 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 
 			throw new BadRequestException();
 		}
+	}
 
+	public async findAll(){
+		return this.find({relations: ['cuisines']});
 	}
 
 	public async findOneByEmail(storeEmail: string) {

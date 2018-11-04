@@ -39,9 +39,9 @@ hooks.beforeAll((transactions, done) => {
 					}
 					console.log(`${stdout}`);
 					console.log(`${stderr}`);
-					done();
 				});
 			}
+			done();
 		})
 		.catch(err => {
 			console.log(err);
