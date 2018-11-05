@@ -55,7 +55,7 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 		}
 	}
 
-	public async findAll(){
+	public async findAll() {
 		return this.find({relations: ['cuisines']});
 	}
 
@@ -164,9 +164,11 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 
 			return queryRunner.manager
 				.save([store, newProduct])
-				.then(async () => {
+				.then(async res => {
 					await queryRunner.commitTransaction();
 					await queryRunner.release();
+					// Return the Product inserted
+					return res[1];
 				});
 		} catch (err) {
 			const logger = new LoggerService('Database');
