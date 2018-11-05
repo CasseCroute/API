@@ -2,7 +2,7 @@ import winston, {Logger, LoggerOptions} from 'winston';
 import * as chalk from 'chalk';
 import PrettyError from 'pretty-error';
 import * as fs from 'fs';
-import {Injectable, LoggerService as NestLoggerService, Optional} from '@nestjs/common';
+import {LoggerService as NestLoggerService, Optional} from '@nestjs/common';
 import {env} from '@letseat/shared/utils';
 
 const PATHS = {
