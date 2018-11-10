@@ -14,7 +14,7 @@ export class DeleteMealHandler implements ICommandHandler<DeleteMealCommand> {
 		const storeUuid = command.storeUuid;
 		try {
 			const storeFound = await storeRepository.findOneByUuid(storeUuid);
-			await mealRepository.deleteStoreMealByUuid(storeFound.id, mealProductUuid);
+			await mealRepository.deleteStoreMealByUuid(storeFound!.id, mealProductUuid);
 			resolve();
 		} catch (err) {
 			resolve(Promise.reject(new BadRequestException(err.message)));

@@ -13,7 +13,7 @@ export class UpdateIngredientHandler implements ICommandHandler<UpdateIngredient
 
 		try {
 			const storeFound = await storeRepository.findOneByUuid(command.storeUuid);
-			const updatedIngredient = await ingredientRepository.updateIngredient(storeFound.id, command.ingredientUuid, command.ingredient);
+			const updatedIngredient = await ingredientRepository.updateIngredient(storeFound!.id, command.ingredientUuid, command.ingredient);
 			resolve();
 			return updatedIngredient;
 		} catch (err) {
