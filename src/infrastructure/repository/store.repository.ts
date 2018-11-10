@@ -78,19 +78,35 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 		});
 	}
 
-	public async findOneByUuid(storeUuid: string) {
-		return this.findOneOrFail({
-			where: {uuid: storeUuid},
-			relations: [
-				'cuisines',
-				'sections',
-				'sections.meals',
-				'sections.meals.product',
-				'sections.meals.subsections',
-				'sections.meals.subsections.options',
-				'sections.products'
-			]
-		});
+	public async findOneByUuid(storeUuid: string): Promise<Store | undefined> {
+		const store = await this.createQueryBuilder('store')
+			.leftJoinAndSelect('store.cuisines', 'cuisines')
+			.leftJoinAndSelect('store.sections', 'sections')
+			.leftJoinAndSelect('sections.meals', 'meals')
+			.leftJoinAndSelect('meals.subsections', 'subsections')
+			.innerJoinAndSelect('subsections.options', 'options')
+			.innerJoinAndSelect('options.products', 'optionProducts')
+			.innerJoinAndSelect('optionProducts.product', 'optionProduct')
+			.innerJoinAndSelect('options.ingredients', 'optionIngredients')
+			.innerJoinAndSelect('optionIngredients.ingredient', 'optionIngredient')
+			.leftJoinAndSelect('sections.products', 'products')
+			.where('store.uuid = :uuid', {uuid: storeUuid})
+			.getOne();
+
+		if (!store){
+			return this.findOneOrFail({
+				where: {uuid: storeUuid},
+				relations: [
+					'cuisines',
+					'sections',
+					'sections.meals',
+					'sections.meals.product',
+					'sections.meals.subsections',
+					'sections.meals.subsections.options',
+					'sections.products'
+				]
+			});
+		}
 	}
 
 	public async getPassword(store: Store) {
@@ -98,8 +114,7 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 	}
 
 	public async getAddress(storeUuid: string) {
-		return this
-			.createQueryBuilder('store')
+		return this.createQueryBuilder('store')
 			.leftJoinAndSelect('store.address', 'address')
 			.where('store.uuid = :uuid', {uuid: storeUuid})
 			.getOne();

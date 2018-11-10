@@ -12,7 +12,9 @@ export class DeleteIngredientByUuidHandler implements ICommandHandler<DeleteIngr
 		const storeRepository = getCustomRepository(StoreRepository);
 		try {
 			const storeFound = await storeRepository.findOneByUuid(command.storeUuid);
-			await ingredientRepository.deleteStoreIngredientByUuid(storeFound.id, command.ingredientUuid);
+			if (storeFound) {
+				await ingredientRepository.deleteStoreIngredientByUuid(storeFound.id, command.ingredientUuid);
+			}
 			resolve();
 		} catch (err) {
 			resolve(Promise.reject(new BadRequestException(err.message)));
