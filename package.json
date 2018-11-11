@@ -33,7 +33,7 @@
     "@nestjs/typeorm": "^5.2.2",
     "bcrypt": "^3.0.2",
     "chalk": "^2.4.1",
-    "class-transformer": "^0.1.10",
+    "class-transformer": "^0.2.0",
     "class-validator": "^0.9.1",
     "config": "^2.0.1",
     "crypto": "^1.0.1",
