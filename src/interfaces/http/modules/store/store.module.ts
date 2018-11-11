@@ -14,10 +14,12 @@ import {ProductCommandHandlers} from '@letseat/application/commands/product/hand
 import {MealCommandHandlers} from '@letseat/application/commands/meal/handlers';
 import {MealsQueryHandlers} from '@letseat/application/queries/meal/handlers';
 import {SectionCommandHandlers} from '@letseat/application/commands/section/handlers';
+import {ProductIngredientRepository} from '@letseat/infrastructure/repository/product-ingredient.repository';
+import {LoggerService} from '@letseat/infrastructure/services';
 
 @Module({
 	imports: [
-		TypeOrmModule.forFeature([Store, StoreRepository]),
+		TypeOrmModule.forFeature([Store, StoreRepository, ProductIngredientRepository]),
 		CQRSModule
 	],
 	providers: [
@@ -29,7 +31,8 @@ import {SectionCommandHandlers} from '@letseat/application/commands/section/hand
 		...ProductCommandHandlers,
 		...MealCommandHandlers,
 		...MealsQueryHandlers,
-		...SectionCommandHandlers
+		...SectionCommandHandlers,
+		LoggerService
 	],
 	controllers: [
 		...StoreContollers
