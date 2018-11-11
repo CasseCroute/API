@@ -39,8 +39,8 @@ export class CustomerRepository extends Repository<Customer> {
 		customer = await this.getCart(uuid);
 		if (customer.cart) {
 			customer = await this.findOne({relations: ['cart'], where: {uuid}});
-			customer!.cart = await getCustomRepository(CartRepository)
-				.findOneByUuid(customer!.cart.uuid, this.cartRelations);
+			customer.cart = await getCustomRepository(CartRepository)
+				.findOneByUuid(customer.cart.uuid, this.cartRelations);
 			return customer;
 		}
 		return this.findOneOrFail({where: {uuid}});
