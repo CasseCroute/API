@@ -15,7 +15,7 @@ export class Order extends Resource {
 		return Object.assign(this, args);
 	}
 
-	@Column({length: 16})
+	@Column({length: 6})
 	reference: string;
 
 	@Column('decimal', {precision: 10, scale: 2, unsigned: true, name: 'total_paid'})
@@ -24,22 +24,22 @@ export class Order extends Resource {
 	@Column('decimal', {precision: 10, scale: 2, unsigned: true, name: 'delivery_fees', default: 0})
 	deliveryFees: number;
 
-	@Column({length: 128, name: 'first_name'})
+	@Column({length: 128, name: 'first_name', nullable: true})
 	firstName: string;
 
-	@Column({length: 128, name: 'last_name'})
+	@Column({length: 128, name: 'last_name', nullable: true})
 	lastName: string;
 
-	@Column({length: 258, name: 'delivery_address'})
+	@Column({length: 258, name: 'delivery_address', nullable: true})
 	deliveryAddress: string;
 
-	@Column({length: 256})
+	@Column({length: 256, nullable: true})
 	email: string;
 
 	@Column('boolean', {name: 'is_guest', default: false})
 	isGuest: boolean;
 
-	@Column({name: 'phone_number'})
+	@Column({name: 'phone_number', nullable: true})
 	phoneNumber: string;
 
 	@Column('text', {nullable: true, name: 'delivery_note'})

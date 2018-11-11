@@ -33,7 +33,7 @@ export class OrderRepository extends Repository<Order> implements ResourceReposi
 
 		order.totalPaid = 0;
 
-		order.reference = cryptoRandomString(16).toUpperCase();
+		order.reference = cryptoRandomString(6).toUpperCase();
 		return this.save(order).then(res => {
 			if (customer.cart.meals && customer.cart.meals.length > 0) {
 				customer.cart.meals.forEach(async meal => {
