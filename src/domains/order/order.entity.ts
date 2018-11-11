@@ -1,3 +1,4 @@
+/* tslint:disable */
 import {Entity, Column, ManyToOne, JoinColumn, OneToMany} from 'typeorm';
 import {Resource} from '@letseat/domains/resource/resource';
 import {Store} from '@letseat/domains/store/store.entity';
@@ -18,15 +19,15 @@ export class Order extends Resource {
 	reference: string;
 
 	@Column('decimal', {precision: 10, scale: 2, unsigned: true, name: 'total_paid'})
-	totalPaid: string;
+	totalPaid: number;
 
-	@Column('decimal', {precision: 10, scale: 2, unsigned: true, name: 'delivery_fees'})
-	deliveryFees: string;
+	@Column('decimal', {precision: 10, scale: 2, unsigned: true, name: 'delivery_fees', default: 0})
+	deliveryFees: number;
 
-	@Column({length: 128})
+	@Column({length: 128, name: 'first_name'})
 	firstName: string;
 
-	@Column({length: 128})
+	@Column({length: 128, name: 'last_name'})
 	lastName: string;
 
 	@Column({length: 258, name: 'delivery_address'})
@@ -41,7 +42,7 @@ export class Order extends Resource {
 	@Column({name: 'phone_number'})
 	phoneNumber: string;
 
-	@Column('text', {nullable: true})
+	@Column('text', {nullable: true, name: 'delivery_note'})
 	deliveryNote?: string;
 
 	@Column('boolean', {name: 'is_take_away', default: false})
@@ -87,7 +88,7 @@ export class OrderDetailProduct extends Resource {
 
 	@ManyToOne(() => Product, {onDelete: 'CASCADE'})
 	@JoinColumn({name: 'id_product'})
-	product: Order;
+	product: Product;
 }
 
 @Entity()
@@ -128,7 +129,7 @@ export class OrderDetailMealOptionProduct extends Resource {
 		return Object.assign(this, args);
 	}
 
-	@ManyToOne(() => Meal, {onDelete: 'CASCADE'})
+	@ManyToOne(() => OrderDetailMeal, {onDelete: 'CASCADE'})
 	@JoinColumn({name: 'id_order_detail_meal'})
 	orderDetailMeal: OrderDetailMeal;
 
@@ -144,7 +145,7 @@ export class OrderDetailMealOptionIngredient extends Resource {
 		return Object.assign(this, args);
 	}
 
-	@ManyToOne(() => Meal, {onDelete: 'CASCADE'})
+	@ManyToOne(() => OrderDetailMeal, {onDelete: 'CASCADE'})
 	@JoinColumn({name: 'id_order_detail_meal'})
 	orderDetailMeal: OrderDetailMeal;
 

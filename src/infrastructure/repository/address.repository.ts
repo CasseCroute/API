@@ -1,7 +1,6 @@
 import {
 	EntityRepository,
 	ObjectLiteral,
-	getRepository,
 	Repository,
 	Transaction,
 	TransactionManager
@@ -21,7 +20,7 @@ export class AddressRepository extends Repository<Address> implements ResourceRe
 	}
 
 	public async updateAddress(address: any, values: ObjectLiteral) {
-		return getRepository(Address).update(address!.id, {...values});
+		return this.update(address.id, {...values});
 	}
 
 }

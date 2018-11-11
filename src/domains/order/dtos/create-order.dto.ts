@@ -1,10 +1,8 @@
 import {
 	IsString,
 	IsOptional,
-	IsNumberString,
 	ValidateNested,
 	IsBoolean,
-	IsEmail
 } from 'class-validator';
 import {Type} from 'class-transformer';
 import {
@@ -17,19 +15,7 @@ export class CreateOrderDto {
 	readonly isGuest: boolean;
 
 	@IsString()
-	readonly firstName: string;
-
-	@IsString()
-	readonly lastName: number;
-
-	@IsString()
 	readonly deliveryAddress: string;
-
-	@IsEmail()
-	readonly email: string;
-
-	@IsNumberString()
-	readonly phoneNumber: string;
 
 	@IsString()
 	@IsOptional()

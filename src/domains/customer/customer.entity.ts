@@ -1,7 +1,6 @@
 import {Entity, Column, Unique, OneToOne, OneToMany} from 'typeorm';
 import {Resource} from '@letseat/domains/resource/resource';
 import {Cart} from '@letseat/domains/cart/cart.entity';
-import {ProductIngredient} from '@letseat/domains/product-ingredient/product-ingredient.entity';
 import {Order} from '@letseat/domains/order/order.entity';
 
 @Entity()

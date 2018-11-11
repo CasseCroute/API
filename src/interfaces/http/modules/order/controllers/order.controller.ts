@@ -13,7 +13,7 @@ import {ValidationPipe} from '@letseat/domains/common/pipes/validation.pipe';
 import {AuthEntities} from '@letseat/infrastructure/authorization/enums/auth.entites';
 import {Order} from '@letseat/domains/order/order.entity';
 import {createOrderValidatorOptions} from '@letseat/domains/order/pipes';
-import {CreateOrderDto} from '@letseat/domains/order/dtos/create-order.dto';
+import {CreateOrderDto} from '@letseat/domains/order/dtos';
 import {CreateOrderCommand} from '@letseat/application/commands/order/create-order.command';
 
 @Controller('/orders')
