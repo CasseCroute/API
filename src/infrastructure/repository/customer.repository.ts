@@ -1,8 +1,26 @@
-import {EntityRepository, ObjectLiteral, Repository, Transaction, TransactionManager} from 'typeorm';
+import {
+	EntityRepository,
+	getCustomRepository,
+	ObjectLiteral,
+	Repository,
+	Transaction,
+	TransactionManager
+} from 'typeorm';
 import {Customer} from '@letseat/domains/customer/customer.entity';
+import {CartRepository} from '@letseat/infrastructure/repository/cart.repository';
 
 @EntityRepository(Customer)
 export class CustomerRepository extends Repository<Customer> {
+	private readonly cartRelations: string[] = [
+		'products',
+		'products.product',
+		'meals',
+		'meals.meal',
+		'meals.ingredientOptions',
+		'meals.productOptions',
+		'store'
+	];
+
 	@Transaction()
 	public async saveCustomer(customer: Customer, @TransactionManager() customerRepository: Repository<Customer>) {
 		return customerRepository.save(customer);
@@ -17,6 +35,14 @@ export class CustomerRepository extends Repository<Customer> {
 	}
 
 	public async findOneByUuid(uuid: string) {
+		let customer;
+		customer = await this.getCart(uuid);
+		if (customer.cart) {
+			customer = await this.findOne({relations: ['cart'], where: {uuid}});
+			customer.cart = await getCustomRepository(CartRepository)
+				.findOneByUuid(customer.cart.uuid, this.cartRelations);
+			return customer;
+		}
 		return this.findOneOrFail({where: {uuid}});
 	}
 
