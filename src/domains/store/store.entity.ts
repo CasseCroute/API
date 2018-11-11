@@ -1,4 +1,3 @@
-/* tslint:disable:no-unused */
 import {Entity, Column, Unique, OneToMany, ManyToOne, JoinColumn, ManyToMany} from 'typeorm';
 import {Resource} from '@letseat/domains/resource/resource';
 import {Kiosk} from '@letseat/domains/kiosk/kiosk.entity';
@@ -8,6 +7,7 @@ import {Product} from '@letseat/domains/product/product.entity';
 import {Meal} from '@letseat/domains/meal/meal.entity';
 import {Section} from '@letseat/domains/section/section.entity';
 import {Cuisine} from '@letseat/domains/cuisine/cuisine.entity';
+import {Order} from '@letseat/domains/order/order.entity';
 
 @Entity()
 @Unique(['email'])
@@ -35,27 +35,30 @@ export class Store extends Resource {
 	@Column({name: 'image_url', length: 256, nullable: true})
 	imageUrl?: string;
 
-	@OneToMany(type => Kiosk, kiosk => kiosk.store, {cascade: ['insert']})
+	@OneToMany(() => Kiosk, kiosk => kiosk.store, {cascade: ['insert']})
 	kiosks: Kiosk[];
 
-	@ManyToOne(type => Address, address => address.store, {cascade: ['insert'], eager: true})
+	@ManyToOne(() => Address, address => address.store, {cascade: ['insert'], eager: true})
 	@JoinColumn({name: 'id_address'})
 	address: Address;
 
-	@OneToMany(type => Ingredient, ingredient => ingredient.store, {cascade: ['insert']})
+	@OneToMany(() => Ingredient, ingredient => ingredient.store, {cascade: ['insert']})
 	ingredients: Ingredient[];
 
-	@OneToMany(type => Product, product => product.store, {cascade: ['insert']})
+	@OneToMany(() => Product, product => product.store, {cascade: ['insert']})
 	products: Product[];
 
-	@OneToMany(type => Meal, meal => meal.store, {cascade: ['insert']})
+	@OneToMany(() => Meal, meal => meal.store, {cascade: ['insert']})
 	meals: Meal[];
 
-	@OneToMany(type => Section, section => section.store, {cascade: ['insert']})
+	@OneToMany(() => Section, section => section.store, {cascade: ['insert']})
 	sections: Section[];
 
 	@ManyToMany(() => Cuisine, cuisine => cuisine.stores)
 	cuisines: Cuisine[];
+
+	@OneToMany(() => Order, order => order.store)
+	orders: Order[];
 
 	public static register(args: any): Store {
 		return new Store(args);

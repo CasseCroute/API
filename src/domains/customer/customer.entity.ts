@@ -1,6 +1,8 @@
-import {Entity, Column, Unique, OneToOne} from 'typeorm';
+import {Entity, Column, Unique, OneToOne, OneToMany} from 'typeorm';
 import {Resource} from '@letseat/domains/resource/resource';
 import {Cart} from '@letseat/domains/cart/cart.entity';
+import {ProductIngredient} from '@letseat/domains/product-ingredient/product-ingredient.entity';
+import {Order} from '@letseat/domains/order/order.entity';
 
 @Entity()
 @Unique(['email'])
@@ -27,6 +29,9 @@ export class Customer extends Resource {
 
 	@OneToOne(() => Cart, cart => cart.customer)
 	cart: Cart;
+
+	@OneToMany(() => Order, order => order.customer)
+	orders: Order[];
 
 	public static register(args: any): Customer {
 		return new Customer(args);

@@ -1,4 +1,3 @@
-/* tslint:disable */
 import {
 	EntityRepository,
 	ObjectLiteral,
@@ -22,7 +21,7 @@ export class AddressRepository extends Repository<Address> implements ResourceRe
 	}
 
 	public async updateAddress(address: any, values: ObjectLiteral) {
-		return getRepository(Address).update(address!.id,{...values})
+		return getRepository(Address).update(address!.id, {...values});
 	}
 
 }
