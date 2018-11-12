@@ -10,6 +10,7 @@ import {CustomerQueryHandlers} from '@letseat/application/queries/customer/handl
 import {JwtStrategy} from '@letseat/infrastructure/authorization/strategies/jwt.strategy';
 import {CurrentCustomerCartController} from '@letseat/interfaces/http/modules/customer/customer.cart.controller';
 import {CartCommandHandlers} from '@letseat/application/commands/cart/handlers';
+import {CurrentCustomerOrderController} from '@letseat/interfaces/http/modules/customer/customer.order.controller';
 
 @Module({
 	imports: [
@@ -25,7 +26,8 @@ import {CartCommandHandlers} from '@letseat/application/commands/cart/handlers';
 	controllers: [
 		CurrentCustomerController,
 		CustomerController,
-		CurrentCustomerCartController
+		CurrentCustomerCartController,
+		CurrentCustomerOrderController
 	]
 })
 export class CustomerModule implements OnModuleInit {

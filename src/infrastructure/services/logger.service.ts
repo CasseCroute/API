@@ -113,7 +113,7 @@ export class LoggerService implements NestLoggerService {
 		}
 		console.log(result);
 
-		if (error && env('NODE_ENV') === 'development') {
+		if (error && env('NODE_ENV') !== 'production') {
 			console.log(`${color.bgRed('Stack Trace')}  ${color.red(error)}`);
 		}
 	}

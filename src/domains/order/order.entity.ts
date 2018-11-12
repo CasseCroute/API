@@ -62,8 +62,11 @@ export class Order extends Resource {
 	@JoinColumn({name: 'id_store'})
 	store: Store;
 
-	@OneToMany(() => OrderDetailProduct || OrderDetailMeal, detail => detail.order)
-	details: OrderDetailProduct[] | OrderDetailMeal[];
+	@OneToMany(() => OrderDetailMeal, detail => detail.order)
+	detailsMeals: OrderDetailMeal[];
+
+	@OneToMany(() => OrderDetailProduct, detail => detail.order)
+	detailsProducts: OrderDetailProduct[];
 }
 
 @Entity()
@@ -82,7 +85,7 @@ export class OrderDetailProduct extends Resource {
 	@Column('text', {nullable: true})
 	instructions?: string;
 
-	@ManyToOne(() => Order, order => order.details, {onDelete: 'CASCADE'})
+	@ManyToOne(() => Order, order => order.detailsProducts, {onDelete: 'CASCADE'})
 	@JoinColumn({name: 'id_order'})
 	order: Order;
 
@@ -107,7 +110,7 @@ export class OrderDetailMeal extends Resource {
 	@Column('text', {nullable: true})
 	instructions?: string;
 
-	@ManyToOne(() => Order, order => order.details, {onDelete: 'CASCADE'})
+	@ManyToOne(() => Order, order => order.detailsMeals, {onDelete: 'CASCADE'})
 	@JoinColumn({name: 'id_order'})
 	order: Order;
 

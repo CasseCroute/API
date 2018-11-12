@@ -16,9 +16,12 @@ import {
 } from '@letseat/domains/cart/cart.entity';
 import {OrderRepository} from '@letseat/infrastructure/repository/order.repository';
 import {LoggerService} from '@letseat/infrastructure/services';
+import {BadRequestException} from '@nestjs/common';
 
 @EntityRepository(OrderDetailProduct)
 export class OrderDetailProductRepository extends Repository<OrderDetailProduct> implements ResourceRepository {
+	private readonly logger = new LoggerService(OrderDetailProductRepository.name);
+
 	public async findOneByUuid(uuid: string) {
 		return this.findOne({where: {uuid}});
 	}
@@ -35,14 +38,16 @@ export class OrderDetailProductRepository extends Repository<OrderDetailProduct>
 			await getCustomRepository(OrderRepository).save(order);
 			return this.save(orderDetailProduct);
 		} catch (err) {
-			const logger = new LoggerService('Database');
-			logger.error(err.message, err.stack);
+			this.logger.error(err.message, err.stack);
+			throw new BadRequestException();
 		}
 	}
 }
 
 @EntityRepository(OrderDetailMeal)
 export class OrderDetailMealRepository extends Repository<OrderDetailMeal> implements ResourceRepository {
+	private readonly logger = new LoggerService(OrderDetailMealRepository.name);
+
 	public async findOneByUuid(uuid: string) {
 		return this.findOne({where: {uuid}});
 	}
@@ -84,8 +89,8 @@ export class OrderDetailMealRepository extends Repository<OrderDetailMeal> imple
 				}
 			});
 		} catch (err) {
-			const logger = new LoggerService('Database');
-			logger.error(err.message, err.stack);
+			this.logger.error(err.message, err.stack);
+			throw new BadRequestException();
 		}
 	}
 }
