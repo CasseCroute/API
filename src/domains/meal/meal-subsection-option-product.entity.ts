@@ -28,8 +28,4 @@ export class MealSubsectionOptionProduct extends Resource {
 	@ManyToOne(type => Product, {eager: true})
 	@JoinColumn({name: 'id_product'})
 	product: Product;
-
-	public static register(args: any): MealSubsectionOptionProduct {
-		return new MealSubsectionOptionProduct(args);
-	}
 }

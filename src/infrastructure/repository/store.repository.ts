@@ -63,14 +63,15 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 		return this.findOne({where: {email: storeEmail}});
 	}
 
-	public async findByQueryParams(queryParams: any) {
-		const stores = await this.find({
+	public async findByQueryParams(queryParams: any): Promise<Store[] | Store | undefined>{
+		const stores: Store[] = await this.find({
 			select: ['uuid'],
 			where: queryParams
 		});
+		const storesUuids: string[] = stores.map((store) => Object.values(store))
+			.reduce((acc, val) => acc.concat(val), []);
 
-		return this.findManyByUuid(stores.map((store) => Object.values(store))
-			.reduce((acc, val) => acc.concat(val), []));
+		return storesUuids.length > 0 ? this.findManyByUuid(storesUuids) : this.findOneByUuid(storesUuids[0]);
 	}
 
 	public async findOneByUuid(storeUuid: string): Promise<Store | undefined> {
@@ -113,11 +114,11 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 			.leftJoinAndSelect('store.sections', 'sections')
 			.leftJoinAndSelect('sections.meals', 'meals')
 			.leftJoinAndSelect('meals.subsections', 'subsections')
-			.innerJoinAndSelect('subsections.options', 'options')
-			.innerJoinAndSelect('options.products', 'optionProducts')
-			.innerJoinAndSelect('optionProducts.product', 'optionProduct')
-			.innerJoinAndSelect('options.ingredients', 'optionIngredients')
-			.innerJoinAndSelect('optionIngredients.ingredient', 'optionIngredient')
+			.leftJoinAndSelect('subsections.options', 'options')
+			.leftJoinAndSelect('options.products', 'optionProducts')
+			.leftJoinAndSelect('optionProducts.product', 'optionProduct')
+			.leftJoinAndSelect('options.ingredients', 'optionIngredients')
+			.leftJoinAndSelect('optionIngredients.ingredient', 'optionIngredient')
 			.leftJoinAndSelect('sections.products', 'products')
 			.where('store.uuid IN (:...uuid)', {uuid: storesUuids})
 			.getMany();

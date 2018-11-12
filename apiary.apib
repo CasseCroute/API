@@ -934,6 +934,33 @@ Remove Product or Meal from Cart. Note: `productUuid` and `mealUuid` cannot be u
 
 + Response 200 (application/json; charset=utf-8)
 
+## Orders [/orders]
+
+### Place an Order [POST]
+
+Converts Customer Cart into an Order
+
+**Endpoint information**
+
+| Requires authentication | Has restricted scope |
+| ----------------------- | -------------------- |
+| Yes (JWT)               | No                   |
+
++ Request (application/json; charset=utf-8)
+    + Headers
+
+            Authorization: Bearer <JWT>
+            
+    + Attributes
+        + isGuest: `false` (boolean, required) - If the Order has been processed by a guest Customer or not.
+        + deliveryAddress: `20, rue du Beau Bois, 75003 Paris` (string, optional) - Delivery address.
+        + deliveryNote: `Meet in the front of the door` (string, optional) - Delivery note.
+        + isTakeAway: `false` (boolean, optional) - If the Order is for take away.
+        + isEatIn: `false` (boolean, optional) - If the Order is for eat in.
+        + isDelivery: `true` (boolean, optional) - If the Order is for delivery.
+        
++ Response 200 (application/json; charset=utf-8)
+ 
 ## Current Customer Profile [/customers/me]
 
 Current store MUST be identified by JWT provided in request header.

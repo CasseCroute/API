@@ -11,6 +11,7 @@ import {
 import {APIKeyStrategy} from '@letseat/infrastructure/authorization/strategies/api-key.strategy';
 import {IngredientModule} from '@letseat/interfaces/http/modules/ingredient/ingredient.module';
 import {CuisineModule} from '@letseat/interfaces/http/modules/cuisine/cuisine.module';
+import {OrderModule} from '@letseat/interfaces/http/modules/order/order.module';
 
 @Module({
 	imports: [
@@ -19,6 +20,7 @@ import {CuisineModule} from '@letseat/interfaces/http/modules/cuisine/cuisine.mo
 		CustomerModule,
 		IngredientModule,
 		CuisineModule,
+		OrderModule,
 		APIKeyStrategy,
 	],
 	providers: [

@@ -1,3 +1,4 @@
+/* tslint:disable */
 import {EntityRepository, getManager, getRepository, Repository} from 'typeorm';
 import {Customer} from '@letseat/domains/customer/customer.entity';
 import {
@@ -132,7 +133,9 @@ export class CartRepository extends Repository<Cart> {
 					cartMealOptionIngredient.optionIngredient = option.ingredients[0];
 					cartMealOptionIngredient.cartMeal = cartMeal;
 					await getRepository(CartMealOptionIngredient).save(cartMealOptionIngredient);
-				} else if (option && option.products && option.products.length > 0) {
+				}
+
+				if (option && option.products && option.products.length > 0) {
 					const cartMealOptionProduct = new CartMealOptionProduct();
 					cartMealOptionProduct.optionProduct = option.products[0];
 					cartMealOptionProduct.cartMeal = cartMeal;
