@@ -182,3 +182,25 @@ workflows:
         - analyze:dependencies:
             requires:
               - build
+  nightly:
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
+          filters:
+            branches:
+              only:
+                - develop
+    jobs:
+      - build
+      - test:unit:
+          requires:
+            - build
+      - test:static:
+          requires:
+            - build
+      - test:api:
+          requires:
+            - build
+      - analyze:dependencies:
+          requires:
+            - build
