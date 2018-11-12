@@ -57,4 +57,22 @@ export class CustomerRepository extends Repository<Customer> {
 	public async getCart(uuid: string): Promise<Customer> {
 		return this.findOneOrFail({relations: ['cart', 'cart.products', 'cart.meals', 'cart.store'], where: {uuid}});
 	}
+
+	public async findCustomerOrders(customerUuid: string) {
+		return this.createQueryBuilder('customer')
+			.leftJoinAndSelect('customer.orders', 'orders')
+			.leftJoinAndSelect('orders.store', 'store')
+			.leftJoinAndSelect('orders.detailsMeals', 'orderDetailsMeals')
+			.leftJoinAndSelect('orders.detailsProducts', 'orderDetailsProducts')
+			.leftJoinAndSelect('orderDetailsMeals.meal', 'orderDetailsMeal')
+			.leftJoinAndSelect('orderDetailsMeals.ingredientOptions', 'orderDetailsMealsIngredientOptions')
+			.leftJoinAndSelect('orderDetailsMeals.productOptions', 'orderDetailsMealsProductOptions')
+			.leftJoinAndSelect('orderDetailsMealsIngredientOptions.optionIngredient', 'orderDetailsMealIngredientOptionsIngredient')
+			.leftJoinAndSelect('orderDetailsMealsProductOptions.optionProduct', 'orderDetailsMealProductOptionsProduct')
+			.leftJoinAndSelect('orderDetailsMealIngredientOptionsIngredient.ingredient', 'orderDetailsMealIngredientOptionsIngredientIngredient')
+			.leftJoinAndSelect('orderDetailsMealProductOptionsProduct.product', 'orderDetailsMealProductOptionsProductProduct')
+			.leftJoinAndSelect('orderDetailsProducts.product', 'orderDetailsProduct')
+			.where('customer.uuid = :customerUuid', {customerUuid})
+			.getOne();
+	}
 }
