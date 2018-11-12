@@ -460,6 +460,11 @@ hooks.before('Cuisines > Cuisine > Retrieve list of Cuisine Stores', (transactio
 		})
 });
 
+hooks.before('Customers > Orders > Place an Order', (transaction, done) => {
+	transaction.request.headers.Authorization = `Bearer ${customer.jwt}`;
+	done();
+});
+
 hooks.afterAll((transactions, done) => {
 	client.query(
 		'TRUNCATE TABLE store CASCADE;' +
@@ -470,6 +475,11 @@ hooks.afterAll((transactions, done) => {
 		'TRUNCATE TABLE cart CASCADE;' +
 		'TRUNCATE TABLE product_ingredient CASCADE;' +
 		'TRUNCATE TABLE address CASCADE;' +
+		'TRUNCATE TABLE "order" CASCADE;' +
+		'TRUNCATE TABLE order_detail_meal CASCADE;' +
+		'TRUNCATE TABLE order_detail_meal_option_ingredient CASCADE;' +
+		'TRUNCATE TABLE order_detail_meal_option_product CASCADE;' +
+		'TRUNCATE TABLE order_detail_product CASCADE;' +
 		'TRUNCATE TABLE kiosk CASCADE;')
 		.then(res => {
 			client.end();

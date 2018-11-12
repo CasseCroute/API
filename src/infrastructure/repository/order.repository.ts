@@ -18,11 +18,8 @@ export class OrderRepository extends Repository<Order> implements ResourceReposi
 		return this.findOne({where: {uuid}});
 	}
 
-	public async createOrder(customer: Customer, orderDto: CreateOrderDto) {
-		const order = new Order();
-		order.deliveryAddress = orderDto.deliveryAddress;
-		order.isGuest = orderDto.isGuest;
-		order.deliveryNote = orderDto.deliveryNote;
+	public async createOrder(customer: Customer, orderDto: any) {
+		const order = new Order(orderDto);
 
 		order.firstName = customer.firstName;
 		order.lastName = customer.lastName;

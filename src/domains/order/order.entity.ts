@@ -12,7 +12,7 @@ import {MealSubsectionOptionIngredient} from '@letseat/domains/meal/meal-subsect
 export class Order extends Resource {
 	constructor(args?: any) {
 		super();
-		return Object.assign(this, args);
+		return Object.assign<Order, Readonly<Partial<Order>>>(this, args);
 	}
 
 	@Column({length: 6})

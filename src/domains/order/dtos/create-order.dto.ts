@@ -18,13 +18,13 @@ export class CreateOrderDto {
 
 	@IsBoolean()
 	@IsOptional()
-	readonly isTakeAway: string;
+	readonly isTakeAway: boolean;
 
 	@IsBoolean()
 	@IsOptional()
-	readonly isEatIn: string;
+	readonly isEatIn: boolean;
 
 	@IsBoolean()
 	@IsOptional()
-	readonly isDelivery: string;
+	readonly isDelivery: boolean;
 }
