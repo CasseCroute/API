@@ -17,7 +17,9 @@ describe('Customer Order HTTP Requests', () => {
 
 	beforeAll(async () => {
 		const module: TestingModule = await Test.createTestingModule({
-			controllers: [CurrentCustomerOrderController],
+			controllers: [
+				CurrentCustomerOrderController
+			],
 			providers: [
 				CQRSModule,
 				AuthService,
@@ -45,6 +47,30 @@ describe('Customer Order HTTP Requests', () => {
 		const logger = new LoggerService('Server');
 		app.useLogger(logger);
 		await app.init();
+	});
+
+	describe('POST /orders', () => {
+		it('should return a HTTP 200 status code when successful', () => {
+			return request(app.getHttpServer())
+				.post('/customers/me/orders')
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.send({isGuest: false})
+				.expect(200);
+		});
+
+		it('should return a HTTP 401 status code when no JWT is provided', () => {
+			return request(app.getHttpServer())
+				.post('/customers/me/orders')
+				.send({isGuest: false})
+				.expect(401);
+		});
+
+		it('should return a HTTP 400 status code when no required data is sent', () => {
+			return request(app.getHttpServer())
+				.post('/customers/me/orders')
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.expect(400);
+		});
 	});
 
 	describe('GET /customers/me/orders', () => {

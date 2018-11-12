@@ -11,10 +11,22 @@ import {JwtStrategy} from '@letseat/infrastructure/authorization/strategies/jwt.
 import {CurrentCustomerCartController} from '@letseat/interfaces/http/modules/customer/customer.cart.controller';
 import {CartCommandHandlers} from '@letseat/application/commands/cart/handlers';
 import {CurrentCustomerOrderController} from '@letseat/interfaces/http/modules/customer/customer.order.controller';
+import {Order} from '@letseat/domains/order/order.entity';
+import {OrderRepository} from '@letseat/infrastructure/repository/order.repository';
+import {Cart} from '@letseat/domains/cart/cart.entity';
+import {CartRepository} from '@letseat/infrastructure/repository/cart.repository';
 
 @Module({
 	imports: [
-		TypeOrmModule.forFeature([Customer, CustomerRepository]),
+		TypeOrmModule.forFeature([
+			Customer,
+			CustomerRepository,
+			Order,
+			OrderRepository,
+			CustomerRepository,
+			Cart,
+			CartRepository
+		]),
 		CQRSModule
 	],
 	providers: [
