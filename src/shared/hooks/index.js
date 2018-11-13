@@ -447,6 +447,13 @@ hooks.before('Stores > Current Store Section > Retrieve a Section by UUID', (tra
 	done();
 });
 
+hooks.before('Stores > Current Store Section > Delete a Section by UUID', (transaction, done) => {
+	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
+	transaction.request.uri = `/stores/me/sections/${section.uuid}`;
+	transaction.fullPath = `/stores/me/sections/${section.uuid}`;
+	done();
+});
+
 
 hooks.before('Cuisines > Cuisine > Retrieve list of Cuisine Stores', (transaction, done) => {
 	client.query('SELECT * from cuisine')

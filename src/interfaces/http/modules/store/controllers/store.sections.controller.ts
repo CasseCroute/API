@@ -1,6 +1,6 @@
 import {
 	BadRequestException,
-	Body, Controller, Get, Param, Post, Req, UnauthorizedException, UseGuards
+	Body, Controller, Delete, Get, HttpCode, Param, Post, Req, UnauthorizedException, UseGuards
 } from '@nestjs/common';
 import {CommandBus} from '@nestjs/cqrs';
 import {ValidationPipe} from '@letseat/domains/common/pipes/validation.pipe';
@@ -13,6 +13,7 @@ import {CreateSectionDto} from '@letseat/domains/section/dtos/create-section.dto
 import {GetStoreSectionsQuery} from '@letseat/application/queries/store/get-store-sections.query';
 import {GetStoreSectionByUuidQuery} from '@letseat/application/queries/store/get-store-section-by-uuid.query';
 import {isUuid} from '@letseat/shared/utils';
+import {DeleteSectionCommand} from '@letseat/application/commands/section';
 
 @Controller('stores/me/sections')
 export class CurrentStoreSectionsController {
@@ -53,4 +54,18 @@ export class CurrentStoreSectionsController {
 		}
 		throw new UnauthorizedException();
 	}
+
+	@Delete(':sectionUuid')
+	@HttpCode(204)
+	@UseGuards(AuthGuard('jwt'))
+	public async deleteSectionByUuid(@Req() request: any, @Param('sectionUuid') sectionUuid: string): Promise<any> {
+		if (request.user.entity === AuthEntities.Store && isUuid(sectionUuid)) {
+			return this.commandBus.execute(new DeleteSectionCommand(request.user.uuid, sectionUuid));
+		}
+		if (!isUuid(sectionUuid)) {
+			throw new BadRequestException();
+		}
+		throw new UnauthorizedException();
+	}
+
 }
