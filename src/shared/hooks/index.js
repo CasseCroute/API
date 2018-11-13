@@ -477,6 +477,11 @@ hooks.before('Customers > Orders > Get Orders', (transaction, done) => {
 	done();
 });
 
+hooks.before('Stores > Current Store Orders > Get Orders', (transaction, done) => {
+	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
+	done();
+});
+
 hooks.afterAll((transactions, done) => {
 	client.query(
 		'TRUNCATE TABLE store CASCADE;' +

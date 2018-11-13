@@ -738,6 +738,23 @@ Delete an ingredient of the current Store.
 
 + Response 204
 
+## Current Store Orders [/stores/me/orders]
+
+### Get Orders
+
+Get Store Orders
+
+| Requires authentication | Has restricted scope |
+| ----------------------- | -------------------- |
+| Yes (JWT)               | No                   |
+
++ Request (application/json; charset=utf-8)
+    + Headers
+
+                Authorization: Bearer <JWT>
+
++ Response 200
+
 ## Current Store Profile [/stores/me]
 
 Current store MUST be identified by JWT provided in request header.

@@ -8,4 +8,4 @@ export {GetStoreIngredientByUuidQuery} from './get-store-ingredient-by-uuid.quer
 export {GetStoreProductsQuery} from './get-store-products.query';
 export {GetStoreProductByUuidQuery} from './get-store-product-by-uuid.query';
 export {GetStoreMealsQuery} from './get-store-meals.query';
-export {GetStoreSectionByUuidHandler} from '@letseat/application/queries/store/handlers';
+export {GetStoreOrdersQuery} from './get-store-orders.query';
