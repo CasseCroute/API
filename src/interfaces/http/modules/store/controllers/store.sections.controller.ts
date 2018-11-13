@@ -1,6 +1,6 @@
 import {
 	BadRequestException,
-	Body, Controller, Delete, Get, Param, Post, Req, UnauthorizedException, UseGuards
+	Body, Controller, Delete, Get, HttpCode, Param, Post, Req, UnauthorizedException, UseGuards
 } from '@nestjs/common';
 import {CommandBus} from '@nestjs/cqrs';
 import {ValidationPipe} from '@letseat/domains/common/pipes/validation.pipe';
@@ -56,6 +56,7 @@ export class CurrentStoreSectionsController {
 	}
 
 	@Delete(':sectionUuid')
+	@HttpCode(204)
 	@UseGuards(AuthGuard('jwt'))
 	public async deleteSectionByUuid(@Req() request: any, @Param('sectionUuid') sectionUuid: string): Promise<any> {
 		if (request.user.entity === AuthEntities.Store && isUuid(sectionUuid)) {

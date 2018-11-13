@@ -151,6 +151,21 @@ describe('Store Sections HTTP Requests', () => {
 					.expect(401);
 			});
 		});
+
+		describe('DELETE stores/me/sections', () => {
+			it('should return a HTTP 204 status code when successful', () => {
+				return request(app.getHttpServer())
+					.delete('/stores/me/sections/' + mocks.sectionRepository.data[0].uuid)
+					.set('Authorization', `Bearer ${mocks.token}`)
+					.expect(204);
+			});
+
+			it('should return a HTTP 401 status code when no JWT is present in Authorization header', () => {
+				return request(app.getHttpServer())
+					.delete('/stores/me/sections/' + mocks.sectionRepository.data[0].uuid)
+					.expect(401);
+			});
+		});
 	});
 
 	afterAll(async () => {
