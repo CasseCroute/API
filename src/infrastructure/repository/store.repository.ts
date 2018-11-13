@@ -63,6 +63,26 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 		return this.findOne({where: {email: storeEmail}});
 	}
 
+	public async findStoreOrders(storeUuid: string) {
+		const store = await this.createQueryBuilder('store')
+			.leftJoinAndSelect('store.orders', 'orders')
+			.leftJoinAndSelect('orders.customer', 'customer')
+			.leftJoinAndSelect('orders.detailsMeals', 'orderDetailsMeals')
+			.leftJoinAndSelect('orders.detailsProducts', 'orderDetailsProducts')
+			.leftJoinAndSelect('orderDetailsMeals.meal', 'orderDetailsMeal')
+			.leftJoinAndSelect('orderDetailsMeals.ingredientOptions', 'orderDetailsMealsIngredientOptions')
+			.leftJoinAndSelect('orderDetailsMeals.productOptions', 'orderDetailsMealsProductOptions')
+			.leftJoinAndSelect('orderDetailsMealsIngredientOptions.optionIngredient', 'orderDetailsMealIngredientOptionsIngredient')
+			.leftJoinAndSelect('orderDetailsMealsProductOptions.optionProduct', 'orderDetailsMealProductOptionsProduct')
+			.leftJoinAndSelect('orderDetailsMealIngredientOptionsIngredient.ingredient', 'orderDetailsMealIngredientOptionsIngredientIngredient')
+			.leftJoinAndSelect('orderDetailsMealProductOptionsProduct.product', 'orderDetailsMealProductOptionsProductProduct')
+			.leftJoinAndSelect('orderDetailsProducts.product', 'orderDetailsProduct')
+			.where('store.uuid = :uuid', {uuid: storeUuid})
+			.getOne();
+
+		return store ? store.orders : undefined;
+	}
+
 	public async findByQueryParams(queryParams: any): Promise<Store[] | Store | undefined>{
 		const stores: Store[] = await this.find({
 			select: ['uuid'],

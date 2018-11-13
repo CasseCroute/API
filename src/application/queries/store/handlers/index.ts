@@ -10,6 +10,7 @@ import {GetStoreProductByUuidHandler} from './get-store-product-by-uuid.handler'
 import {GetStoreMealsHandler} from './get-store-meals.handler';
 import {GetStoreSectionsHandler} from './get-store-sections.handler';
 import {GetStoreSectionByUuidHandler} from '@letseat/application/queries/store/handlers/get-store-section-by-uuid.handler';
+import {GetStoreOrdersHandler} from '@letseat/application/queries/store/handlers/get-store-orders.handler';
 
 export const StoreQueryHandlers = [
 	GetStoreByEmailHandler,
@@ -23,7 +24,8 @@ export const StoreQueryHandlers = [
 	GetStoreProductByUuidHandler,
 	GetStoreMealsHandler,
 	GetStoreSectionsHandler,
-	GetStoreSectionByUuidHandler
+	GetStoreSectionByUuidHandler,
+	GetStoreOrdersHandler
 ];
 
 export {
@@ -38,5 +40,6 @@ export {
 	GetStoreProductByUuidHandler,
 	GetStoreMealsHandler,
 	GetStoreSectionsHandler,
-	GetStoreSectionByUuidHandler
+	GetStoreSectionByUuidHandler,
+	GetStoreOrdersHandler
 };

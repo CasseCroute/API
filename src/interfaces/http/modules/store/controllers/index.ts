@@ -4,6 +4,7 @@ import {CurrentStoreIngredientsController, StoreIngredientsController} from './s
 import {CurrentStoreProductsController, StoreProductsController} from './store.products.controller';
 import {CurrentStoreMealsController} from './store.meals.controller';
 import {CurrentStoreSectionsController} from '@letseat/interfaces/http/modules/store/controllers/store.sections.controller';
+import {CurrentStoreOrdersController} from '@letseat/interfaces/http/modules/store/controllers/store.orders.controller';
 
 export const StoreContollers = [
 	StoreController,
@@ -14,6 +15,7 @@ export const StoreContollers = [
 	StoreProductsController,
 	CurrentStoreMealsController,
 	CurrentStoreSectionsController,
+	CurrentStoreOrdersController
 ];
 export {
 	StoreController,
@@ -23,5 +25,6 @@ export {
 	CurrentStoreProductsController,
 	StoreProductsController,
 	CurrentStoreMealsController,
-	CurrentStoreSectionsController
+	CurrentStoreSectionsController,
+	CurrentStoreOrdersController
 };
