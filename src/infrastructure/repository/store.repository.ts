@@ -1,7 +1,8 @@
 /* tslint:disable */
 import {
 	EntityRepository,
-	getConnection, getCustomRepository,
+	getConnection,
+	getCustomRepository,
 	getManager,
 	getRepository,
 	ObjectLiteral,
@@ -243,7 +244,13 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 			if (order && status) {
 				history.status = status;
 				history.order = order;
-				await this.orderHistoryRepository.save(history);
+				return this.orderHistoryRepository.save(history).then(async () => {
+					const order = await this.orderRepository.findOneByUuid(orderUuid, ['history', 'history.status']);
+					order!.history = order!.history.sort((a, b) => {
+						return b.createdAt.getTime() - a.createdAt.getTime();
+					});
+					return order;
+				});
 			}
 		}
 		catch (err) {

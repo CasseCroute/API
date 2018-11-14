@@ -31,7 +31,7 @@ export class CurrentStoreOrdersController {
 	}
 
 	@Patch(':uuid')
-	@HttpCode(204)
+	@HttpCode(200)
 	@UseGuards(AuthGuard('jwt'))
 	public async updateOrderStatus(
 		@Req() request: any,
