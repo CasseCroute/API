@@ -26,11 +26,11 @@ export class MealSubsection extends Resource {
 	@Column('int2', {name: 'max_selections_permitted', default: 1})
 	maxSelectionsPermitted: number;
 
-	@ManyToOne(type => Meal, meal => meal.subsections, {nullable: false, cascade: ['insert'], onDelete: 'CASCADE'})
+	@ManyToOne(() => Meal, meal => meal.subsections, {nullable: false, cascade: ['insert'], onDelete: 'CASCADE'})
 	@JoinColumn({name: 'id_meal'})
 	meal: Meal;
 
-	@OneToOne(type => MealSubsectionOption, option => option.subsection, {nullable: false, cascade: ['insert'], onDelete: 'CASCADE'})
+	@OneToOne(() => MealSubsectionOption, option => option.subsection, {nullable: false, cascade: ['insert'], onDelete: 'CASCADE'})
 	options: MealSubsectionOption;
 
 	public static register(args: any): MealSubsection {

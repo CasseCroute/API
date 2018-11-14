@@ -1,7 +1,7 @@
 /* tslint:disable */
 import {
 	EntityRepository,
-	getConnection,
+	getConnection, getCustomRepository,
 	getManager,
 	getRepository,
 	ObjectLiteral,
@@ -26,9 +26,16 @@ import {Cuisine} from '@letseat/domains/cuisine/cuisine.entity';
 import {CreateProductDto} from '@letseat/domains/product/dtos';
 import {BadRequestException} from '@nestjs/common';
 import {CreateStoreDto} from '@letseat/domains/store/dtos';
+import {OrderRepository} from '@letseat/infrastructure/repository/order.repository';
+import {OrderHistory, OrderStatus} from '@letseat/domains/order/order-history.entity';
 
 @EntityRepository(Store)
 export class StoreRepository extends Repository<Store> implements ResourceRepository {
+	private readonly logger = new LoggerService(StoreRepository.name);
+	private readonly orderRepository = getCustomRepository(OrderRepository);
+	private readonly orderStatusRepository = getRepository(OrderStatus);
+	private readonly orderHistoryRepository = getRepository(OrderHistory);
+
 	public async saveStore(store: Store & CreateStoreDto) {
 		const queryRunner = getConnection().createQueryRunner();
 		await queryRunner.startTransaction();
@@ -83,15 +90,14 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 		return store ? store.orders : undefined;
 	}
 
-	public async findByQueryParams(queryParams: any): Promise<Store[] | Store | undefined>{
+	public async findByQueryParams(queryParams: any): Promise<Store[] | Store | undefined> {
 		const stores: Store[] = await this.find({
 			select: ['uuid'],
 			where: queryParams
 		});
 		const storesUuids: string[] = stores.map((store) => Object.values(store))
 			.reduce((acc, val) => acc.concat(val), []);
-
-		return storesUuids.length > 0 ? this.findManyByUuid(storesUuids) : this.findOneByUuid(storesUuids[0]);
+		return storesUuids.length > 1 ? this.findManyByUuid(storesUuids) : this.findOneByUuid(storesUuids[0]);
 	}
 
 	public async findOneByUuid(storeUuid: string): Promise<Store | undefined> {
@@ -109,8 +115,8 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 			.where('store.uuid = :uuid', {uuid: storeUuid})
 			.getOne();
 
-		if (!store){
-			 store = await this.findOneOrFail({
+		if (!store) {
+			store = await this.findOneOrFail({
 				where: {uuid: storeUuid},
 				relations: [
 					'cuisines',
@@ -221,11 +227,27 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 					return res[1];
 				});
 		} catch (err) {
-			const logger = new LoggerService('Database');
-			logger.error(err.message, err.stack);
+			this.logger.error(err.message, err.stack);
 			await queryRunner.rollbackTransaction();
 			await queryRunner.release();
 			throw new BadRequestException();
+		}
+	}
+
+	public async updateOrderStatus(storeUuid: string, orderUuid: string, orderStatusUuid: string) {
+		try {
+			const history = new OrderHistory();
+			const order = await this.orderRepository.findOneByUuid(orderUuid, ['history', 'history.status']);
+			const status = await this.orderStatusRepository.findOneOrFail({uuid: orderStatusUuid});
+
+			if (order && status) {
+				history.status = status;
+				history.order = order;
+				await this.orderHistoryRepository.save(history);
+			}
+		}
+		catch (err) {
+			this.logger.error(err.message, err.stack);
 		}
 	}
 
