@@ -238,10 +238,10 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 	public async updateOrderStatus(storeUuid: string, orderUuid: string, orderStatusUuid: string) {
 		try {
 			const history = new OrderHistory();
-			const order = await this.orderRepository.findOneByUuid(orderUuid, ['history', 'history.status']);
+			const order = await this.orderRepository.findOneByUuid(orderUuid,['history', 'history.status', 'store']);
 			const status = await this.orderStatusRepository.findOneOrFail({uuid: orderStatusUuid});
 
-			if (order && status) {
+			if (order && status && order.store.uuid === storeUuid) {
 				history.status = status;
 				history.order = order;
 				return this.orderHistoryRepository.save(history).then(async () => {

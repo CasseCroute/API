@@ -15,10 +15,10 @@ export class UpdateStatusOrderHandler implements ICommandHandler<UpdateOrderStat
 	async execute(command: UpdateOrderStatusCommand, resolve: (value?) => void) {
 		try {
 			const order = await this.storeRepository.updateOrderStatus(command.storeUuid, command.orderUuid, command.order.orderStatusUuid);
-			console.log(order);
 			if (order) {
 				resolve(order);
 			}
+			resolve();
 		} catch (err) {
 			resolve(Promise.reject(new BadRequestException(err.message)));
 		}

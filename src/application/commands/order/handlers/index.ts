@@ -1,4 +1,4 @@
-import {UpdateStatusOrderHandler} from '@letseat/application/commands/order/handlers/update-customer.handler';
+import {UpdateStatusOrderHandler} from '@letseat/application/commands/order/handlers/update-order-status.handler';
 
 export const OrderCommandHandlers = [
 	UpdateStatusOrderHandler,
