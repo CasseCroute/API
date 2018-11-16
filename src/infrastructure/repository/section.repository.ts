@@ -39,35 +39,38 @@ export class SectionRepository extends Repository<Section> implements ResourceRe
 		const mealsRepository = getCustomRepository(MealRepository);
 		const productsRepository = getCustomRepository(ProductRepository);
 		const {sectionUuid, products, meals} = section;
-
-		console.log(sectionUuid + products + meals);
 		const storeSection = await this.findStoreSectionByUuid(storeUuid, sectionUuid) as Section;
 
-		if (!(meals && meals.length > 0)) {
+		if (meals && meals.length > 0) {
+			meals.forEach(async mealUuid => {
+				const newMeal = await mealsRepository.findOneByUuid(mealUuid);
+
+				if (newMeal === undefined) {
+					return;
+				}
+
+				storeSection.meals.push(newMeal);
+				return this.save(storeSection);
+
+			});
+		}
+
+		if (!(products && products.length > 0)) {
 			return;
 		}
 
-		meals.forEach(mealUuid => {
-			const newMeal = mealsRepository.findOneByUuid(mealUuid);
+		products.forEach(async productUuid => {
+			const newProduct = await productsRepository.findStoreProductByUuid(storeUuid, productUuid);
 
-			if (newMeal) {
-				return;
-			}
-
-			storeSection.meals.push(newMeal);
-			this.save(storeSection);
-
-		});
-
-		products.forEach(productUuid => {
-			const newProduct = productsRepository.findStoreProductByUuid(storeUuid, productUuid);
-			if (newProduct) {
+			if (newProduct === undefined) {
 				return;
 			}
 
 			storeSection.products.push(newProduct);
-			this.save(newProduct);
+			return this.save(storeSection);
+
 		});
+
 	}
 
 	public async deleteSectionByUuid(storeUuid: string, sectionUuid: string) {
