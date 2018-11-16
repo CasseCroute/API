@@ -1,5 +1,5 @@
 /* tslint:disable */
-import {Entity, Column, ManyToOne, JoinColumn, OneToMany} from 'typeorm';
+import {Entity, Column, ManyToOne, JoinColumn, OneToMany, ManyToMany, JoinTable} from 'typeorm';
 import {Resource} from '@letseat/domains/resource/resource';
 import {Store} from '@letseat/domains/store/store.entity';
 import {Customer} from '@letseat/domains/customer/customer.entity';
@@ -7,6 +7,7 @@ import {Product} from '@letseat/domains/product/product.entity';
 import {Meal} from '@letseat/domains/meal/meal.entity';
 import {MealSubsectionOptionProduct} from '@letseat/domains/meal/meal-subsection-option-product.entity';
 import {MealSubsectionOptionIngredient} from '@letseat/domains/meal/meal-subsection-option-ingredient.entity';
+import {OrderHistory, OrderStatus} from '@letseat/domains/order/order-history.entity';
 
 @Entity()
 export class Order extends Resource {
@@ -67,6 +68,9 @@ export class Order extends Resource {
 
 	@OneToMany(() => OrderDetailProduct, detail => detail.order)
 	detailsProducts: OrderDetailProduct[];
+
+	@OneToMany(() => OrderHistory, orderHistory => orderHistory.order)
+	history: OrderHistory[];
 }
 
 @Entity()

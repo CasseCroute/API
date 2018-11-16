@@ -6,3 +6,10 @@ export const createOrderValidatorOptions: BaseValidatorPipeOptions = {
 	forbidUnknownValues: true,
 	forbidNonWhitelisted: true
 };
+
+export const updateOrderValidatorOptions: BaseValidatorPipeOptions = {
+	skipMissingProperties: true,
+	forbidUnknownValues: true,
+	forbidNonWhitelisted: true,
+	whitelist: true
+};
