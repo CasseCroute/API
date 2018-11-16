@@ -59,6 +59,22 @@ describe('Store Orders HTTP Requests', () => {
 		});
 	});
 
+	describe('PATCH stores/me/orders', () => {
+		it('should return a HTTP 200 status code when successful', () => {
+			return request(app.getHttpServer())
+				.patch('/stores/me/orders/591366ff-82d2-4a57-972d-4851c8107f75')
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.send({orderStatusUuid: 'bbe8e2f6-4ed3-4fa1-941a-8941b1658a08'})
+				.expect(200);
+		});
+
+		it('should return a HTTP 401 status code when no JWT is present in Authorization header', () => {
+			return request(app.getHttpServer())
+				.patch('/stores/me/orders/591366ff-82d2-4a57-972d-4851c8107f75')
+				.expect(401);
+		});
+	});
+
 	afterAll(async () => {
 		await app.close();
 	});

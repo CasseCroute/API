@@ -16,6 +16,7 @@ import {MealsQueryHandlers} from '@letseat/application/queries/meal/handlers';
 import {SectionCommandHandlers} from '@letseat/application/commands/section/handlers';
 import {ProductIngredientRepository} from '@letseat/infrastructure/repository/product-ingredient.repository';
 import {LoggerService} from '@letseat/infrastructure/services';
+import {OrderCommandHandlers} from '@letseat/application/commands/order/handlers';
 
 @Module({
 	imports: [
@@ -32,6 +33,7 @@ import {LoggerService} from '@letseat/infrastructure/services';
 		...MealCommandHandlers,
 		...MealsQueryHandlers,
 		...SectionCommandHandlers,
+		...OrderCommandHandlers,
 		LoggerService
 	],
 	controllers: [
@@ -42,7 +44,8 @@ export class StoreModule implements OnModuleInit {
 	constructor(
 		private readonly moduleRef: ModuleRef,
 		private readonly command$: CommandBus,
-	) {}
+	) {
+	}
 
 	onModuleInit() {
 		this.command$.setModuleRef(this.moduleRef);
@@ -54,5 +57,6 @@ export class StoreModule implements OnModuleInit {
 		this.command$.register(ProductCommandHandlers);
 		this.command$.register(MealCommandHandlers);
 		this.command$.register(SectionCommandHandlers);
+		this.command$.register(OrderCommandHandlers);
 	}
 }

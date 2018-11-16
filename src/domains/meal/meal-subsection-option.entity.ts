@@ -12,14 +12,14 @@ export class MealSubsectionOption extends Resource {
 		return Object.assign(this, args);
 	}
 
-	@ManyToOne(type => MealSubsection, subsection => subsection.options, {nullable: false, cascade: ['insert'], onDelete: 'CASCADE'})
+	@ManyToOne(() => MealSubsection, subsection => subsection.options, {nullable: false, cascade: ['insert'], onDelete: 'CASCADE'})
 	@JoinColumn({name: 'id_meal_subsection'})
 	subsection: MealSubsection;
 
-	@OneToMany(type => MealSubsectionOptionIngredient, ingredientOption => ingredientOption.option, {nullable: false, cascade: ['insert'], onDelete: 'CASCADE', eager: true})
+	@OneToMany(() => MealSubsectionOptionIngredient, ingredientOption => ingredientOption.option, {nullable: false, cascade: ['insert'], onDelete: 'CASCADE', eager: true})
 	ingredients: MealSubsectionOptionIngredient[];
 
-	@OneToMany(type => MealSubsectionOptionProduct, productOption => productOption.option, {nullable: false, cascade: ['insert'], onDelete: 'CASCADE', eager: true})
+	@OneToMany(() => MealSubsectionOptionProduct, productOption => productOption.option, {nullable: false, cascade: ['insert'], onDelete: 'CASCADE', eager: true})
 	products: MealSubsectionOptionProduct[];
 
 	public static register(args: any): MealSubsectionOption {
