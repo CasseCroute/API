@@ -1,12 +1,9 @@
 import {
-	EntityRepository, getCustomRepository,
+	EntityRepository,
 	Repository,
 } from 'typeorm';
 import {ResourceRepository} from '@letseat/infrastructure/repository/resource.repository';
 import {Section} from '@letseat/domains/section/section.entity';
-import {AddSectionProductDto} from '@letseat/domains/section/dtos/add-section-product.dto';
-import {MealRepository} from '@letseat/infrastructure/repository/meal.repository';
-import {ProductRepository} from '@letseat/infrastructure/repository/product.repository';
 
 @EntityRepository(Section)
 export class SectionRepository extends Repository<Section> implements ResourceRepository {
@@ -33,44 +30,6 @@ export class SectionRepository extends Repository<Section> implements ResourceRe
 			.leftJoinAndSelect('section.products', 'products')
 			.where('section.uuid = :uuid', {uuid: sectionUuid})
 			.getOne();
-	}
-
-	public async addSectionProduct(storeUuid: string, section: AddSectionProductDto) {
-		const mealsRepository = getCustomRepository(MealRepository);
-		const productsRepository = getCustomRepository(ProductRepository);
-		const {sectionUuid, products, meals} = section;
-		const storeSection = await this.findStoreSectionByUuid(storeUuid, sectionUuid) as Section;
-
-		if (meals && meals.length > 0) {
-			meals.forEach(async mealUuid => {
-				const newMeal = await mealsRepository.findOneByUuid(mealUuid);
-
-				if (newMeal === undefined) {
-					return;
-				}
-
-				storeSection.meals.push(newMeal);
-				return this.save(storeSection);
-
-			});
-		}
-
-		if (!(products && products.length > 0)) {
-			return;
-		}
-
-		products.forEach(async productUuid => {
-			const newProduct = await productsRepository.findStoreProductByUuid(storeUuid, productUuid);
-
-			if (newProduct === undefined) {
-				return;
-			}
-
-			storeSection.products.push(newProduct);
-			return this.save(storeSection);
-
-		});
-
 	}
 
 	public async deleteSectionByUuid(storeUuid: string, sectionUuid: string) {
