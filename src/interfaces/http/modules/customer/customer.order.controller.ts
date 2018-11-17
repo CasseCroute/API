@@ -10,7 +10,8 @@ import {ValidationPipe} from '@letseat/domains/common/pipes/validation.pipe';
 import {Order} from '@letseat/domains/order/order.entity';
 import {createOrderValidatorOptions} from '@letseat/domains/order/pipes';
 import {CreateOrderDto} from '@letseat/domains/order/dtos';
-import {CreateOrderCommand} from '@letseat/application/commands/customer';
+import {CreateGuestOrderDto} from '@letseat/domains/order/dtos/create-order.dto';
+import {CreateGuestOrderCommand, CreateOrderCommand} from '@letseat/application/commands/order';
 
 @Controller('customers/me/orders')
 export class CurrentCustomerOrderController {
@@ -40,5 +41,18 @@ export class CurrentCustomerOrderController {
 				throw new UnauthorizedException();
 			})();
 	}
+}
 
+@Controller('customers/guest/orders')
+export class GuestCustomerOrderController {
+	constructor(private readonly commandBus: CommandBus) {
+	}
+
+	@Post()
+	@HttpCode(200)
+	public async placeOrder(
+		@Body(new ValidationPipe<Order>(createOrderValidatorOptions)) guestOrder: CreateGuestOrderDto
+	): Promise<any> {
+		return this.commandBus.execute(new CreateGuestOrderCommand(guestOrder.order, guestOrder.storeUuid));
+	}
 }

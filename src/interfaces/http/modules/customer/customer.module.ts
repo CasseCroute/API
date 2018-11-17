@@ -10,11 +10,13 @@ import {CustomerQueryHandlers} from '@letseat/application/queries/customer/handl
 import {JwtStrategy} from '@letseat/infrastructure/authorization/strategies/jwt.strategy';
 import {CurrentCustomerCartController} from '@letseat/interfaces/http/modules/customer/customer.cart.controller';
 import {CartCommandHandlers} from '@letseat/application/commands/cart/handlers';
-import {CurrentCustomerOrderController} from '@letseat/interfaces/http/modules/customer/customer.order.controller';
+import {CurrentCustomerOrderController, GuestCustomerOrderController} from '@letseat/interfaces/http/modules/customer/customer.order.controller';
 import {Order} from '@letseat/domains/order/order.entity';
 import {OrderRepository} from '@letseat/infrastructure/repository/order.repository';
 import {Cart} from '@letseat/domains/cart/cart.entity';
 import {CartRepository} from '@letseat/infrastructure/repository/cart.repository';
+import {OrderCommandHandlers} from '@letseat/application/commands/order/handlers';
+import {StoreRepository} from '@letseat/infrastructure/repository/store.repository';
 
 @Module({
 	imports: [
@@ -25,6 +27,7 @@ import {CartRepository} from '@letseat/infrastructure/repository/cart.repository
 			OrderRepository,
 			CustomerRepository,
 			Cart,
+			StoreRepository,
 			CartRepository
 		]),
 		CQRSModule
@@ -33,13 +36,15 @@ import {CartRepository} from '@letseat/infrastructure/repository/cart.repository
 		JwtStrategy,
 		...CartCommandHandlers,
 		...CustomerCommandHandlers,
-		...CustomerQueryHandlers
+		...CustomerQueryHandlers,
+		...OrderCommandHandlers
 	],
 	controllers: [
 		CurrentCustomerController,
 		CustomerController,
 		CurrentCustomerCartController,
-		CurrentCustomerOrderController
+		CurrentCustomerOrderController,
+		GuestCustomerOrderController
 	]
 })
 export class CustomerModule implements OnModuleInit {
@@ -54,5 +59,6 @@ export class CustomerModule implements OnModuleInit {
 		this.command$.register(CustomerCommandHandlers);
 		this.command$.register(CustomerQueryHandlers);
 		this.command$.register(CartCommandHandlers);
+		this.command$.register(OrderCommandHandlers);
 	}
 }

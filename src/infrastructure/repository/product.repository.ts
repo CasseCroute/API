@@ -8,13 +8,16 @@ import {ResourceRepository} from '@letseat/infrastructure/repository/resource.re
 import {Product} from '@letseat/domains/product/product.entity';
 import {LoggerService} from '@letseat/infrastructure/services';
 import {NotFoundException} from '@nestjs/common';
+import {Store} from '@letseat/domains/store/store.entity';
 
 @EntityRepository(Product)
 export class ProductRepository extends Repository<Product> implements ResourceRepository {
-	@Transaction()
+	public async findOneByUuid(productUuid: string, relations?: string[]) {
+		return this.findOne({where: {uuid: productUuid}, relations});
+	}
 
-	public async findOneByUuid(productUuid: string) {
-		return this.findOne({where: {uuid: productUuid}});
+	public async findOneByUuidAndStore(productUuid: string, store: Store, relations?: string[]) {
+		return this.findOneOrFail({where: {uuid: productUuid, store}, relations});
 	}
 
 	public async updateProduct(storeId: number, productUuid: string, values: ObjectLiteral) {

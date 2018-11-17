@@ -1,8 +1,10 @@
 import {
 	IsString,
 	IsOptional,
-	IsBoolean,
+	IsBoolean, ValidateNested, IsArray, IsUUID,
 } from 'class-validator';
+import {Type} from 'class-transformer';
+import {AddProductOrMealToCartDto} from '@letseat/domains/cart/dtos';
 
 export class CreateOrderDto {
 	@IsBoolean()
@@ -27,4 +29,14 @@ export class CreateOrderDto {
 	@IsBoolean()
 	@IsOptional()
 	readonly isDelivery: boolean;
+}
+
+export class CreateGuestOrderDto {
+	@ValidateNested()
+	@IsArray()
+	@Type(() => AddProductOrMealToCartDto)
+	order: AddProductOrMealToCartDto[];
+
+	@IsUUID()
+	storeUuid: string;
 }
