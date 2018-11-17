@@ -166,6 +166,31 @@ describe('Store Sections HTTP Requests', () => {
 					.expect(401);
 			});
 		});
+
+		describe('POST stores/me/sections/add', () => {
+			it('should return a HTTP 201 status code when successful', () => {
+				return request(app.getHttpServer())
+					.post('/stores/me/sections/add')
+					.set('Authorization', `Bearer ${mocks.token}`)
+					.send({
+						sectionUuid: mocks.sectionRepository.data[0].uuid,
+						products: [mocks.productRepository.data[0].uuid],
+						meals: [mocks.productRepository.data[0].uuid]
+					})
+					.expect(201);
+			});
+
+			it('should return a HTTP 401 status code when no JWT is present in Authorization header', () => {
+				return request(app.getHttpServer())
+					.post('/stores/me/sections/add')
+					.send({
+						sectionUuid: mocks.sectionRepository.data[0].uuid,
+						products: [mocks.productRepository.data[0].uuid],
+						meals: [mocks.productRepository.data[0].uuid]
+					})
+					.expect(401);
+			});
+		});
 	});
 
 	afterAll(async () => {
