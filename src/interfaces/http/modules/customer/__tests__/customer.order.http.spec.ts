@@ -10,7 +10,10 @@ import {JwtStrategy} from '@letseat/infrastructure/authorization/strategies/jwt.
 import {CustomExceptionFilter} from '@letseat/domains/common/exceptions';
 import {Cart} from '@letseat/domains/cart/cart.entity';
 import {LoggerService} from '@letseat/infrastructure/services';
-import {CurrentCustomerOrderController} from '@letseat/interfaces/http/modules/customer/customer.order.controller';
+import {
+	CurrentCustomerOrderController,
+	GuestCustomerOrderController
+} from '@letseat/interfaces/http/modules/customer/customer.order.controller';
 
 describe('Customer Order HTTP Requests', () => {
 	let app: INestApplication;
@@ -18,7 +21,8 @@ describe('Customer Order HTTP Requests', () => {
 	beforeAll(async () => {
 		const module: TestingModule = await Test.createTestingModule({
 			controllers: [
-				CurrentCustomerOrderController
+				CurrentCustomerOrderController,
+				GuestCustomerOrderController
 			],
 			providers: [
 				CQRSModule,
@@ -49,7 +53,7 @@ describe('Customer Order HTTP Requests', () => {
 		await app.init();
 	});
 
-	describe('POST /orders', () => {
+	describe('POST /customers/me/orders', () => {
 		it('should return a HTTP 200 status code when successful', () => {
 			return request(app.getHttpServer())
 				.post('/customers/me/orders')
@@ -69,6 +73,31 @@ describe('Customer Order HTTP Requests', () => {
 			return request(app.getHttpServer())
 				.post('/customers/me/orders')
 				.set('Authorization', `Bearer ${mocks.token}`)
+				.expect(400);
+		});
+	});
+
+	describe('POST /customers/guest/orders', () => {
+		it('should return a HTTP 200 status code when successful', () => {
+			return request(app.getHttpServer())
+				.post('/customers/guest/orders')
+				.send({
+					storeUuid: 'cb0c83e2-5c52-4b5d-81b0-f4829f4986b8',
+					order: [{mealUuid: 'bbe8e2f6-4ed3-4fa1-941a-8941b1658a08', quantity: 2}]
+				})
+				.expect(200);
+		});
+
+		it('should return a HTTP 400 status code when incorrect data is sent', () => {
+			return request(app.getHttpServer())
+				.post('/customers/guest/orders')
+				.send({error: false})
+				.expect(400);
+		});
+
+		it('should return a HTTP 400 status code when no required data is sent', () => {
+			return request(app.getHttpServer())
+				.post('/customers/guest/orders')
 				.expect(400);
 		});
 	});
