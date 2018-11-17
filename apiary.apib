@@ -981,11 +981,9 @@ Converts Customer Cart into an Order
             Authorization: Bearer <JWT>
             
     + Attributes
-        + isGuest: `false` (boolean, required) - If the Order has been processed by a guest Customer or not.
         + deliveryAddress: `20, rue du Beau Bois, 75003 Paris` (string, optional) - Delivery address.
         + deliveryNote: `Meet in the front of the door` (string, optional) - Delivery note.
         + isTakeAway: `false` (boolean, optional) - If the Order is for take away.
-        + isEatIn: `false` (boolean, optional) - If the Order is for eat in.
         + isDelivery: `true` (boolean, optional) - If the Order is for delivery.
         
 + Response 200 (application/json; charset=utf-8)

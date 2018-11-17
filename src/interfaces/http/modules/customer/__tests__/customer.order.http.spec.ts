@@ -58,7 +58,7 @@ describe('Customer Order HTTP Requests', () => {
 			return request(app.getHttpServer())
 				.post('/customers/me/orders')
 				.set('Authorization', `Bearer ${mocks.token}`)
-				.send({isGuest: false})
+				.send({isDelivery: false})
 				.expect(200);
 		});
 
@@ -78,14 +78,15 @@ describe('Customer Order HTTP Requests', () => {
 	});
 
 	describe('POST /customers/guest/orders', () => {
-		it('should return a HTTP 200 status code when successful', () => {
+		it('should return a HTTP 201 status code when successful', () => {
 			return request(app.getHttpServer())
 				.post('/customers/guest/orders')
 				.send({
 					storeUuid: 'cb0c83e2-5c52-4b5d-81b0-f4829f4986b8',
-					order: [{mealUuid: 'bbe8e2f6-4ed3-4fa1-941a-8941b1658a08', quantity: 2}]
+					isTakeAway: true,
+					cart: [{mealUuid: 'bbe8e2f6-4ed3-4fa1-941a-8941b1658a08', quantity: 2}]
 				})
-				.expect(200);
+				.expect(201);
 		});
 
 		it('should return a HTTP 400 status code when incorrect data is sent', () => {

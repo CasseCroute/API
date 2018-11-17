@@ -1,4 +1,5 @@
 import {
+	BadRequestException,
 	Body,
 	Controller, Get, HttpCode, Post, Req, UnauthorizedException, UseGuards
 } from '@nestjs/common';
@@ -12,6 +13,7 @@ import {createOrderValidatorOptions} from '@letseat/domains/order/pipes';
 import {CreateOrderDto} from '@letseat/domains/order/dtos';
 import {CreateGuestOrderDto} from '@letseat/domains/order/dtos/create-order.dto';
 import {CreateGuestOrderCommand, CreateOrderCommand} from '@letseat/application/commands/order';
+import {isUndefined} from '@letseat/shared/utils';
 
 @Controller('customers/me/orders')
 export class CurrentCustomerOrderController {
@@ -25,6 +27,9 @@ export class CurrentCustomerOrderController {
 		@Req() request: any,
 		@Body(new ValidationPipe<Order>(createOrderValidatorOptions)) order: CreateOrderDto
 	): Promise<any> {
+		if (isUndefined(order.isDelivery) && isUndefined(order.isTakeAway)) {
+			throw new BadRequestException();
+		}
 		return request.user.entity === AuthEntities.Customer
 			? this.commandBus.execute(new CreateOrderCommand(request.user.uuid, order))
 			: (() => {
@@ -49,10 +54,12 @@ export class GuestCustomerOrderController {
 	}
 
 	@Post()
-	@HttpCode(200)
 	public async placeOrder(
 		@Body(new ValidationPipe<Order>(createOrderValidatorOptions)) guestOrder: CreateGuestOrderDto
 	): Promise<any> {
-		return this.commandBus.execute(new CreateGuestOrderCommand(guestOrder.order, guestOrder.storeUuid));
+		if (isUndefined(guestOrder.isEatIn) && isUndefined(guestOrder.isTakeAway)) {
+			throw new BadRequestException();
+		}
+		return this.commandBus.execute(new CreateGuestOrderCommand(guestOrder, guestOrder.storeUuid));
 	}
 }

@@ -25,6 +25,7 @@ import {MealRepository} from '@letseat/infrastructure/repository/meal.repository
 import {CartMeal, CartMealOptionIngredient, CartMealOptionProduct} from '@letseat/domains/cart/cart.entity';
 import {MealSubsectionOption} from '@letseat/domains/meal/meal-subsection-option.entity';
 import {LoggerService} from '@letseat/infrastructure/services';
+import {CreateGuestOrderDto} from '@letseat/domains/order/dtos/create-order.dto';
 
 @EntityRepository(Order)
 export class OrderRepository extends Repository<Order> implements ResourceRepository {
@@ -47,6 +48,7 @@ export class OrderRepository extends Repository<Order> implements ResourceReposi
 		// @TODO: Set Order Status Dynamically (by default an order is Paid)
 		const paidStatus = await this.orderStatusRepository.findOne({where: {uuid: 'f77ee6a1-7498-4a64-860c-a6f5d2d26514'}});
 
+		order.isGuest = false;
 		order.firstName = customer.firstName;
 		order.lastName = customer.lastName;
 		order.email = customer.email;
@@ -78,8 +80,8 @@ export class OrderRepository extends Repository<Order> implements ResourceReposi
 		});
 	}
 
-	public async createGuestOrder(products: AddProductOrMealToCartDto[], store: Store): Promise<any> {
-		const order = new Order();
+	public async createGuestOrder(guestOrder: CreateGuestOrderDto, store: Store): Promise<any> {
+		const order = new Order(guestOrder);
 		const history = new OrderHistory();
 		// @TODO: Set Order Status Dynamically (by default an order is Paid)
 		const paidStatus = await this.orderStatusRepository.findOneOrFail({where: {uuid: 'f77ee6a1-7498-4a64-860c-a6f5d2d26514'}});
@@ -92,7 +94,7 @@ export class OrderRepository extends Repository<Order> implements ResourceReposi
 
 		order.reference = cryptoRandomString(6).toUpperCase();
 		return this.save(order).then(async res => {
-			products.forEach(async product => {
+			guestOrder.cart.forEach(async product => {
 				if (product.mealUuid){
 					const storeMeal = await this.mealRepository.findOneByUuidAndStore(product.mealUuid, store.uuid);
 					if (storeMeal) {
