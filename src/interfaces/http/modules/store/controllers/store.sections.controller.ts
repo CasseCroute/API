@@ -89,10 +89,10 @@ export class CurrentStoreSectionsController {
 		throw new UnauthorizedException();
 	}
 
-	@Patch(':sectionUuid')
+	@Patch(':uuid')
 	@HttpCode(204)
 	@UseGuards(AuthGuard('jwt'))
-	public async updateSection(@Req() request: any, @Param('sectionUuid') sectionUuid: string, @Body(new ValidationPipe(updateSectionlValidatorOptions)) section: UpdateSectionNameDto): Promise<any> {
+	public async updateSection(@Req() request: any, @Param('uuid') sectionUuid: string, @Body(new ValidationPipe(updateSectionlValidatorOptions)) section: UpdateSectionNameDto): Promise<any> {
 		if (request.user.entity === AuthEntities.Store && isUuid(sectionUuid)) {
 			return this.commandBus.execute(new UpdateSectionCommand(request.user.uuid, sectionUuid, section));
 		}
