@@ -1,6 +1,6 @@
 import {
 	BadRequestException,
-	Body, Controller, Delete, Get, HttpCode, Param, Post, Req, UnauthorizedException, UseGuards
+	Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Req, UnauthorizedException, UseGuards
 } from '@nestjs/common';
 import {CommandBus} from '@nestjs/cqrs';
 import {ValidationPipe} from '@letseat/domains/common/pipes/validation.pipe';
@@ -9,7 +9,7 @@ import {AuthGuard} from '@letseat/infrastructure/authorization/guards';
 import {Section} from '@letseat/domains/section/section.entity';
 import {
 	createSectionProductValidatorOptions,
-	createSectionValidatorOptions
+	createSectionValidatorOptions, removeSectionProductValidatorOptions, updateSectionlValidatorOptions
 } from '@letseat/domains/section/pipes/section-validator-pipe-options';
 import {CreateSectionCommand} from '@letseat/application/commands/section/create-section.command';
 import {CreateSectionDto} from '@letseat/domains/section/dtos/create-section.dto';
@@ -19,10 +19,11 @@ import {isUuid} from '@letseat/shared/utils';
 import {
 	AddSectionProductCommand,
 	DeleteSectionCommand,
-	RemoveSectionProductCommand
+	RemoveSectionProductCommand, UpdateSectionCommand
 } from '@letseat/application/commands/section';
 import {AddSectionProductDto} from '@letseat/domains/section/dtos/add-section-product.dto';
 import {RemoveSectionProductDto} from '@letseat/domains/section/dtos/remove-section-product.dto';
+import {UpdateSectionNameDto} from '@letseat/domains/section/dtos/update-section.dto';
 
 @Controller('stores/me/sections')
 export class CurrentStoreSectionsController {
@@ -78,9 +79,22 @@ export class CurrentStoreSectionsController {
 
 	@Post(':sectionUuid/remove')
 	@UseGuards(AuthGuard('jwt'))
-	public async deleteSectionProducts(@Req() request: any, @Param('sectionUuid') sectionUuid: string, @Body(new ValidationPipe(createSectionProductValidatorOptions)) section: RemoveSectionProductDto): Promise<any> {
+	public async deleteSectionProducts(@Req() request: any, @Param('sectionUuid') sectionUuid: string, @Body(new ValidationPipe(removeSectionProductValidatorOptions)) section: RemoveSectionProductDto): Promise<any> {
 		if (request.user.entity === AuthEntities.Store && isUuid(sectionUuid)) {
 			return this.commandBus.execute(new RemoveSectionProductCommand(request.user.uuid, sectionUuid, section));
+		}
+		if (!isUuid(sectionUuid)) {
+			throw new BadRequestException();
+		}
+		throw new UnauthorizedException();
+	}
+
+	@Patch(':sectionUuid')
+	@HttpCode(204)
+	@UseGuards(AuthGuard('jwt'))
+	public async updateSection(@Req() request: any, @Param('sectionUuid') sectionUuid: string, @Body(new ValidationPipe(updateSectionlValidatorOptions)) section: UpdateSectionNameDto): Promise<any> {
+		if (request.user.entity === AuthEntities.Store && isUuid(sectionUuid)) {
+			return this.commandBus.execute(new UpdateSectionCommand(request.user.uuid, sectionUuid, section));
 		}
 		if (!isUuid(sectionUuid)) {
 			throw new BadRequestException();
