@@ -167,15 +167,15 @@ describe('Store Sections HTTP Requests', () => {
 			});
 		});
 
-		describe('POST stores/me/sections/add', () => {
-			const url = '/stores/me/sections/add';
+		describe('POST stores/me/sections/:uuid/add', () => {
+			const sectionUuid = mocks.sectionRepository.data[0].uuid;
+			const url = `/stores/me/sections/${sectionUuid}/add`;
 
 			it('should return a HTTP 201 status code when meals and products creation is successful', () => {
 				return request(app.getHttpServer())
 					.post(url)
 					.set('Authorization', `Bearer ${mocks.token}`)
 					.send({
-						sectionUuid: mocks.sectionRepository.data[0].uuid,
 						products: [mocks.productRepository.data[0].uuid],
 						meals: [mocks.productRepository.data[0].uuid]
 					})
@@ -187,20 +187,45 @@ describe('Store Sections HTTP Requests', () => {
 					.post(url)
 					.set('Authorization', `Bearer ${mocks.token}`)
 					.send({
-						sectionUuid: mocks.sectionRepository.data[0].uuid,
 						meals: [mocks.productRepository.data[0].uuid]
 					})
 					.expect(201);
 			});
 
-			it('should return a HTTP 400 status code when missing sectionUuid', () => {
+			it('should return a HTTP 401 status code when no JWT is present in Authorization header', () => {
+				return request(app.getHttpServer())
+					.post(url)
+					.send({
+						products: [mocks.productRepository.data[0].uuid],
+						meals: [mocks.productRepository.data[0].uuid]
+					})
+					.expect(401);
+			});
+		});
+
+		describe('POST stores/me/sections/:uuid/remove', () => {
+			const sectionUuid = mocks.sectionRepository.data[0].uuid;
+			const url = `/stores/me/sections/${sectionUuid}/remove`;
+
+			it('should return a HTTP 201 status code when meals and products deletion is successful', () => {
 				return request(app.getHttpServer())
 					.post(url)
 					.set('Authorization', `Bearer ${mocks.token}`)
 					.send({
 						products: [mocks.productRepository.data[0].uuid],
+						meals: [mocks.productRepository.data[0].uuid]
 					})
-					.expect(400);
+					.expect(201);
+			});
+
+			it('should return a HTTP 201 status code when meals deletion is successful', () => {
+				return request(app.getHttpServer())
+					.post(url)
+					.set('Authorization', `Bearer ${mocks.token}`)
+					.send({
+						meals: [mocks.productRepository.data[0].uuid]
+					})
+					.expect(201);
 			});
 
 			it('should return a HTTP 401 status code when no JWT is present in Authorization header', () => {
