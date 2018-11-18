@@ -1,5 +1,5 @@
 import {ICommand} from '@nestjs/cqrs';
-import {CreateOrderDto} from '@letseat/domains/order/dtos/create-order.dto';
+import {CreateOrderDto} from '@letseat/domains/order/dtos';
 
 export class CreateOrderCommand implements ICommand {
 	readonly customerUuid: string;

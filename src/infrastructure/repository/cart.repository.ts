@@ -15,6 +15,8 @@ import {Meal} from '@letseat/domains/meal/meal.entity';
 import {NotFoundException} from '@nestjs/common';
 import {MealSubsectionOption} from '@letseat/domains/meal/meal-subsection-option.entity';
 import {RemoveProductOrMealToCartDto} from '@letseat/domains/cart/dtos/remove-product-or-meal-to-cart.dto';
+import {MealSubsectionOptionIngredient} from '@letseat/domains/meal/meal-subsection-option-ingredient.entity';
+import {MealSubsectionOptionProduct} from '@letseat/domains/meal/meal-subsection-option-product.entity';
 
 @EntityRepository(Cart)
 export class CartRepository extends Repository<Cart> {
@@ -121,25 +123,28 @@ export class CartRepository extends Repository<Cart> {
 	public async saveCartMealOptions(mealOptionUuids: string[], cartMeal: CartMeal) {
 		try {
 			mealOptionUuids.forEach(async mealOptionUuid => {
-				const option = await getRepository(MealSubsectionOption)
-					.createQueryBuilder('mealSubsectionOption')
-					.leftJoinAndSelect('mealSubsectionOption.ingredients', 'ingredient')
-					.leftJoinAndSelect('mealSubsectionOption.products', 'product')
-					.where('ingredient.uuid = :mealOptionUuid or product.uuid = :mealOptionUuid', {mealOptionUuid})
+				const subsectionOptionIngredient = await getRepository(MealSubsectionOptionIngredient)
+					.createQueryBuilder('mealSubsectionOptionIngredient')
+					.where('mealSubsectionOptionIngredient.uuid = :mealOptionUuid', {mealOptionUuid})
 					.getOne();
 
-				if (option && option.ingredients && option.ingredients.length > 0) {
+				if (subsectionOptionIngredient) {
 					const cartMealOptionIngredient = new CartMealOptionIngredient();
-					cartMealOptionIngredient.optionIngredient = option.ingredients[0];
+					cartMealOptionIngredient.optionIngredient = subsectionOptionIngredient;
 					cartMealOptionIngredient.cartMeal = cartMeal;
 					await getRepository(CartMealOptionIngredient).save(cartMealOptionIngredient);
-				}
+				} else {
+					const subsectionOptionProduct = await getRepository(MealSubsectionOptionProduct)
+						.createQueryBuilder('mealSubsectionOptionProduct')
+						.where('mealSubsectionOptionProduct.uuid = :mealOptionUuid', {mealOptionUuid})
+						.getOne();
 
-				if (option && option.products && option.products.length > 0) {
-					const cartMealOptionProduct = new CartMealOptionProduct();
-					cartMealOptionProduct.optionProduct = option.products[0];
-					cartMealOptionProduct.cartMeal = cartMeal;
-					await getRepository(CartMealOptionProduct).save(cartMealOptionProduct);
+					if (subsectionOptionProduct) {
+						const cartMealOptionProduct = new CartMealOptionProduct();
+						cartMealOptionProduct.optionProduct = subsectionOptionProduct;
+						cartMealOptionProduct.cartMeal = cartMeal;
+						await getRepository(CartMealOptionProduct).save(cartMealOptionProduct);
+					}
 				}
 			});
 		} catch (err) {

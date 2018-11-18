@@ -130,9 +130,7 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 				]
 			});
 		}
-
 		return store;
-
 	}
 
 	public async findManyByUuid(storesUuids: string[]): Promise<Store[]> {

@@ -11,8 +11,8 @@
     "test": "yarn test:static && yarn test:unit && yarn test:api",
     "test:api": "NODE_ENV=test yarn api:validate && dredd",
     "test:static": "tslint --project ./tsconfig.json 'src/**/*.{ts,tsx}'",
-    "test:unit": "NODE_ENV=test jest --maxWorkers=1",
-    "test:unit:cov": "jest --coverage",
+    "test:unit": "NODE_ENV=test jest",
+    "test:unit:cov": "jest --coverage --maxWorkers=2",
     "typeorm": "node -r ts-node/register/transpile-only ./node_modules/.bin/typeorm"
   },
   "repository": {
