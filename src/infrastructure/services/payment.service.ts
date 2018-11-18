@@ -5,7 +5,7 @@ type StripeCustomer = Stripe.customers.ICustomer;
 
 @Injectable()
 export class PaymentService {
-	private stripe = new Stripe(config.get('stripe.secretKey'));
+	private readonly stripe = new Stripe(config.get('stripe.secretKey'));
 
 	public async createCustomer(email: string, source: any) {
 		return this.stripe.customers.create({
