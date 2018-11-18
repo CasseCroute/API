@@ -1,7 +1,7 @@
 import {ICommand} from '@nestjs/cqrs';
 import {UpdateSectionNameDto} from '@letseat/domains/section/dtos/update-section.dto.ts';
 
-export class UpdateSectionNameCommand implements ICommand {
+export class UpdateSectionCommand implements ICommand {
 	readonly storeUuid: string;
 	readonly sectionUuid: string;
 	readonly section: UpdateSectionNameDto;
