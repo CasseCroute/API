@@ -11,6 +11,14 @@ export class MealRepository extends Repository<Meal> implements ResourceReposito
 		return this.findOne({where: {uuid: mealUuid}});
 	}
 
+	public async findOneByUuidAndStore(mealUuid: string, storeUuid: string) {
+		return this.createQueryBuilder('meal')
+		.leftJoin('meal.store', 'store')
+		.where('meal.uuid = :mealUuid', {mealUuid})
+		.andWhere('store.uuid = :storeUuid', {storeUuid})
+		.getOne();
+	}
+
 	public async findStoreMeals(storeUuid: string) {
 		return this.createQueryBuilder('meal')
 			.select()

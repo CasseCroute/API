@@ -25,10 +25,12 @@ hooks.beforeAll((transactions, done) => {
 		});
 });
 
-// CUSTOMER
 const customer = {};
-
 const ingredient = {};
+const store = {};
+const cuisine = {};
+const product = {};
+const meal = {};
 
 // After Customer Registration
 hooks.after('Customers > Customer Registration > Register a new Customer', (transaction, done) => {
@@ -79,10 +81,6 @@ hooks.before('Customers > Current Customer Profile > Delete Account of the curre
 			done();
 		})
 });
-
-// STORE
-const store = {};
-const cuisine = {};
 
 // Before Store Registration
 hooks.before('Stores > Store Registration > Register a new Store', (transaction, done) => {
@@ -172,9 +170,6 @@ hooks.before('Stores > Current Store Products > Create a new Product', (transact
 	transaction.request.body = JSON.stringify(body);
 	done();
 });
-
-// PRODUCTS
-const product = {};
 
 // After current Store add and Ingredient
 hooks.after('Stores > Current Store Products > Create a new Product', (transaction, done) => {
@@ -297,9 +292,6 @@ hooks.before('Stores > Store Ingredients > Retrieve a Store Ingredient', (transa
 	transaction.fullPath = `/stores/${store.uuid}/ingredients/${ingredient.uuid}`;
 	done();
 });
-
-// MEALS
-const meal = {};
 
 // Before current Store creates a Meal
 hooks.before('Stores > Current Store Meals > Create a new Meal', (transaction, done) => {
@@ -432,6 +424,21 @@ hooks.before('Cuisines > Cuisine > Retrieve list of Cuisine Stores', (transactio
 hooks.before('Customers > Orders > Place an Order', (transaction, done) => {
 	transaction.request.headers.Authorization = `Bearer ${customer.jwt}`;
 	done();
+});
+
+hooks.before('Customers > Guest Orders > Place an Order', (transaction, done) => {
+	const body = JSON.parse(transaction.request.body);
+	Promise.all([
+		utils.findProductUuid(client),
+		utils.findStoreUuid(client)
+	]).then(values => {
+		body.cart[0].productUuid = values[0];
+		body.storeUuid = values[1];
+		delete body.cart[0].mealUuid;
+		delete body.cart[0].optionUuids;
+		transaction.request.body = JSON.stringify(body);
+		done();
+	})
 });
 
 hooks.before('Customers > Orders > Get Orders', (transaction, done) => {

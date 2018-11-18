@@ -56,6 +56,12 @@ const createProduct = (storeJwt) =>
 		headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${storeJwt}`},
 	});
 
+const findProductUuid = (client) => client.query('SELECT * from product')
+		.then(res => res.rows[0].uuid);
+
+const findStoreUuid = (client) => client.query('SELECT * from store')
+	.then(res => res.rows[0].uuid);
+
 const seedDb = () => {
 	exec('psql --host localhost -U postgres -d test_letseat < ~/letseat/api/.circleci/seed.sql',
 		(error, stdout, stderr) => {
@@ -71,5 +77,7 @@ module.exports = {
 	registerStore,
 	registerCustomer,
 	createProduct,
-	seedDb
+	seedDb,
+	findProductUuid,
+	findStoreUuid
 };
