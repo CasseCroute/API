@@ -17,7 +17,7 @@ export class OrderStatus {
 
 @Entity()
 export class OrderHistory extends Resource {
-	@ManyToOne(() => Order, order => order.history, {primary: true})
+	@ManyToOne(() => Order, order => order.history, {primary: true, onDelete: 'CASCADE'})
 	@JoinColumn({name: 'id_order'})
 	order: Order;
 

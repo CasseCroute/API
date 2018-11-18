@@ -17,10 +17,18 @@ import {SectionCommandHandlers} from '@letseat/application/commands/section/hand
 import {ProductIngredientRepository} from '@letseat/infrastructure/repository/product-ingredient.repository';
 import {LoggerService} from '@letseat/infrastructure/services';
 import {OrderCommandHandlers} from '@letseat/application/commands/order/handlers';
+import {OrderRepository} from '@letseat/infrastructure/repository/order.repository';
+import {CustomerRepository} from '@letseat/infrastructure/repository/customer.repository';
 
 @Module({
 	imports: [
-		TypeOrmModule.forFeature([Store, StoreRepository, ProductIngredientRepository]),
+		TypeOrmModule.forFeature([
+			Store,
+			StoreRepository,
+			ProductIngredientRepository,
+			OrderRepository,
+			CustomerRepository,
+		]),
 		CQRSModule
 	],
 	providers: [
