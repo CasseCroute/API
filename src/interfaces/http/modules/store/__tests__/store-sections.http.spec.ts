@@ -166,9 +166,107 @@ describe('Store Sections HTTP Requests', () => {
 					.expect(401);
 			});
 		});
+
+		describe('POST stores/me/sections/:uuid/add', () => {
+			const sectionUuid = mocks.sectionRepository.data[0].uuid;
+			const url = `/stores/me/sections/${sectionUuid}/add`;
+
+			it('should return a HTTP 201 status code when meals and products creation is successful', () => {
+				return request(app.getHttpServer())
+					.post(url)
+					.set('Authorization', `Bearer ${mocks.token}`)
+					.send({
+						products: [mocks.productRepository.data[0].uuid],
+						meals: [mocks.productRepository.data[0].uuid]
+					})
+					.expect(201);
+			});
+
+			it('should return a HTTP 201 status code when meals creation is successful', () => {
+				return request(app.getHttpServer())
+					.post(url)
+					.set('Authorization', `Bearer ${mocks.token}`)
+					.send({
+						meals: [mocks.productRepository.data[0].uuid]
+					})
+					.expect(201);
+			});
+
+			it('should return a HTTP 401 status code when no JWT is present in Authorization header', () => {
+				return request(app.getHttpServer())
+					.post(url)
+					.send({
+						products: [mocks.productRepository.data[0].uuid],
+						meals: [mocks.productRepository.data[0].uuid]
+					})
+					.expect(401);
+			});
+		});
+
+		describe('POST stores/me/sections/:uuid/remove', () => {
+			const sectionUuid = mocks.sectionRepository.data[0].uuid;
+			const url = `/stores/me/sections/${sectionUuid}/remove`;
+
+			it('should return a HTTP 201 status code when meals and products deletion is successful', () => {
+				return request(app.getHttpServer())
+					.post(url)
+					.set('Authorization', `Bearer ${mocks.token}`)
+					.send({
+						products: [mocks.productRepository.data[0].uuid],
+						meals: [mocks.productRepository.data[0].uuid]
+					})
+					.expect(201);
+			});
+
+			it('should return a HTTP 201 status code when meals deletion is successful', () => {
+				return request(app.getHttpServer())
+					.post(url)
+					.set('Authorization', `Bearer ${mocks.token}`)
+					.send({
+						meals: [mocks.productRepository.data[0].uuid]
+					})
+					.expect(201);
+			});
+
+			it('should return a HTTP 401 status code when no JWT is present in Authorization header', () => {
+				return request(app.getHttpServer())
+					.post(url)
+					.send({
+						sectionUuid: mocks.sectionRepository.data[0].uuid,
+						products: [mocks.productRepository.data[0].uuid],
+						meals: [mocks.productRepository.data[0].uuid]
+					})
+					.expect(401);
+			});
+		});
+
+		describe('PATCH stores/me/sections/:uuid', () => {
+			const sectionUuid = mocks.sectionRepository.data[0].uuid;
+			const url = `/stores/me/sections/${sectionUuid}`;
+
+			it('should return a HTTP 204 status code when successful', () => {
+				return request(app.getHttpServer())
+					.patch(url)
+					.set('Authorization', `Bearer ${mocks.token}`)
+					.send({
+						name: mocks.sectionRepository.data[1].name,
+					})
+					.expect(204);
+			});
+
+			it('should return a HTTP 401 status code when no JWT is present in Authorization header', () => {
+				return request(app.getHttpServer())
+					.patch(url)
+					.send({
+						name: mocks.sectionRepository.data[0].name,
+					})
+					.expect(401);
+			});
+		});
 	});
 
-	afterAll(async () => {
-		await app.close();
-	});
+afterAll(async () => {
+	await app.close();
 });
+})
+;
