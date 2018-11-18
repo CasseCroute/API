@@ -25,7 +25,8 @@ const development = {
 	},
 	stripe: {
 		publishableKey:  process.env.DEV_STRIPE_PUBLISHABLE_KEY,
-		secretKey: process.env.DEV_STRIPE_SECRET_KEY
+		secretKey: process.env.DEV_STRIPE_SECRET_KEY,
+		testToken: process.env.STRIPE_TEST_TOKEN
 	}
 };
 
@@ -50,7 +51,8 @@ const test = {
 	},
 	stripe: {
 		publishableKey:  process.env.TEST_STRIPE_PUBLISHABLE_KEY,
-		secretKey: process.env.TEST_STRIPE_SECRET_KEY
+		secretKey: process.env.TEST_STRIPE_SECRET_KEY,
+		testToken: process.env.STRIPE_TEST_TOKEN
 	}
 };
 

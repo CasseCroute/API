@@ -39,7 +39,7 @@ export class CurrentCustomerOrderController {
 				throw new UnauthorizedException();
 			})();
 		} else {
-			const stripeCustomer = await this.paymentService.createCustomer(request.user.email, order.payment);
+			const stripeCustomer = await this.paymentService.createCustomer(request.user.email, order.paymentDetails);
 			await this.paymentService.createCharge(stripeCustomer, order.totalToPay);
 			return this.commandBus.execute(new CreateOrderCommand(request.user.uuid, order));
 		}
