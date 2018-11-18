@@ -59,13 +59,13 @@ export class CurrentStoreSectionsController {
 		throw new UnauthorizedException();
 	}
 
-	@Post('/add')
+	@Post(':sectionUuid/add')
 	@UseGuards(AuthGuard('jwt'))
-	public async addSectionProduct(@Req() request: any, @Body(new ValidationPipe(createSectionProductValidatorOptions)) section: AddSectionProductDto): Promise<any> {
-		if (request.user.entity === AuthEntities.Store && isUuid(section.sectionUuid)) {
-			return this.commandBus.execute(new AddSectionProductCommand(request.user.uuid, section));
+	public async addSectionProduct(@Req() request: any, @Param('sectionUuid') sectionUuid: string, @Body(new ValidationPipe(createSectionProductValidatorOptions)) section: AddSectionProductDto): Promise<any> {
+		if (request.user.entity === AuthEntities.Store && isUuid(sectionUuid)) {
+			return this.commandBus.execute(new AddSectionProductCommand(request.user.uuid, sectionUuid, section));
 		}
-		if (!isUuid(section.sectionUuid)) {
+		if (!isUuid(sectionUuid)) {
 			throw new BadRequestException();
 		}
 		throw new UnauthorizedException();

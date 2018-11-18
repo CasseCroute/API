@@ -35,10 +35,10 @@ export class SectionRepository extends Repository<Section> implements ResourceRe
 			.getOne();
 	}
 
-	public async addSectionProduct(storeUuid: string, section: AddSectionProductDto) {
+	public async addSectionProduct(storeUuid: string, sectionUuid: string, section: AddSectionProductDto) {
 		const mealsRepository = getCustomRepository(MealRepository);
 		const productsRepository = getCustomRepository(ProductRepository);
-		const {sectionUuid, products, meals} = section;
+		const {products, meals} = section;
 		const storeSection = await this.findStoreSectionByUuid(storeUuid, sectionUuid) as Section;
 
 		if (meals && meals.length > 0) {

@@ -9,7 +9,7 @@ export class AddSectionProductHandler implements ICommandHandler<AddSectionProdu
 	async execute(command: AddSectionProductCommand, resolve: (value?) => void) {
 		const sectionRepository = getCustomRepository(SectionRepository);
 		try {
-			sectionRepository.addSectionProduct(command.storeUuid, command.section)
+			sectionRepository.addSectionProduct(command.storeUuid, command.sectionUuid, command.section)
 				.then(() => {
 					resolve();
 				})

@@ -3,10 +3,12 @@ import {AddSectionProductDto} from '@letseat/domains/section/dtos/add-section-pr
 
 export class AddSectionProductCommand implements ICommand {
 	readonly storeUuid: string;
+	readonly sectionUuid: string;
 	readonly section: AddSectionProductDto;
 
-	constructor(storeUuid: string, section: AddSectionProductDto) {
+	constructor(storeUuid: string, sectionUuid: string, section: AddSectionProductDto) {
 		this.storeUuid = storeUuid;
+		this.sectionUuid = sectionUuid;
 		this.section = section;
 	}
 }
