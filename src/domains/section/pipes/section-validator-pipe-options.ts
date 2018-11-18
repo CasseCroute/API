@@ -13,3 +13,17 @@ export const createSectionProductValidatorOptions: BaseValidatorPipeOptions = {
 	forbidUnknownValues: true,
 	forbidNonWhitelisted: true
 };
+
+export const removeSectionProductValidatorOptions: BaseValidatorPipeOptions = {
+	skipMissingProperties: false,
+	whitelist: true,
+	forbidUnknownValues: true,
+	forbidNonWhitelisted: true
+};
+
+export const updateSectionlValidatorOptions: BaseValidatorPipeOptions = {
+	skipMissingProperties: false,
+	whitelist: true,
+	forbidUnknownValues: true,
+	forbidNonWhitelisted: true
+};
