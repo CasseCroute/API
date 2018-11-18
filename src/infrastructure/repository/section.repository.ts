@@ -1,5 +1,5 @@
 import {
-	EntityRepository, getCustomRepository,
+	EntityRepository, getConnection, getCustomRepository,
 	Repository,
 } from 'typeorm';
 import {ResourceRepository} from '@letseat/infrastructure/repository/resource.repository';
@@ -7,6 +7,9 @@ import {Section} from '@letseat/domains/section/section.entity';
 import {AddSectionProductDto} from '@letseat/domains/section/dtos/add-section-product.dto';
 import {MealRepository} from '@letseat/infrastructure/repository/meal.repository';
 import {ProductRepository} from '@letseat/infrastructure/repository/product.repository';
+import {Meal} from '@letseat/domains/meal/meal.entity';
+import {Store} from "@letseat/domains/store/store.entity";
+import {Product} from "@letseat/domains/product/product.entity";
 
 @EntityRepository(Section)
 export class SectionRepository extends Repository<Section> implements ResourceRepository {
@@ -70,6 +73,25 @@ export class SectionRepository extends Repository<Section> implements ResourceRe
 			return this.save(storeSection);
 
 		});
+
+	}
+
+	public async deleteSectionMealByUuid(sectionId: number, mealId: number) {
+		return this
+			.createQueryBuilder('sections')
+			.delete()
+			.from('sections_meals')
+			.where('id_section = :idSection AND id_meal = :idMeal', {idSection: sectionId , idMeal: mealId})
+			.execute();
+
+	}
+	public async deleteSectionProductByUuid(sectionId: number, productId: number) {
+		return this
+			.createQueryBuilder('sections')
+			.delete()
+			.from('sections_products')
+			.where('id_section = :idSection AND id_product = :idProduct', {idSection: sectionId , idProduct: productId})
+			.execute();
 
 	}
 
