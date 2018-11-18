@@ -16,8 +16,13 @@ import {CreateSectionDto} from '@letseat/domains/section/dtos/create-section.dto
 import {GetStoreSectionsQuery} from '@letseat/application/queries/store/get-store-sections.query';
 import {GetStoreSectionByUuidQuery} from '@letseat/application/queries/store/get-store-section-by-uuid.query';
 import {isUuid} from '@letseat/shared/utils';
-import {AddSectionProductCommand, DeleteSectionCommand} from '@letseat/application/commands/section';
+import {
+	AddSectionProductCommand,
+	DeleteSectionCommand,
+	RemoveSectionProductCommand
+} from '@letseat/application/commands/section';
 import {AddSectionProductDto} from '@letseat/domains/section/dtos/add-section-product.dto';
+import {RemoveSectionProductDto} from '@letseat/domains/section/dtos/remove-section-product.dto';
 
 @Controller('stores/me/sections')
 export class CurrentStoreSectionsController {
@@ -61,9 +66,21 @@ export class CurrentStoreSectionsController {
 
 	@Post(':sectionUuid/add')
 	@UseGuards(AuthGuard('jwt'))
-	public async addSectionProduct(@Req() request: any, @Param('sectionUuid') sectionUuid: string, @Body(new ValidationPipe(createSectionProductValidatorOptions)) section: AddSectionProductDto): Promise<any> {
+	public async addSectionProducts(@Req() request: any, @Param('sectionUuid') sectionUuid: string, @Body(new ValidationPipe(createSectionProductValidatorOptions)) section: AddSectionProductDto): Promise<any> {
 		if (request.user.entity === AuthEntities.Store && isUuid(sectionUuid)) {
 			return this.commandBus.execute(new AddSectionProductCommand(request.user.uuid, sectionUuid, section));
+		}
+		if (!isUuid(sectionUuid)) {
+			throw new BadRequestException();
+		}
+		throw new UnauthorizedException();
+	}
+
+	@Post(':sectionUuid/remove')
+	@UseGuards(AuthGuard('jwt'))
+	public async deleteSectionProducts(@Req() request: any, @Param('sectionUuid') sectionUuid: string, @Body(new ValidationPipe(createSectionProductValidatorOptions)) section: RemoveSectionProductDto): Promise<any> {
+		if (request.user.entity === AuthEntities.Store && isUuid(sectionUuid)) {
+			return this.commandBus.execute(new RemoveSectionProductCommand(request.user.uuid, sectionUuid, section));
 		}
 		if (!isUuid(sectionUuid)) {
 			throw new BadRequestException();
