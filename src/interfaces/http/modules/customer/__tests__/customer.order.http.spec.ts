@@ -14,6 +14,9 @@ import {
 	CurrentCustomerOrderController,
 	GuestCustomerOrderController
 } from '@letseat/interfaces/http/modules/customer/customer.order.controller';
+import config from 'config';
+import dotenv from 'dotenv';
+import {PaymentService} from '@letseat/infrastructure/services/payment.service';
 
 describe('Customer Order HTTP Requests', () => {
 	let app: INestApplication;
@@ -28,6 +31,7 @@ describe('Customer Order HTTP Requests', () => {
 				CQRSModule,
 				AuthService,
 				CommandBus,
+				PaymentService,
 				{
 					provide: getRepositoryToken(Customer),
 					useValue: mocks.customerRepository,
@@ -46,6 +50,8 @@ describe('Customer Order HTTP Requests', () => {
 			.overrideProvider(JwtStrategy).useClass(mocks.JwtStrategyMock)
 			.compile();
 
+		dotenv.config();
+
 		app = module.createNestApplication();
 		app.useGlobalFilters(new CustomExceptionFilter());
 		const logger = new LoggerService('Server');
@@ -58,7 +64,7 @@ describe('Customer Order HTTP Requests', () => {
 			return request(app.getHttpServer())
 				.post('/customers/me/orders')
 				.set('Authorization', `Bearer ${mocks.token}`)
-				.send({isDelivery: false})
+				.send({isDelivery: false, totalToPay: 30, paymentDetails: {id: config.get('stripe.testToken')}})
 				.expect(200);
 		});
 
