@@ -13,13 +13,13 @@ import {Product} from '@letseat/domains/product/product.entity';
 import {LoggerService} from '@letseat/infrastructure/services';
 import {Meal} from '@letseat/domains/meal/meal.entity';
 import {NotFoundException} from '@nestjs/common';
-import {MealSubsectionOption} from '@letseat/domains/meal/meal-subsection-option.entity';
 import {RemoveProductOrMealToCartDto} from '@letseat/domains/cart/dtos/remove-product-or-meal-to-cart.dto';
 import {MealSubsectionOptionIngredient} from '@letseat/domains/meal/meal-subsection-option-ingredient.entity';
 import {MealSubsectionOptionProduct} from '@letseat/domains/meal/meal-subsection-option-product.entity';
 
 @EntityRepository(Cart)
 export class CartRepository extends Repository<Cart> {
+	private readonly logger = new LoggerService(CartRepository.name);
 	private readonly selectRelations: string[] = [
 		'products',
 		'products.product',
@@ -31,7 +31,9 @@ export class CartRepository extends Repository<Cart> {
 	];
 
 	public async findOneByUuid(uuid: string, relations?: string[]) {
-		return this.findOneOrFail({where: {uuid}, relations});
+		const cart = await this.findOneOrFail({where: {uuid}, relations});
+		cart.itemsCount = await this.getCartItemsCount(cart);
+		return cart;
 	}
 
 	public async createCart(customer: Customer, productDto: AddProductOrMealToCartDto): Promise<any> {
@@ -51,8 +53,7 @@ export class CartRepository extends Repository<Cart> {
 			await getManager().save(customer);
 			return this.save(cart).then(res => res);
 		} catch (err) {
-			const logger = new LoggerService('Database');
-			logger.error(err.message, err.stack);
+			this.logger.error(err.message, err.stack);
 		}
 	}
 
@@ -81,8 +82,7 @@ export class CartRepository extends Repository<Cart> {
 			await this.save(cart);
 			return this.findOneByUuid(cart.uuid, this.selectRelations);
 		} catch (err) {
-			const logger = new LoggerService('Database');
-			logger.error(err.message, err.stack);
+			this.logger.error(err.message, err.stack);
 			throw new NotFoundException();
 		}
 	}
@@ -110,14 +110,25 @@ export class CartRepository extends Repository<Cart> {
 			await this.save(cart);
 			return this.findOneByUuid(cart.uuid, this.selectRelations);
 		} catch (err) {
-			const logger = new LoggerService('Database');
-			logger.error(err.message, err.stack);
+			this.logger.error(err.message, err.stack);
 			throw new NotFoundException();
 		}
 	}
 
 	public async destroyCart(cart: Cart) {
 		return this.remove(cart);
+	}
+
+	public async getCartItemsCount(cart: Cart): Promise<number> {
+		const cartItems = await this.createQueryBuilder('cart')
+			.leftJoinAndSelect('cart.meals', 'cm')
+			.leftJoinAndSelect('cart.products', 'cp')
+			.where('cart.id = :cartId', {cartId: cart.id})
+			.getRawMany();
+		
+		return cartItems.reduce((acc, val) => {
+			return acc + val.cm_quantity + val.cp_quantity
+		}, 0);
 	}
 
 	public async saveCartMealOptions(mealOptionUuids: string[], cartMeal: CartMeal) {
@@ -148,8 +159,7 @@ export class CartRepository extends Repository<Cart> {
 				}
 			});
 		} catch (err) {
-			const logger = new LoggerService('Database');
-			logger.error(err.message, err.stack);
+			this.logger.error(err.message, err.stack);
 		}
 		return;
 	}
@@ -163,8 +173,7 @@ export class CartRepository extends Repository<Cart> {
 			}
 			return this.findOneByUuid(cart.uuid, this.selectRelations);
 		} catch (err) {
-			const logger = new LoggerService('Database');
-			logger.error(err.message, err.stack);
+			this.logger.error(err.message, err.stack);
 		}
 	}
 

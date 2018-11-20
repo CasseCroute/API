@@ -21,9 +21,8 @@ export class CustomerRepository extends Repository<Customer> {
 		'store'
 	];
 
-	@Transaction()
-	public async saveCustomer(customer: Customer, @TransactionManager() customerRepository: Repository<Customer>) {
-		return customerRepository.save(customer);
+	public async saveCustomer(customer: Customer) {
+		return this.save(customer);
 	}
 
 	public async findOneByEmail(customerEmail: string) {
