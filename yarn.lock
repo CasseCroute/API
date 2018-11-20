@@ -4673,9 +4673,9 @@ strip-json-comments@~2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-2.0.1.tgz#3c531942e908c2697c0ec344858c286c7ca0a60a"
 
-stripe@^6.14.0:
-  version "6.14.0"
-  resolved "https://registry.yarnpkg.com/stripe/-/stripe-6.14.0.tgz#e029e79fffed74d90c498c07b1d70f7ee564dce9"
+stripe@^6.15.0:
+  version "6.15.0"
+  resolved "https://registry.yarnpkg.com/stripe/-/stripe-6.15.0.tgz#27a5449beb41d618446599da1ae6dd97308b85fb"
   dependencies:
     lodash.isplainobject "^4.0.6"
     qs "~6.5.1"
@@ -4995,9 +4995,9 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
 
-typeorm@^0.2.7:
-  version "0.2.8"
-  resolved "https://registry.yarnpkg.com/typeorm/-/typeorm-0.2.8.tgz#b8f7e0809ad7b2c03c03ff101fadf1b90e4083a3"
+typeorm@^0.2.9:
+  version "0.2.9"
+  resolved "https://registry.yarnpkg.com/typeorm/-/typeorm-0.2.9.tgz#b21a55f4c7ae398c104911e298485c232bcceefc"
   dependencies:
     app-root-path "^2.0.1"
     buffer "^5.1.0"

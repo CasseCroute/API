@@ -17,6 +17,7 @@ import {Cart} from '@letseat/domains/cart/cart.entity';
 import {CartRepository} from '@letseat/infrastructure/repository/cart.repository';
 import {OrderCommandHandlers} from '@letseat/application/commands/order/handlers';
 import {StoreRepository} from '@letseat/infrastructure/repository/store.repository';
+import {PaymentService} from '@letseat/infrastructure/services/payment.service';
 
 @Module({
 	imports: [
@@ -34,6 +35,7 @@ import {StoreRepository} from '@letseat/infrastructure/repository/store.reposito
 	],
 	providers: [
 		JwtStrategy,
+		PaymentService,
 		...CartCommandHandlers,
 		...CustomerCommandHandlers,
 		...CustomerQueryHandlers,
