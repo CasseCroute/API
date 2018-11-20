@@ -14,10 +14,14 @@ import {CreateOrderDto} from '@letseat/domains/order/dtos';
 import {CreateGuestOrderDto} from '@letseat/domains/order/dtos/create-order.dto';
 import {CreateGuestOrderCommand, CreateOrderCommand} from '@letseat/application/commands/order';
 import {isUndefined} from '@letseat/shared/utils';
+import {PaymentService} from '@letseat/infrastructure/services/payment.service';
 
 @Controller('customers/me/orders')
 export class CurrentCustomerOrderController {
-	constructor(private readonly commandBus: CommandBus) {
+	constructor(
+		private readonly commandBus: CommandBus,
+		private readonly paymentService: PaymentService
+	) {
 	}
 
 	@Post()
@@ -30,11 +34,15 @@ export class CurrentCustomerOrderController {
 		if (isUndefined(order.isDelivery) && isUndefined(order.isTakeAway)) {
 			throw new BadRequestException();
 		}
-		return request.user.entity === AuthEntities.Customer
-			? this.commandBus.execute(new CreateOrderCommand(request.user.uuid, order))
-			: (() => {
+		if (request.user.entity !== AuthEntities.Customer) {
+			(() => {
 				throw new UnauthorizedException();
 			})();
+		} else {
+			const stripeCustomer = await this.paymentService.createCustomer(request.user.email, order.paymentDetails);
+			await this.paymentService.createCharge(stripeCustomer, order.totalToPay);
+			return this.commandBus.execute(new CreateOrderCommand(request.user.uuid, order));
+		}
 	}
 
 	@Get()

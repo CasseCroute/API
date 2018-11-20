@@ -75,7 +75,8 @@ export class OrderRepository extends Repository<Order> implements ResourceReposi
 			history.order = res;
 			return this.orderHistoryRepository.save(history).then(async historyRes => {
 				res.history = [historyRes];
-				return this.save(res);
+				 await this.save(res);
+				 return res.uuid;
 			});
 		});
 	}
