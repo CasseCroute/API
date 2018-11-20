@@ -32,7 +32,8 @@ export class CartRepository extends Repository<Cart> {
 
 	public async findOneByUuid(uuid: string, relations?: string[]) {
 		const cart = await this.findOneOrFail({where: {uuid}, relations});
-		cart.itemsCount = await this.getCartItemsCount(cart);
+		cart.itemsCount = CartRepository.getCartItemsCount(cart);
+		cart.totalPrice = CartRepository.getCartTotalPrice(cart);
 		return cart;
 	}
 
@@ -119,16 +120,39 @@ export class CartRepository extends Repository<Cart> {
 		return this.remove(cart);
 	}
 
-	public async getCartItemsCount(cart: Cart): Promise<number> {
-		const cartItems = await this.createQueryBuilder('cart')
-			.leftJoinAndSelect('cart.meals', 'cm')
-			.leftJoinAndSelect('cart.products', 'cp')
-			.where('cart.id = :cartId', {cartId: cart.id})
-			.getRawMany();
-		
-		return cartItems.reduce((acc, val) => {
-			return acc + val.cm_quantity + val.cp_quantity
-		}, 0);
+	private static getCartItemsCount(cart: Cart): number {
+		return Object.entries(cart).reduce((acc, [key, value]) => {
+			if (key === 'meals' || key === 'products') {
+				acc += value.reduce((acc, val) => acc + val.quantity, 0)
+			}
+			return acc
+		}, 0)
+	}
+
+	private static getCartTotalPrice(cart: Cart): number {
+		return +Object.entries(cart).reduce((acc, [key, val]) => {
+			if (key === 'meals') {
+				acc += val.reduce((acc, val) => {
+					const quantity = val.quantity;
+					acc += parseFloat(val.meal.price) * quantity;
+					if (val.ingredientOptions) {
+						acc += val.ingredientOptions.reduce((acc, val) => ((parseFloat(acc) + parseFloat(val.optionIngredient.price)) * quantity), 0)
+					}
+					if (val.productOptions) {
+						acc += val.productOptions.reduce((acc, val) => ((parseFloat(acc) + parseFloat(val.optionProduct.price)) * quantity), 0)
+					}
+					return acc;
+				}, 0);
+			}
+
+			if (key === 'products') {
+				acc += val.reduce((acc, val) => {
+					acc += parseFloat(val.product.price) * val.quantity;
+					return acc;
+				}, 0);
+			}
+			return acc
+		}, 0).toFixed(2)
 	}
 
 	public async saveCartMealOptions(mealOptionUuids: string[], cartMeal: CartMeal) {
