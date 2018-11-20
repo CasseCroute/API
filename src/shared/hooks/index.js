@@ -423,6 +423,9 @@ hooks.before('Cuisines > Cuisine > Retrieve list of Cuisine Stores', (transactio
 
 hooks.before('Customers > Orders > Place an Order', (transaction, done) => {
 	transaction.request.headers.Authorization = `Bearer ${customer.jwt}`;
+	const body = JSON.parse(transaction.request.body);
+	body.paymentDetails.id = env.STRIPE_TEST_TOKEN;
+	transaction.request.body = JSON.stringify(body);
 	done();
 });
 
