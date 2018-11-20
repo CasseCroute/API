@@ -61,7 +61,7 @@
     "@types/jest": "^23.3.9",
     "@types/node": "^10.12.9",
     "@types/redis": "^2.8.7",
-    "@types/stripe": "^6.0.3",
+    "@types/stripe": "^6.0.4",
     "@types/supertest": "^2.0.6",
     "@types/yargs": "^12.0.1",
     "api-blueprint-validator-module": "^1.2.2",
