@@ -6,7 +6,7 @@ import {CurrentStoreMealsController} from './store.meals.controller';
 import {CurrentStoreSectionsController} from '@letseat/interfaces/http/modules/store/controllers/store.sections.controller';
 import {CurrentStoreOrdersController} from '@letseat/interfaces/http/modules/store/controllers/store.orders.controller';
 
-export const StoreContollers = [
+export const StoreControllers = [
 	StoreController,
 	StoreKiosksController,
 	CurrentStoreIngredientsController,

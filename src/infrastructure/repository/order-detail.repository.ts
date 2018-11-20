@@ -56,7 +56,6 @@ export class OrderDetailProductRepository extends Repository<OrderDetailProduct>
 			orderDetailProduct.price = product.price;
 			orderDetailProduct.product = product;
 			orderDetailProduct.order = order;
-			order.detailsProducts.push(orderDetailProduct);
 			order.totalPaid = (parseFloat(order.totalPaid as any) + parseFloat(product.price as any));
 			await getCustomRepository(OrderRepository).save(order);
 			await this.save(orderDetailProduct);
