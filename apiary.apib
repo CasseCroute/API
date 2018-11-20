@@ -981,6 +981,8 @@ Converts Customer Cart into an Order
             Authorization: Bearer <JWT>
             
     + Attributes
+        + paymentDetails (object, required) - Stripe Payment details.
+        + totalToPay: `12.80` (number, required) - Total to pay for the Order.
         + deliveryAddress: `20, rue du Beau Bois, 75003 Paris` (string, optional) - Delivery address.
         + deliveryNote: `Meet in the front of the door` (string, optional) - Delivery note.
         + isTakeAway: `false` (boolean, optional) - If the Order is for take away.

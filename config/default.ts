@@ -22,6 +22,11 @@ const development = {
 		host: process.env.REDIS_HOST || 'localhost',
 		port: process.env.REDIS_PORT || 6379,
 		apiKeyHashMap: process.env.REDIS_API_KEY_HASHMAP || ''
+	},
+	stripe: {
+		publishableKey:  process.env.DEV_STRIPE_PUBLISHABLE_KEY,
+		secretKey: process.env.DEV_STRIPE_SECRET_KEY,
+		testToken: process.env.STRIPE_TEST_TOKEN
 	}
 };
 
@@ -43,6 +48,11 @@ const test = {
 		host: process.env.REDIS_HOST || 'localhost',
 		port: process.env.REDIS_PORT || 6379,
 		apiKeyHashMap: process.env.REDIS_API_KEY_HASHMAP || ''
+	},
+	stripe: {
+		publishableKey:  process.env.TEST_STRIPE_PUBLISHABLE_KEY,
+		secretKey: process.env.TEST_STRIPE_SECRET_KEY,
+		testToken: process.env.STRIPE_TEST_TOKEN
 	}
 };
 

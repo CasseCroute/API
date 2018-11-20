@@ -9,7 +9,7 @@ import {StoreQueryHandlers} from '@letseat/application/queries/store/handlers';
 import {JwtStrategy} from '@letseat/infrastructure/authorization/strategies/jwt.strategy';
 import {ResourceQueryHandlers} from '@letseat/application/queries/resource/handlers';
 import {IngredientCommandHandlers} from '@letseat/application/commands/ingredient/handlers';
-import {StoreContollers} from '@letseat/interfaces/http/modules/store/controllers';
+import {StoreControllers} from '@letseat/interfaces/http/modules/store/controllers';
 import {ProductCommandHandlers} from '@letseat/application/commands/product/handlers';
 import {MealCommandHandlers} from '@letseat/application/commands/meal/handlers';
 import {MealsQueryHandlers} from '@letseat/application/queries/meal/handlers';
@@ -45,7 +45,7 @@ import {CustomerRepository} from '@letseat/infrastructure/repository/customer.re
 		LoggerService
 	],
 	controllers: [
-		...StoreContollers
+		...StoreControllers
 	]
 })
 export class StoreModule implements OnModuleInit {
