@@ -1,6 +1,6 @@
 import {ICommandHandler, CommandHandler} from '@nestjs/cqrs';
 import {CreateCustomerCommand} from '../create-customer.command';
-import {getCustomRepository, Repository} from 'typeorm';
+import {getCustomRepository} from 'typeorm';
 import {BadRequestException} from '@nestjs/common';
 import {CustomerRepository} from '@letseat/infrastructure/repository/customer.repository';
 import {AuthService, CryptographerService} from '@letseat/infrastructure/authorization';
@@ -14,7 +14,7 @@ export class CreateCustomerHandler implements ICommandHandler<CreateCustomerComm
 		const customer = Customer.register(command);
 
 		try {
-			const customerSaved = await customerRepository.saveCustomer(customer, new Repository<Customer>());
+			const customerSaved = await customerRepository.saveCustomer(customer);
 			delete customerSaved.password;
 			const jwt = AuthService.createToken<Customer>(customerSaved);
 			resolve(jwt);

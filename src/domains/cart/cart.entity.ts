@@ -28,6 +28,10 @@ export class Cart extends Resource {
 
 	@OneToMany(() => CartMeal, cartMeal => cartMeal.cart)
 	meals: CartMeal[];
+
+	totalPrice: number;
+
+	itemsCount: number;
 }
 
 @Entity()
