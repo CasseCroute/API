@@ -3,8 +3,6 @@ import {
 	getCustomRepository,
 	ObjectLiteral,
 	Repository,
-	Transaction,
-	TransactionManager
 } from 'typeorm';
 import {Customer} from '@letseat/domains/customer/customer.entity';
 import {CartRepository} from '@letseat/infrastructure/repository/cart.repository';
