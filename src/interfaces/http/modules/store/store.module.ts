@@ -19,6 +19,7 @@ import {LoggerService} from '@letseat/infrastructure/services';
 import {OrderCommandHandlers} from '@letseat/application/commands/order/handlers';
 import {OrderRepository} from '@letseat/infrastructure/repository/order.repository';
 import {CustomerRepository} from '@letseat/infrastructure/repository/customer.repository';
+import {GeocoderService} from '@letseat/infrastructure/services/geocoder.service';
 
 @Module({
 	imports: [
@@ -42,6 +43,7 @@ import {CustomerRepository} from '@letseat/infrastructure/repository/customer.re
 		...MealsQueryHandlers,
 		...SectionCommandHandlers,
 		...OrderCommandHandlers,
+		GeocoderService,
 		LoggerService
 	],
 	controllers: [
