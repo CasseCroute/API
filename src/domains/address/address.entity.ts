@@ -26,10 +26,10 @@ export class Address extends Resource {
 	country: string;
 
 	@Column({type: 'decimal', precision: 8, scale: 6, nullable: true})
-	latitude: number;
+	latitude?: number;
 
 	@Column({type: 'decimal', precision: 9, scale: 6, nullable: true})
-	longitude: number;
+	longitude?: number;
 
 	@OneToMany(type => Store, store => store.address)
 	store: Store;
