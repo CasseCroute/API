@@ -1,9 +1,12 @@
 import {CreateVoucherHandler} from './create-voucher.handler';
+import {DeleteVoucherByUuidHandler} from './delete-voucher.handler';
 
 export const VoucherCommandHandlers = [
-	CreateVoucherHandler
+	CreateVoucherHandler,
+	DeleteVoucherByUuidHandler
 ];
 
 export {
-	CreateVoucherHandler
+	CreateVoucherHandler,
+	DeleteVoucherByUuidHandler
 };
