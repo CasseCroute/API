@@ -6,6 +6,8 @@ import {Store} from '@letseat/domains/store/store.entity';
 
 @EntityRepository(Voucher)
 export class VoucherRepository extends Repository<Voucher> implements ResourceRepository {
+	private readonly property = 'voucher.store';
+
 	public async findOneByUuid(voucherUuid: string) {
 		return this.findOne({where: {uuid: voucherUuid}});
 	}
@@ -22,7 +24,7 @@ export class VoucherRepository extends Repository<Voucher> implements ResourceRe
 
 	public async deleteVoucherByUuid(storeUuid: string, voucherUuid: string) {
 		return this.createQueryBuilder('voucher')
-			.leftJoinAndSelect('voucher.store', 'store')
+			.leftJoinAndSelect(this.property, 'store')
 			.where('store.uuid = :storeUuid', {storeUuid})
 			.where('voucher.uuid = :voucherUuid', {voucherUuid})
 			.delete()
@@ -32,14 +34,14 @@ export class VoucherRepository extends Repository<Voucher> implements ResourceRe
 
 	public async findStoreVoucherByUuid(storeUuid: string, voucherUuid: string) {
 		return this.createQueryBuilder('voucher')
-			.leftJoin('voucher.store', 'store')
+			.leftJoin(this.property, 'store')
 			.where('store.uuid = :storeUuid AND voucher.uuid = :voucherUuid', {storeUuid, voucherUuid})
 			.getOne();
 	}
 
 	public async findStoreVoucherByCode(storeUuid: string, voucherCode: string) {
 		return this.createQueryBuilder('voucher')
-			.leftJoin('voucher.store', 'store')
+			.leftJoin(this.property, 'store')
 			.where('store.uuid = :storeUuid AND voucher.code = :voucherCode', {storeUuid, voucherCode})
 			.getOne();
 	}
