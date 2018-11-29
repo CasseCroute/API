@@ -3,7 +3,6 @@ import {getCustomRepository} from 'typeorm';
 import {ICommandHandler, CommandHandler} from '@nestjs/cqrs';
 import {GetVoucherByCodeQuery} from '../get-voucher-by-code.query';
 import {VoucherRepository} from '@letseat/infrastructure/repository/voucher.repository';
-import {Voucher} from '@letseat/domains/voucher/voucher.entity';
 
 @CommandHandler(GetVoucherByCodeQuery)
 export class GetVoucherByCodeHandler implements ICommandHandler<GetVoucherByCodeQuery> {
