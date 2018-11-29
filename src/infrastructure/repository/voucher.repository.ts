@@ -1,4 +1,4 @@
-import {EntityRepository, getConnectionManager, Repository} from 'typeorm';
+import {EntityRepository, Repository} from 'typeorm';
 import {Voucher} from '@letseat/domains/voucher/voucher.entity';
 import {ResourceRepository} from '@letseat/infrastructure/repository/resource.repository';
 import {CreateVoucherDto} from '@letseat/domains/voucher/dtos';
