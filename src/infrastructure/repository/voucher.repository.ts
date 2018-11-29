@@ -32,7 +32,7 @@ export class VoucherRepository extends Repository<Voucher> implements ResourceRe
 
 	public async findStoreVoucherByUuid(storeUuid: string, voucherUuid: string) {
 		return this.createQueryBuilder('voucher')
-			.leftJoinAndSelect('voucher.store', 'store')
+			.leftJoin('voucher.store', 'store')
 			.where('store.uuid = :storeUuid AND voucher.uuid = :voucherUuid', {storeUuid, voucherUuid})
 			.getOne();
 	}
