@@ -29,4 +29,18 @@ export class VoucherRepository extends Repository<Voucher> implements ResourceRe
 			.execute();
 
 	}
+
+	public async findStoreVoucherByUuid(storeUuid: string, voucherUuid: string) {
+		return this.createQueryBuilder('voucher')
+			.leftJoinAndSelect('voucher.store', 'store')
+			.where('store.uuid = :storeUuid AND voucher.uuid = :voucherUuid', {storeUuid, voucherUuid})
+			.getOne();
+	}
+
+	public async isStillValid(voucherCode: string) {
+		const voucher = await this.findVoucherByCode(voucherCode) as Voucher;
+		const now = new Date();
+
+		return now.getDate() < voucher.expirationDate.getDate();
+	}
 }
