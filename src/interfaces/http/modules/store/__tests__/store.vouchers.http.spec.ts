@@ -145,6 +145,23 @@ describe('Store HTTP Requests', () => {
 		});
 	});
 
+	describe('GET stores/me/vouchers', () => {
+		const url = '/stores/me/vouchers';
+
+		it(success, () => {
+			return request(app.getHttpServer())
+				.get(url)
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.expect(200);
+		});
+
+		it(missingJwt, () => {
+			return request(app.getHttpServer())
+				.get(url)
+				.expect(401);
+		});
+	});
+
 	afterAll(async () => {
 		await app.close();
 	});
