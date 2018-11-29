@@ -140,15 +140,8 @@ describe('Store HTTP Requests', () => {
 
 		it(missingJwt, () => {
 			return request(app.getHttpServer())
-				.delete(url)
+				.get(url)
 				.expect(401);
-		});
-
-		it(incorrectUrl, () => {
-			return request(app.getHttpServer())
-				.get(url + 'toto')
-				.set('Authorization', `Bearer ${mocks.token}`)
-				.expect(400);
 		});
 	});
 
