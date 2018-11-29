@@ -14,7 +14,6 @@ export class CreateVoucherHandler implements ICommandHandler<CreateVoucherComman
 		try {
 			const storeFound = await storeRepository.findOneByUuid(command.storeUuid) as Store;
 			const voucherFound = await voucherRepository.findVoucherByCode(command.voucher.code);
-			console.log(voucherFound);
 			if (!storeFound) {
 				return resolve(Promise.reject(new BadRequestException('Store not found')));
 			}
