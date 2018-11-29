@@ -18,11 +18,20 @@ import {AuthEntities} from '@letseat/infrastructure/authorization/enums/auth.ent
 import {CreateVoucherCommand, DeleteVoucherByUuidCommand} from '@letseat/application/commands/voucher';
 import {CreateVoucherDto} from '@letseat/domains/voucher/dtos';
 import {isUuid} from '@letseat/shared/utils';
-import {GetVoucherByCodeQuery, GetVoucherByUuidQuery} from '@letseat/application/queries/voucher';
+import {GetVoucherByCodeQuery, GetVoucherByUuidQuery, GetVouchersQuery} from '@letseat/application/queries/voucher';
 
 @Controller('/stores/me/vouchers')
 export class StoreVouchersController {
 	constructor(private readonly commandBus: CommandBus) {
+	}
+
+	@Get()
+	@UseGuards(AuthGuard('jwt'))
+	public async getVouchers(@Req() request: any) {
+		if (request.user.entity === AuthEntities.Store) {
+			return this.commandBus.execute(new GetVouchersQuery(request.user.uuid));
+		}
+		throw new UnauthorizedException();
 	}
 
 	@Post()

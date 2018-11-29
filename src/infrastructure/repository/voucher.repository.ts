@@ -12,6 +12,13 @@ export class VoucherRepository extends Repository<Voucher> implements ResourceRe
 		return this.findOne({where: {uuid: voucherUuid}});
 	}
 
+	public async findStoreVouchers(storeUuid: string) {
+		return this.createQueryBuilder('voucher')
+			.leftJoin('voucher.store', 'store')
+			.where('store.uuid = :storeUuid', {storeUuid})
+			.getMany();
+	}
+
 	public async findVoucherByCode(voucherCode: string) {
 		return this.findOne({where: {code: voucherCode}});
 	}
