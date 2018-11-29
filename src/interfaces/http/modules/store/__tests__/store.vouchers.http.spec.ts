@@ -44,10 +44,13 @@ describe('Store HTTP Requests', () => {
 		await app.init();
 	});
 
+	const success = 'should return a HTTP 201 status code when successful';
+	const missingJwt = 'should return a HTTP 401 status code when no JWT is present in Authorization header';
+	const incorrectUrl = 'should return a HTTP 400 status code when incorrect URL is sent';
+
 	describe('POST stores/me/vouchers', () => {
 		const url = '/stores/me/vouchers';
-
-		it('should return a HTTP 201 status code when successful', () => {
+		it(success, () => {
 			const data = {
 				code: 'BLACKFRIDAY10',
 				reduction: 5,
@@ -61,7 +64,7 @@ describe('Store HTTP Requests', () => {
 				.expect(201);
 		});
 
-		it('should return a HTTP 401 status code when no JWT is present in Authorization header', () => {
+		it(missingJwt, () => {
 			return request(app.getHttpServer())
 				.post(url)
 				.send(mocks.voucherRepository.data[0])
@@ -80,22 +83,70 @@ describe('Store HTTP Requests', () => {
 	describe('DELETE stores/me/vouchers/:uuid', () => {
 		const url = '/stores/me/vouchers/' + mocks.voucherRepository.data[0].uuid;
 
-		it('should return a HTTP 201 status code when successful', () => {
+		it(success, () => {
 			return request(app.getHttpServer())
 				.delete(url)
 				.set('Authorization', `Bearer ${mocks.token}`)
 				.expect(204);
 		});
 
-		it('should return a HTTP 401 status code when no JWT is present in Authorization header', () => {
+		it(missingJwt, () => {
 			return request(app.getHttpServer())
 				.delete(url)
 				.expect(401);
 		});
 
-		it('should return a HTTP 400 status code when incorrect URL is sent', () => {
+		it(incorrectUrl, () => {
 			return request(app.getHttpServer())
 				.delete(url + 'toto')
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.expect(400);
+		});
+	});
+
+	describe('GET stores/me/vouchers/:uuid', () => {
+		const url = '/stores/me/vouchers/' + mocks.voucherRepository.data[0].uuid;
+
+		it(success, () => {
+			return request(app.getHttpServer())
+				.get(url)
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.expect(200);
+		});
+
+		it(missingJwt, () => {
+			return request(app.getHttpServer())
+				.get(url)
+				.expect(401);
+		});
+
+		it(incorrectUrl, () => {
+			return request(app.getHttpServer())
+				.get(url + 'toto')
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.expect(400);
+		});
+	});
+
+	describe('GET stores/me/vouchers/code/:voucherCode', () => {
+		const url = '/stores/me/vouchers/code/' + mocks.voucherRepository.data[0].code;
+
+		it(success, () => {
+			return request(app.getHttpServer())
+				.get(url)
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.expect(200);
+		});
+
+		it(missingJwt, () => {
+			return request(app.getHttpServer())
+				.delete(url)
+				.expect(401);
+		});
+
+		it(incorrectUrl, () => {
+			return request(app.getHttpServer())
+				.get(url + 'toto')
 				.set('Authorization', `Bearer ${mocks.token}`)
 				.expect(400);
 		});
