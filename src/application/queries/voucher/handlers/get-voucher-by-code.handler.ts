@@ -10,14 +10,8 @@ export class GetVoucherByCodeHandler implements ICommandHandler<GetVoucherByCode
 	async execute(command: GetVoucherByCodeQuery, resolve: (value?) => void) {
 		try {
 			const voucherRepository = getCustomRepository(VoucherRepository);
-			const voucher = await voucherRepository.findStoreVoucherByCode(command.storeUuid, command.voucherCode) as Voucher;
-			if (voucher === undefined) {
-				return resolve();
-
-			}
-
-			const {id, ...data} = voucher;
-			resolve(data);
+			const voucher = await voucherRepository.findStoreVoucherByCode(command.storeUuid, command.voucherCode);
+			resolve(voucher);
 		} catch (err) {
 			resolve(Promise.reject((err.message)));
 		}
