@@ -37,6 +37,13 @@ export class VoucherRepository extends Repository<Voucher> implements ResourceRe
 			.getOne();
 	}
 
+	public async findStoreVoucherByCode(storeUuid: string, voucherCode: string) {
+		return this.createQueryBuilder('voucher')
+			.leftJoin('voucher.store', 'store')
+			.where('store.uuid = :storeUuid AND voucher.code = :voucherCode', {storeUuid, voucherCode})
+			.getOne();
+	}
+
 	public async isStillValid(voucherCode: string) {
 		const voucher = await this.findVoucherByCode(voucherCode) as Voucher;
 		const now = new Date();

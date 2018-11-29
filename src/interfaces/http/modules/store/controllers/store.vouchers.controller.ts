@@ -18,7 +18,7 @@ import {AuthEntities} from '@letseat/infrastructure/authorization/enums/auth.ent
 import {CreateVoucherCommand, DeleteVoucherByUuidCommand} from '@letseat/application/commands/voucher';
 import {CreateVoucherDto} from '@letseat/domains/voucher/dtos';
 import {isUuid} from '@letseat/shared/utils';
-import {GetVoucherByUuidQuery} from '@letseat/application/queries/voucher';
+import {GetVoucherByCodeQuery, GetVoucherByUuidQuery} from '@letseat/application/queries/voucher';
 
 @Controller('/stores/me/vouchers')
 export class StoreVouchersController {
@@ -58,6 +58,15 @@ export class StoreVouchersController {
 		}
 		if (!isUuid(voucherUuid)) {
 			throw new BadRequestException();
+		}
+		throw new UnauthorizedException();
+	}
+
+	@Get('/code/:voucherCode')
+	@UseGuards(AuthGuard('jwt'))
+	public async getVoucherByCode(@Req() request: any, @Param('voucherCode') voucherCode: string) {
+		if (request.user.entity === AuthEntities.Store || request.user.entity === AuthEntities.Customer) {
+			return this.commandBus.execute(new GetVoucherByCodeQuery(request.user.uuid, voucherCode));
 		}
 		throw new UnauthorizedException();
 	}
