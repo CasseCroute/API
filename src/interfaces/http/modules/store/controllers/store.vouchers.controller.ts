@@ -2,7 +2,7 @@ import {
 	BadRequestException,
 	Body,
 	Controller,
-	Delete, HttpCode,
+	Delete, Get, HttpCode,
 	Param,
 	Post,
 	Req,
@@ -18,6 +18,7 @@ import {AuthEntities} from '@letseat/infrastructure/authorization/enums/auth.ent
 import {CreateVoucherCommand, DeleteVoucherByUuidCommand} from '@letseat/application/commands/voucher';
 import {CreateVoucherDto} from '@letseat/domains/voucher/dtos';
 import {isUuid} from '@letseat/shared/utils';
+import {GetVoucherByUuidQuery} from '@letseat/application/queries/voucher';
 
 @Controller('/stores/me/vouchers')
 export class StoreVouchersController {
@@ -47,5 +48,17 @@ export class StoreVouchersController {
 		}
 		throw new UnauthorizedException();
 
+	}
+
+	@Get(':voucherUuid')
+	@UseGuards(AuthGuard('jwt'))
+	public async getVoucherByUuid(@Req() request: any, @Param('voucherUuid') voucherUuid: string) {
+		if (request.user.entity === AuthEntities.Store && isUuid(voucherUuid)) {
+			return this.commandBus.execute(new GetVoucherByUuidQuery(request.user.uuid, voucherUuid));
+		}
+		if (!isUuid(voucherUuid)) {
+			throw new BadRequestException();
+		}
+		throw new UnauthorizedException();
 	}
 }

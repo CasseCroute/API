@@ -15,12 +15,14 @@ import {MealCommandHandlers} from '@letseat/application/commands/meal/handlers';
 import {MealsQueryHandlers} from '@letseat/application/queries/meal/handlers';
 import {SectionCommandHandlers} from '@letseat/application/commands/section/handlers';
 import {VoucherCommandHandlers} from '@letseat/application/commands/voucher/handlers';
+import {VoucherQueryHandlers} from '@letseat/application/queries/voucher/handlers';
 import {ProductIngredientRepository} from '@letseat/infrastructure/repository/product-ingredient.repository';
 import {LoggerService} from '@letseat/infrastructure/services';
 import {OrderCommandHandlers} from '@letseat/application/commands/order/handlers';
 import {OrderRepository} from '@letseat/infrastructure/repository/order.repository';
 import {CustomerRepository} from '@letseat/infrastructure/repository/customer.repository';
 import {GeocoderService} from '@letseat/infrastructure/services/geocoder.service';
+import {VoucherRepository} from '@letseat/infrastructure/repository/voucher.repository';
 
 @Module({
 	imports: [
@@ -30,6 +32,7 @@ import {GeocoderService} from '@letseat/infrastructure/services/geocoder.service
 			ProductIngredientRepository,
 			OrderRepository,
 			CustomerRepository,
+			VoucherRepository
 		]),
 		CQRSModule
 	],
@@ -45,6 +48,7 @@ import {GeocoderService} from '@letseat/infrastructure/services/geocoder.service
 		...SectionCommandHandlers,
 		...OrderCommandHandlers,
 		...VoucherCommandHandlers,
+		...VoucherQueryHandlers,
 		GeocoderService,
 		LoggerService
 	],
@@ -71,5 +75,6 @@ export class StoreModule implements OnModuleInit {
 		this.command$.register(SectionCommandHandlers);
 		this.command$.register(OrderCommandHandlers);
 		this.command$.register(VoucherCommandHandlers);
+		this.command$.register(VoucherQueryHandlers);
 	}
 }
