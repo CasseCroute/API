@@ -12,7 +12,7 @@ export class Voucher extends Resource {
 	@Column({length: 128})
 	code: string;
 
-	@Column()
+	@Column('decimal', {precision: 10, scale: 2, unsigned: true})
 	reduction: number;
 
 	@Column({length: 256, nullable: true})
