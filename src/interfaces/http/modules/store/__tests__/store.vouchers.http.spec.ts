@@ -77,6 +77,30 @@ describe('Store HTTP Requests', () => {
 		});
 	});
 
+	describe('DELETE stores/me/vouchers/:uuid', () => {
+		const url = '/stores/me/vouchers/' + mocks.voucherRepository.data[0].uuid;
+
+		it('should return a HTTP 201 status code when successful', () => {
+			return request(app.getHttpServer())
+				.delete(url)
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.expect(204);
+		});
+
+		it('should return a HTTP 401 status code when no JWT is present in Authorization header', () => {
+			return request(app.getHttpServer())
+				.delete(url)
+				.expect(401);
+		});
+
+		it('should return a HTTP 400 status code when incorrect URL is sent', () => {
+			return request(app.getHttpServer())
+				.delete(url + 'toto')
+				.set('Authorization', `Bearer ${mocks.token}`)
+				.expect(400);
+		});
+	});
+
 	afterAll(async () => {
 		await app.close();
 	});

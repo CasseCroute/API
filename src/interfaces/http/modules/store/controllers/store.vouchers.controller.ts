@@ -2,7 +2,7 @@ import {
 	BadRequestException,
 	Body,
 	Controller,
-	Delete,
+	Delete, HttpCode,
 	Param,
 	Post,
 	Req,
@@ -36,6 +36,7 @@ export class StoreVouchersController {
 	}
 
 	@Delete(':voucherUuid')
+	@HttpCode(204)
 	@UseGuards(AuthGuard('jwt'))
 	public async deleteVoucher(@Req() request: any, @Param('voucherUuid') voucherUuid: string) {
 		if (request.user.entity === AuthEntities.Store && isUuid(voucherUuid)) {
