@@ -59,6 +59,8 @@ export class CustomerRepository extends Repository<Customer> {
 		return this.createQueryBuilder('customer')
 			.leftJoinAndSelect('customer.orders', 'orders')
 			.leftJoinAndSelect('orders.store', 'store')
+			.leftJoinAndSelect('orders.history', 'history')
+			.leftJoinAndSelect('history.status', 'historyStatus')
 			.leftJoinAndSelect('orders.detailsMeals', 'orderDetailsMeals')
 			.leftJoinAndSelect('orders.detailsProducts', 'orderDetailsProducts')
 			.leftJoinAndSelect('orderDetailsMeals.meal', 'orderDetailsMeal')
@@ -71,6 +73,7 @@ export class CustomerRepository extends Repository<Customer> {
 			.leftJoinAndSelect('orderDetailsProducts.product', 'orderDetailsProduct')
 			.where('customer.uuid = :customerUuid', {customerUuid})
 			.orderBy('orders.createdAt', 'DESC')
+			.addOrderBy('history.updatedAt', 'DESC')
 			.getOne();
 	}
 }
