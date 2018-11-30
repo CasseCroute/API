@@ -103,6 +103,7 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 
 	public async findOneByUuid(storeUuid: string): Promise<Store | undefined> {
 		let store = await this.createQueryBuilder('store')
+			.leftJoinAndSelect('store.address', 'address')
 			.leftJoinAndSelect('store.cuisines', 'cuisines')
 			.leftJoinAndSelect('store.sections', 'sections')
 			.leftJoinAndSelect('sections.meals', 'meals')
