@@ -596,6 +596,7 @@ bcrypt-pbkdf@^1.0.0:
 bcrypt@^3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/bcrypt/-/bcrypt-3.0.2.tgz#3c575c49ccbfdf0875eb42aa1453f5654092a33d"
+  integrity sha512-kE1IaaRchCgdrmzQX/eBQKcsuL4jRHZ+O11sMvEUrI/HgFTQYAGvxlj9z7kb3zfFuwljQ5y8/NrbnXtgx5oJLg==
   dependencies:
     nan "2.11.1"
     node-pre-gyp "0.11.0"

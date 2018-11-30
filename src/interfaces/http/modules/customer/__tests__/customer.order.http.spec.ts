@@ -90,7 +90,9 @@ describe('Customer Order HTTP Requests', () => {
 				.send({
 					storeUuid: 'cb0c83e2-5c52-4b5d-81b0-f4829f4986b8',
 					isTakeAway: true,
-					cart: [{mealUuid: 'bbe8e2f6-4ed3-4fa1-941a-8941b1658a08', quantity: 2}]
+					cart: [{mealUuid: 'bbe8e2f6-4ed3-4fa1-941a-8941b1658a08', quantity: 2}],
+					totalToPay: 22,
+					paymentDetails: {id: config.get('stripe.testToken')}
 				})
 				.expect(201);
 		});
