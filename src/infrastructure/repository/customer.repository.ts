@@ -70,6 +70,7 @@ export class CustomerRepository extends Repository<Customer> {
 			.leftJoinAndSelect('orderDetailsMealProductOptionsProduct.product', 'orderDetailsMealProductOptionsProductProduct')
 			.leftJoinAndSelect('orderDetailsProducts.product', 'orderDetailsProduct')
 			.where('customer.uuid = :customerUuid', {customerUuid})
+			.orderBy('orders.createdAt', 'DESC')
 			.getOne();
 	}
 }
