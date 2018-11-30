@@ -40,8 +40,6 @@ export class OrderDetailProductRepository extends Repository<OrderDetailProduct>
 			orderDetailProduct.instructions = product.instructions;
 			orderDetailProduct.price = product.product.price;
 			orderDetailProduct.order = order;
-			order.totalPaid = (parseFloat(order.totalPaid as any) + parseFloat(product.product.price as any));
-			await getCustomRepository(OrderRepository).save(order);
 			await this.save(orderDetailProduct);
 		} catch (err) {
 			this.logger.error(err.message, err.stack);
@@ -56,9 +54,7 @@ export class OrderDetailProductRepository extends Repository<OrderDetailProduct>
 			orderDetailProduct.price = product.price;
 			orderDetailProduct.product = product;
 			orderDetailProduct.order = order;
-			order.totalPaid = (parseFloat(order.totalPaid as any) + parseFloat(product.price as any));
 			await getCustomRepository(OrderRepository).save(order);
-			await this.save(orderDetailProduct);
 		} catch (err) {
 			this.logger.error(err.message, err.stack);
 			throw new BadRequestException();
