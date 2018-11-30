@@ -39,7 +39,7 @@ export class CurrentCustomerOrderController {
 				throw new UnauthorizedException();
 			})();
 		} else {
-			const stripeCustomer = await this.paymentService.createCustomer(request.user.email, order.paymentDetails);
+			const stripeCustomer = await this.paymentService.createCustomer(order.paymentDetails, request.user.email);
 			await this.paymentService.createCharge(stripeCustomer, order.totalToPay);
 			return this.commandBus.execute(new CreateOrderCommand(request.user.uuid, order));
 		}
@@ -58,7 +58,7 @@ export class CurrentCustomerOrderController {
 
 @Controller('customers/guest/orders')
 export class GuestCustomerOrderController {
-	constructor(private readonly commandBus: CommandBus) {
+	constructor(private readonly commandBus: CommandBus, private readonly paymentService: PaymentService) {
 	}
 
 	@Post()
@@ -68,6 +68,8 @@ export class GuestCustomerOrderController {
 		if (isUndefined(guestOrder.isEatIn) && isUndefined(guestOrder.isTakeAway)) {
 			throw new BadRequestException();
 		}
+		const stripeCustomer = await this.paymentService.createCustomer(guestOrder.paymentDetails);
+		await this.paymentService.createCharge(stripeCustomer, guestOrder.totalToPay);
 		return this.commandBus.execute(new CreateGuestOrderCommand(guestOrder, guestOrder.storeUuid));
 	}
 }

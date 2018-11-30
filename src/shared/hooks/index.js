@@ -437,6 +437,7 @@ hooks.before('Customers > Guest Orders > Place an Order', (transaction, done) =>
 	]).then(values => {
 		body.cart[0].productUuid = values[0];
 		body.storeUuid = values[1];
+		body.paymentDetails.id = env.STRIPE_TEST_TOKEN;
 		delete body.cart[0].mealUuid;
 		delete body.cart[0].optionUuids;
 		transaction.request.body = JSON.stringify(body);

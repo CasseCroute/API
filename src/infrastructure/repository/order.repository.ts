@@ -42,7 +42,7 @@ export class OrderRepository extends Repository<Order> implements ResourceReposi
 		return this.findOne({where: {uuid: mealUuid, store: store}, relations});
 	}
 
-	public async createOrder(customer: Customer, orderDto: any) {
+	public async createOrder(customer: Customer, orderDto: CreateOrderDto) {
 		const order = new Order(orderDto);
 		const history = new OrderHistory();
 		// @TODO: Set Order Status Dynamically (by default an order is Paid)
@@ -58,7 +58,7 @@ export class OrderRepository extends Repository<Order> implements ResourceReposi
 
 		history.status = paidStatus as OrderStatus;
 
-		order.totalPaid = 0;
+		order.totalPaid = orderDto.totalToPay;
 
 		order.reference = cryptoRandomString(6).toUpperCase();
 		return this.save(order).then(async res => {
@@ -91,7 +91,7 @@ export class OrderRepository extends Repository<Order> implements ResourceReposi
 		order.store = store;
 		history.status = paidStatus;
 
-		order.totalPaid = 0;
+		order.totalPaid = guestOrder.totalToPay;
 
 		order.reference = cryptoRandomString(6).toUpperCase();
 		return this.save(order).then(async res => {
@@ -117,7 +117,6 @@ export class OrderRepository extends Repository<Order> implements ResourceReposi
 			});
 		});
 	}
-
 }
 
 

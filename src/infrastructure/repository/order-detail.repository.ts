@@ -82,19 +82,14 @@ export class OrderDetailMealRepository extends Repository<OrderDetailMeal> imple
 			orderDetailMeal.instructions = meal.instructions;
 			orderDetailMeal.price = meal.meal.price;
 			orderDetailMeal.order = order;
-			order.totalPaid = (parseFloat(order.totalPaid as any) + parseFloat(meal.meal.price as any));
 
-			await getCustomRepository(OrderRepository).save(order);
 			return this.save(orderDetailMeal).then(res => {
 				if (meal.ingredientOptions && meal.ingredientOptions.length > 0) {
 					meal.ingredientOptions.forEach(async ingredientOption => {
 						const mealOptionIngredient = new OrderDetailMealOptionIngredient();
 						mealOptionIngredient.optionIngredient = ingredientOption.optionIngredient;
 						mealOptionIngredient.orderDetailMeal = res;
-
-						order.totalPaid = (parseFloat(order.totalPaid as any) + parseFloat(ingredientOption.optionIngredient.price as any));
 						await getRepository(OrderDetailMealOptionIngredient).save(mealOptionIngredient);
-						await getCustomRepository(OrderRepository).save(order);
 					});
 				}
 
@@ -102,11 +97,8 @@ export class OrderDetailMealRepository extends Repository<OrderDetailMeal> imple
 					meal.productOptions.forEach(async productOption => {
 						const mealOptionProduct = new OrderDetailMealOptionProduct();
 						mealOptionProduct.optionProduct = productOption.optionProduct;
-
 						mealOptionProduct.orderDetailMeal = res;
-						order.totalPaid = (parseFloat(order.totalPaid as any) + parseFloat(productOption.optionProduct.price as any));
 						await getRepository(OrderDetailMealOptionProduct).save(mealOptionProduct);
-						await getCustomRepository(OrderRepository).save(order);
 					});
 				}
 			});
@@ -123,9 +115,7 @@ export class OrderDetailMealRepository extends Repository<OrderDetailMeal> imple
 			orderDetailMeal.quantity = quantity;
 			orderDetailMeal.price = meal.price;
 			orderDetailMeal.order = order;
-			order.totalPaid = (parseFloat(order.totalPaid as any) + parseFloat(meal.price as any));
 
-			await getCustomRepository(OrderRepository).save(order);
 			return this.save(orderDetailMeal).then(async res => {
 				if (optionUuids && optionUuids.length > 0) {
 					await this.saveGuestOrderMealOptions(optionUuids, res, order);
@@ -148,9 +138,7 @@ export class OrderDetailMealRepository extends Repository<OrderDetailMeal> imple
 					const orderDetailMealOptionIngredient = new OrderDetailMealOptionIngredient();
 					orderDetailMealOptionIngredient.optionIngredient = subsectionOptionIngredient;
 					orderDetailMealOptionIngredient.orderDetailMeal = orderDetailMeal;
-					order.totalPaid = (parseFloat(order.totalPaid as any) + parseFloat(subsectionOptionIngredient.price as any));
 					await getRepository(OrderDetailMealOptionIngredient).save(orderDetailMealOptionIngredient);
-					await getCustomRepository(OrderRepository).save(order);
 				} else {
 					const subsectionOptionProduct = await getRepository(MealSubsectionOptionProduct)
 						.createQueryBuilder('mealSubsectionOptionProduct')
@@ -161,9 +149,7 @@ export class OrderDetailMealRepository extends Repository<OrderDetailMeal> imple
 						const orderDetailMealOptionProduct = new OrderDetailMealOptionProduct();
 						orderDetailMealOptionProduct.optionProduct = subsectionOptionProduct;
 						orderDetailMealOptionProduct.orderDetailMeal = orderDetailMeal;
-						order.totalPaid = (parseFloat(order.totalPaid as any) + parseFloat(orderDetailMealOptionProduct.optionProduct.price as any));
 						await getRepository(OrderDetailMealOptionProduct).save(orderDetailMealOptionProduct);
-						await getCustomRepository(OrderRepository).save(order);
 					}
 				}
 			});
