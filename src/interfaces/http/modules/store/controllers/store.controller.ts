@@ -1,4 +1,5 @@
 import {
+	BadRequestException,
 	Body, Controller, Delete, FileInterceptor, Get, HttpCode,
 	NotFoundException, Param, Patch, Post, Req, UnauthorizedException, UploadedFile, UseGuards, UseInterceptors
 } from '@nestjs/common';
@@ -25,10 +26,11 @@ import {ValidationPipe} from '@letseat/domains/common/pipes/validation.pipe';
 import {AuthEntities} from '@letseat/infrastructure/authorization/enums/auth.entites';
 import {DeleteStoreByUuidCommand} from '@letseat/application/commands/store/delete-store-by-uuid.command';
 import {UpdateStoreDto} from '@letseat/domains/store/dtos/update-store.dto';
+import {AWSService} from '@letseat/infrastructure/services/aws.service';
 
 @Controller('stores')
 export class StoreController {
-	constructor(private readonly commandBus: CommandBus) {
+	constructor(private readonly commandBus: CommandBus, private readonly awsService: AWSService) {
 	}
 
 	@Get()
@@ -78,7 +80,15 @@ export class StoreController {
 				throw new UnauthorizedException();
 			})();
 		}
-		return this.commandBus.execute(new SaveStoreProfilePictureUrlCommand(request.user.uuid, file.location));
+		if (!file) {
+			(() => {
+				throw new BadRequestException('No file uploaded');
+			})();
+		}
+		const uploadImagePromise = this.awsService.uploadImage(file, 'lets-eat-co/stores', request.user.uuid);
+		return uploadImagePromise.then(async fileData => {
+			return this.commandBus.execute(new SaveStoreProfilePictureUrlCommand(request.user.uuid, fileData.Location));
+		}).catch(err => console.log(err));
 	}
 
 	@Post('/login')
