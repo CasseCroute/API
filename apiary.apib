@@ -755,6 +755,28 @@ Get Store Orders
 
 + Response 200
 
+## Current Store Vouchers [/stores/me/vouchers]
+
+### Get Vouchers [GET]
+
+Get Store Orders
+
+| Requires authentication | Has restricted scope |
+| ----------------------- | -------------------- |
+| Yes (JWT)               | No                   |
+
++ Request (application/json; charset=utf-8)
+    + Headers
+
+                Authorization: Bearer <JWT>
+    + Attributes
+        + code: `XMAS20PROMO` (string, required) - Promo code
+        + reduction: `20` (number, required) - Reduction in amount of order total.
+        + expirationDate: `20` (string, required) - Expiration date of the voucher.
+        + description: `20€ of discount for your orders` (string, optional) - Description of the voucher.
+
++ Response 200 (application/json; charset=utf-8)
+
 ## Current Store Profile [/stores/me]
 
 Current store MUST be identified by JWT provided in request header.

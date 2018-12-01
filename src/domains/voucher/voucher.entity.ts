@@ -9,7 +9,7 @@ export class Voucher extends Resource {
 		return Object.assign(this, args);
 	}
 
-	@Column({length: 128})
+	@Column({length: 32})
 	code: string;
 
 	@Column('decimal', {precision: 10, scale: 2, unsigned: true})
@@ -24,8 +24,4 @@ export class Voucher extends Resource {
 	@ManyToOne(() => Store, store => store.vouchers, {onDelete: 'CASCADE'})
 	@JoinColumn({name: 'id_store'})
 	store: Store;
-
-	public static register(args: any): Voucher {
-		return new Voucher(args);
-	}
 }

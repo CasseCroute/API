@@ -29,7 +29,6 @@ import {BadRequestException} from '@nestjs/common';
 import {CreateStoreDto} from '@letseat/domains/store/dtos';
 import {OrderRepository} from '@letseat/infrastructure/repository/order.repository';
 import {OrderHistory, OrderStatus} from '@letseat/domains/order/order-history.entity';
-import {Voucher} from "@letseat/domains/voucher/voucher.entity";
 
 @EntityRepository(Store)
 export class StoreRepository extends Repository<Store> implements ResourceRepository {

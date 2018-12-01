@@ -469,6 +469,11 @@ hooks.before('Stores > Current Store Order > Update Order Status', (transaction,
 		});
 });
 
+hooks.before('Stores > Current Store Vouchers > Get Vouchers', (transaction, done) => {
+	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
+	done();
+});
+
 hooks.afterAll((transactions, done) => {
 	client.query(
 		'TRUNCATE TABLE store CASCADE;' +
@@ -484,7 +489,8 @@ hooks.afterAll((transactions, done) => {
 		'TRUNCATE TABLE order_detail_meal_option_ingredient CASCADE;' +
 		'TRUNCATE TABLE order_detail_meal_option_product CASCADE;' +
 		'TRUNCATE TABLE order_detail_product CASCADE;' +
-		'TRUNCATE TABLE kiosk CASCADE;')
+		'TRUNCATE TABLE kiosk CASCADE;' +
+		'TRUNCATE TABLE voucher CASCADE;')
 		.then(() => {
 			client.end();
 			done();

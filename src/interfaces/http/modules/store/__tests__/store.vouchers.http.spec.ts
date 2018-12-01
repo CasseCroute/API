@@ -54,7 +54,7 @@ describe('Store HTTP Requests', () => {
 			const data = {
 				code: 'BLACKFRIDAY10',
 				reduction: 5,
-				expirationDate: '2018-11-30'
+				expirationDate: new Date().toISOString()
 			};
 
 			return request(app.getHttpServer())
