@@ -1,3 +1,4 @@
+/* tslint:disable */
 import {
 	EntityRepository, getCustomRepository, getRepository,
 	Repository
@@ -18,8 +19,6 @@ import {LoggerService} from '@letseat/infrastructure/services';
 import {BadRequestException} from '@nestjs/common';
 import {Product} from '@letseat/domains/product/product.entity';
 import {Meal} from '@letseat/domains/meal/meal.entity';
-import {MealSubsectionOption} from '@letseat/domains/meal/meal-subsection-option.entity';
-import {AddProductOrMealToCartDto} from '@letseat/domains/cart/dtos';
 import {MealSubsectionOptionIngredient} from '@letseat/domains/meal/meal-subsection-option-ingredient.entity';
 import {MealSubsectionOptionProduct} from '@letseat/domains/meal/meal-subsection-option-product.entity';
 
@@ -95,6 +94,8 @@ export class OrderDetailMealRepository extends Repository<OrderDetailMeal> imple
 						mealOptionProduct.orderDetailMeal = res;
 						await getRepository(OrderDetailMealOptionProduct).save(mealOptionProduct);
 					});
+				} else {
+					return;
 				}
 			});
 		} catch (err) {
@@ -113,7 +114,7 @@ export class OrderDetailMealRepository extends Repository<OrderDetailMeal> imple
 
 			return this.save(orderDetailMeal).then(async res => {
 				if (optionUuids && optionUuids.length > 0) {
-					await this.saveGuestOrderMealOptions(optionUuids, res, order);
+					await this.saveGuestOrderMealOptions(optionUuids, res);
 				}
 			});
 		} catch (err) {
@@ -122,7 +123,7 @@ export class OrderDetailMealRepository extends Repository<OrderDetailMeal> imple
 		}
 	}
 
-	public async saveGuestOrderMealOptions(mealOptionUuids: string[], orderDetailMeal: OrderDetailMeal, order: Order) {
+	public async saveGuestOrderMealOptions(mealOptionUuids: string[], orderDetailMeal: OrderDetailMeal) {
 		try {
 			mealOptionUuids.forEach(async mealOptionUuid => {
 				const subsectionOptionIngredient = await getRepository(MealSubsectionOptionIngredient)
