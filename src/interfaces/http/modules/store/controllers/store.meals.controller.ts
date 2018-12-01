@@ -1,5 +1,17 @@
 import {
-Body, Controller, Get, HttpCode, Param, Patch, Delete, Post, Req, UnauthorizedException, UseGuards
+	Body,
+	Controller,
+	Get,
+	HttpCode,
+	Param,
+	Patch,
+	Delete,
+	Post,
+	Req,
+	UnauthorizedException,
+	UseGuards,
+	UseInterceptors,
+	FileInterceptor, UploadedFile, BadRequestException
 } from '@nestjs/common';
 import {CommandBus} from '@nestjs/cqrs';
 import {ValidationPipe} from '@letseat/domains/common/pipes/validation.pipe';
@@ -12,10 +24,12 @@ import {CreateMealCommand, DeleteMealCommand, UpdateMealCommand} from '@letseat/
 import {GetStoreMealsQuery} from '@letseat/application/queries/store';
 import {isUuid} from '@letseat/shared/utils';
 import {UpdateMealDto} from '@letseat/domains/meal/dtos';
+import {AWSService} from '@letseat/infrastructure/services/aws.service';
+import {SaveMealPictureUrlCommand} from '@letseat/application/commands/meal/save-meal-picture-url.command';
 
 @Controller('stores/me/meals')
 export class CurrentStoreMealsController {
-	constructor(private readonly commandBus: CommandBus) {
+	constructor(private readonly commandBus: CommandBus, private readonly awsService: AWSService) {
 	}
 
 	@Post()
@@ -49,7 +63,7 @@ export class CurrentStoreMealsController {
 		@Body(new ValidationPipe<Meal>(updateMealValidatorOptions)) meal: UpdateMealDto,
 		@Param('uuid') uuid: string): Promise<any> {
 		return request.user.entity === AuthEntities.Store && isUuid(uuid)
-			? this.commandBus.execute(new UpdateMealCommand(request.user.uuid, uuid , meal))
+			? this.commandBus.execute(new UpdateMealCommand(request.user.uuid, uuid, meal))
 			: (() => {
 				throw new UnauthorizedException();
 			})();
@@ -66,5 +80,28 @@ export class CurrentStoreMealsController {
 			: (() => {
 				throw new UnauthorizedException();
 			})();
+	}
+
+	@Post(':uuid/picture')
+	@UseInterceptors(FileInterceptor('file'))
+	@UseGuards(AuthGuard('jwt'))
+	public async uploadMealPicture(
+		@Req() request: any,
+		@Param('uuid') uuid: string,
+		@UploadedFile() file) {
+		if (request.user.entity !== AuthEntities.Store) {
+			(() => {
+				throw new UnauthorizedException();
+			})();
+		}
+		if (!file) {
+			(() => {
+				throw new BadRequestException('No file uploaded');
+			})();
+		}
+		const uploadImagePromise = this.awsService.uploadImage(file, `lets-eat-co/stores/${request.user.uuid}`, uuid);
+		return uploadImagePromise.then(async fileData => {
+			return this.commandBus.execute(new SaveMealPictureUrlCommand(request.user.uuid, uuid, fileData.Location));
+		}).catch(err => console.log(err));
 	}
 }

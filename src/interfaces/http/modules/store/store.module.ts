@@ -1,4 +1,4 @@
-import {Module, OnModuleInit} from '@nestjs/common';
+import {Module, MulterModule, OnModuleInit} from '@nestjs/common';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import {CommandBus, CQRSModule} from '@nestjs/cqrs';
 import {ModuleRef} from '@nestjs/core';
@@ -20,6 +20,10 @@ import {OrderCommandHandlers} from '@letseat/application/commands/order/handlers
 import {OrderRepository} from '@letseat/infrastructure/repository/order.repository';
 import {CustomerRepository} from '@letseat/infrastructure/repository/customer.repository';
 import {GeocoderService} from '@letseat/infrastructure/services/geocoder.service';
+import {AWSService} from '@letseat/infrastructure/services/aws.service';
+import {MulterConfigService} from '@letseat/infrastructure/services/multer.service';
+import {MealRepository} from '@letseat/infrastructure/repository/meal.repository';
+import {ProductRepository} from '@letseat/infrastructure/repository/product.repository';
 
 @Module({
 	imports: [
@@ -29,8 +33,13 @@ import {GeocoderService} from '@letseat/infrastructure/services/geocoder.service
 			ProductIngredientRepository,
 			OrderRepository,
 			CustomerRepository,
+			MealRepository,
+			ProductRepository
 		]),
-		CQRSModule
+		CQRSModule,
+		MulterModule.registerAsync({
+			useClass: MulterConfigService
+		}),
 	],
 	providers: [
 		JwtStrategy,
@@ -44,7 +53,8 @@ import {GeocoderService} from '@letseat/infrastructure/services/geocoder.service
 		...SectionCommandHandlers,
 		...OrderCommandHandlers,
 		GeocoderService,
-		LoggerService
+		LoggerService,
+		AWSService,
 	],
 	controllers: [
 		...StoreControllers

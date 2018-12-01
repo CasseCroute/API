@@ -10,6 +10,7 @@ import {Store} from '@letseat/domains/store/store.entity';
 import {JwtStrategy} from '@letseat/infrastructure/authorization/strategies/jwt.strategy';
 import {CustomExceptionFilter} from '@letseat/domains/common/exceptions';
 import {LoggerService} from '@letseat/infrastructure/services';
+import {AWSService} from '../../../../../infrastructure/services/aws.service';
 
 describe('Store HTTP Requests', () => {
 	let app: INestApplication;
@@ -24,6 +25,7 @@ describe('Store HTTP Requests', () => {
 				CQRSModule,
 				AuthService,
 				CommandBus,
+				AWSService,
 				{
 					provide: getRepositoryToken(Store),
 					useValue: mocks.storeRepository,

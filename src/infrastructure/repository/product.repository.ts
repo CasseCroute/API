@@ -16,8 +16,12 @@ export class ProductRepository extends Repository<Product> implements ResourceRe
 		return this.findOne({where: {uuid: productUuid}, relations});
 	}
 
-	public async findOneByUuidAndStore(productUuid: string, store: Store, relations?: string[]) {
-		return this.findOneOrFail({where: {uuid: productUuid, store}, relations});
+	public async findOneByUuidAndStore(productUuid: string, storeUuid: string) {
+		return this.createQueryBuilder('product')
+			.leftJoin('product.store', 'store')
+			.where('product.uuid = :productUuid', {productUuid})
+			.andWhere('store.uuid = :storeUuid', {storeUuid})
+			.getOne();
 	}
 
 	public async updateProduct(storeId: number, productUuid: string, values: ObjectLiteral) {
@@ -90,5 +94,13 @@ export class ProductRepository extends Repository<Product> implements ResourceRe
 			.where('product.uuid = :uuid', {uuid: productUuid})
 			.delete()
 			.execute()
+	}
+
+	public async saveProductPictureUrl(storeUuid: string, mealUuid: string, imageUrl: string) {
+		const product = await this.findOneByUuidAndStore(mealUuid, storeUuid);
+		if (product) {
+			product.imageUrl = imageUrl;
+			await this.save(product);
+		}
 	}
 }

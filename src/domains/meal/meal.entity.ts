@@ -24,6 +24,9 @@ export class Meal extends Resource {
 	@Column('decimal', {precision: 10, scale: 2, unsigned: true})
 	price: number;
 
+	@Column({name: 'image_url', length: 256, nullable: true})
+	imageUrl?: string;
+
 	@Column('smallint', {default: 1, name: 'product_quantity', unsigned: true})
 	productQuantity: number;
 

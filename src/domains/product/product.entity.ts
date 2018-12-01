@@ -29,6 +29,9 @@ export class Product extends Resource {
 	@Column('decimal', {precision: 10, scale: 2, unsigned: true})
 	price: number;
 
+	@Column({name: 'image_url', length: 256, nullable: true})
+	imageUrl?: string;
+
 	@ManyToOne(type => Store, store => store.products, {cascade: ['insert'], onDelete: 'CASCADE'})
 	@JoinColumn({name: 'id_store'})
 	store: Store;

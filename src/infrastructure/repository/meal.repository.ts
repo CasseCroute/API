@@ -39,4 +39,12 @@ export class MealRepository extends Repository<Meal> implements ResourceReposito
 			.where('uuid = :uuid AND id_store = :id', {uuid: mealUuid, id: storeId})
 			.execute();
 	}
+
+	public async saveMealPictureUrl(storeUuid: string, mealUuid: string, imageUrl: string) {
+		const meal = await this.findOneByUuidAndStore(mealUuid, storeUuid);
+		if (meal) {
+			meal.imageUrl = imageUrl;
+			await this.save(meal);
+		}
+	}
 }

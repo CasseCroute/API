@@ -1,5 +1,5 @@
 /* tslint:disable:no-unused */
-import {Entity, Column, ManyToOne, JoinColumn, OneToMany, OneToOne} from 'typeorm';
+import {Entity, Column, ManyToOne, JoinColumn, OneToOne} from 'typeorm';
 import {Resource} from '@letseat/domains/resource/resource';
 import {Meal} from '@letseat/domains/meal/meal.entity';
 import {MealSubsectionOption} from '@letseat/domains/meal/meal-subsection-option.entity';
