@@ -17,7 +17,7 @@ export class SaveStoreProfilePictureUrlHandler implements ICommandHandler<SaveSt
 
 	async execute(command: SaveStoreProfilePictureUrlCommand, resolve: (value?) => void) {
 		defer(async () => {
-			return this.storeRepository.saveStoreProfilePictureUrl(command.storeUuid, command.imageUrl)
+			return this.storeRepository.saveStoreProfilePictureUrl(command.storeUuid, command.imageUrl);
 		}).subscribe({
 			next: () => resolve(),
 			error: err => resolve(Promise.reject(new BadRequestException(err.message))),
