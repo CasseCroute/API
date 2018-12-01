@@ -33,9 +33,10 @@
     reflect-metadata "^0.1.12"
     tslib "^1.8.1"
 
-"@nestjs/common@^5.0.0", "@nestjs/common@^5.4.0":
-  version "5.4.0"
-  resolved "https://registry.yarnpkg.com/@nestjs/common/-/common-5.4.0.tgz#74aa7da0d6931349b0a2cbe813b83ad77c2797ec"
+"@nestjs/common@^5.0.0", "@nestjs/common@^5.4.1":
+  version "5.4.1"
+  resolved "https://registry.yarnpkg.com/@nestjs/common/-/common-5.4.1.tgz#7caef567c0aa116086c4785b48ce6df43194bc9d"
+  integrity sha512-05XsPaqte1Y8IHDSjMpxR3hfTEJfFcpfC/Ko81r+aUAFhxO8d4oYUzZl8Wob4zeJY6+nmLpuF8jtGeb/X73qiQ==
   dependencies:
     axios "0.18.0"
     cli-color "1.2.0"
