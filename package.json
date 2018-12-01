@@ -68,7 +68,7 @@
     "@types/multer-s3": "^2.7.6",
     "@types/node": "^10.12.9",
     "@types/node-geocoder": "^3.19.0",
-    "@types/redis": "^2.8.7",
+    "@types/redis": "^2.8.8",
     "@types/stripe": "^6.0.4",
     "@types/supertest": "^2.0.6",
     "@types/yargs": "^12.0.1",
