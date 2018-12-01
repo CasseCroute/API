@@ -1,6 +1,6 @@
 import {
-	Body, Controller, Delete, Get, HttpCode,
-	NotFoundException, Param, Patch, Post, Req, UnauthorizedException, UseGuards
+	Body, Controller, Delete, FileInterceptor, Get, HttpCode,
+	NotFoundException, Param, Patch, Post, Req, UnauthorizedException, UploadedFile, UseGuards, UseInterceptors
 } from '@nestjs/common';
 import {CommandBus} from '@nestjs/cqrs';
 import {Search} from '@letseat/application/queries/common/decorators/search.decorator';
@@ -15,7 +15,11 @@ import {
 	GetStoresQuery
 } from '@letseat/application/queries/store';
 import {CreateStoreDto, LoginStoreDto} from '@letseat/domains/store/dtos';
-import {CreateStoreCommand, UpdateStoreByUuidCommand} from '@letseat/application/commands/store';
+import {
+	CreateStoreCommand,
+	SaveStoreProfilePictureUrlCommand,
+	UpdateStoreByUuidCommand
+} from '@letseat/application/commands/store';
 import {AuthGuard} from '@letseat/infrastructure/authorization/guards';
 import {ValidationPipe} from '@letseat/domains/common/pipes/validation.pipe';
 import {AuthEntities} from '@letseat/infrastructure/authorization/enums/auth.entites';
@@ -61,6 +65,20 @@ export class StoreController {
 			: (() => {
 				throw new UnauthorizedException();
 			})();
+	}
+
+	@Post('/me/picture')
+	@UseInterceptors(FileInterceptor('file'))
+	@UseGuards(AuthGuard('jwt'))
+	public async uploadProfilePicture(
+		@Req() request: any,
+		@UploadedFile() file) {
+		if (request.user.entity !== AuthEntities.Store) {
+			(() => {
+				throw new UnauthorizedException();
+			})();
+		}
+		return this.commandBus.execute(new SaveStoreProfilePictureUrlCommand(request.user.uuid, file.location));
 	}
 
 	@Post('/login')

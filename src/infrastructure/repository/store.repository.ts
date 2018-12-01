@@ -367,4 +367,10 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 			}
 		});
 	}
+
+	public async saveStoreProfilePictureUrl(storeUuid: string, imageUrl: string){
+		const store = await this.findOneOrFail({where: {uuid: storeUuid}});
+		store.imageUrl = imageUrl;
+		await this.save(store);
+	}
 }

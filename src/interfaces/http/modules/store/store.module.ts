@@ -1,4 +1,5 @@
-import {Module, OnModuleInit} from '@nestjs/common';
+/* tslint:disable:no-unused */
+import {BadRequestException, Module, MulterModule, OnModuleInit} from '@nestjs/common';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import {CommandBus, CQRSModule} from '@nestjs/cqrs';
 import {ModuleRef} from '@nestjs/core';
@@ -20,6 +21,9 @@ import {OrderCommandHandlers} from '@letseat/application/commands/order/handlers
 import {OrderRepository} from '@letseat/infrastructure/repository/order.repository';
 import {CustomerRepository} from '@letseat/infrastructure/repository/customer.repository';
 import {GeocoderService} from '@letseat/infrastructure/services/geocoder.service';
+import {AWSService} from '@letseat/infrastructure/services/aws.service';
+import multerS3 from 'multer-s3';
+import path from 'path';
 
 @Module({
 	imports: [
@@ -30,7 +34,24 @@ import {GeocoderService} from '@letseat/infrastructure/services/geocoder.service
 			OrderRepository,
 			CustomerRepository,
 		]),
-		CQRSModule
+		CQRSModule,
+		MulterModule.register({
+			storage: multerS3({
+				s3: new AWSService().S3,
+				bucket: 'lets-eat-co/stores',
+				metadata: (req, file, callback) => callback(null, {fieldName: file.fieldname}),
+				key: (req: any, file, callback) => callback(null, req.user.uuid),
+				acl: 'public-read',
+				contentType: multerS3.AUTO_CONTENT_TYPE,
+			}),
+			fileFilter: ((req, file, callback) => {
+				const imageRegex = /[\/.](jpg|jpeg|png)$/i;
+				if (!imageRegex.test(path.extname(file.originalname))) {
+					return callback(new BadRequestException('Only images are allowed'), false);
+				}
+				callback(null, true);
+			})
+		}),
 	],
 	providers: [
 		JwtStrategy,
@@ -44,7 +65,8 @@ import {GeocoderService} from '@letseat/infrastructure/services/geocoder.service
 		...SectionCommandHandlers,
 		...OrderCommandHandlers,
 		GeocoderService,
-		LoggerService
+		LoggerService,
+		AWSService,
 	],
 	controllers: [
 		...StoreControllers
