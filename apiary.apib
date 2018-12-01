@@ -757,7 +757,7 @@ Get Store Orders
 
 ## Current Store Vouchers [/stores/me/vouchers]
 
-### Get Vouchers [GET]
+### Create a Voucher [POST]
 
 Get Store Orders
 
@@ -772,9 +772,24 @@ Get Store Orders
     + Attributes
         + code: `XMAS20PROMO` (string, required) - Promo code
         + reduction: `20` (number, required) - Reduction in amount of order total.
-        + expirationDate: `20` (string, required) - Expiration date of the voucher.
+        + expirationDate: `2018-07-01T15:11:09.553Z` (string, required) - Expiration date of the voucher.
         + description: `20€ of discount for your orders` (string, optional) - Description of the voucher.
 
++ Response 201
+
+### Get Vouchers [GET]
+
+Get Store Orders
+
+| Requires authentication | Has restricted scope |
+| ----------------------- | -------------------- |
+| Yes (JWT)               | No                   |
+
++ Request (application/json; charset=utf-8)
+    + Headers
+
+                Authorization: Bearer <JWT>
+                
 + Response 200 (application/json; charset=utf-8)
 
 ## Current Store Profile [/stores/me]

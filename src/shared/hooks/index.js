@@ -474,6 +474,11 @@ hooks.before('Stores > Current Store Vouchers > Get Vouchers', (transaction, don
 	done();
 });
 
+hooks.before('Stores > Current Store Vouchers > Create a Voucher', (transaction, done) => {
+	transaction.request.headers.Authorization = `Bearer ${store.jwt}`;
+	done();
+});
+
 hooks.afterAll((transactions, done) => {
 	client.query(
 		'TRUNCATE TABLE store CASCADE;' +

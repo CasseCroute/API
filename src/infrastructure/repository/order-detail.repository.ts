@@ -1,4 +1,3 @@
-/* tslint:disable */
 import {
 	EntityRepository, getCustomRepository, getRepository,
 	Repository
