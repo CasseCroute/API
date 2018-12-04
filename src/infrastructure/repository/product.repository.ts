@@ -42,6 +42,16 @@ export class ProductRepository extends Repository<Product> implements ResourceRe
 			.getMany();
 	}
 
+	public async findProductWithIngredients(productUuid: string) {
+		return this.createQueryBuilder('product')
+			.leftJoin('product.store', 'store')
+			.leftJoinAndSelect('product.ingredients', 'ingredients')
+			.leftJoinAndSelect('product.cuisine', 'cuisine')
+			.leftJoinAndSelect('ingredients.ingredient', 'ingredient')
+			.where('product.uuid = :uuid', {uuid: productUuid})
+			.getOne();
+	}
+
 	public async findStoreProductsPublic(storeUuid: string) {
 		return this.createQueryBuilder('product')
 			.select([
