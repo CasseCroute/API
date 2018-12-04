@@ -47,6 +47,14 @@ docker-compose up
 
 You can access to the app at : http://localhost
 
+### Tests
+
+Simply run :
+
+```sh
+yarn test
+```
+
 ### License
 This project is licensed under the GNU General Public License v3.0 License - see the [LICENSE.md](LICENSE.md) file for details
 
