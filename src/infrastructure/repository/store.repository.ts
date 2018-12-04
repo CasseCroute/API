@@ -74,6 +74,8 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 	public async findStoreOrders(storeUuid: string) {
 		const store = await this.createQueryBuilder('store')
 			.leftJoinAndSelect('store.orders', 'orders')
+			.leftJoinAndSelect('orders.history', 'history')
+			.leftJoinAndSelect('history.status', 'historyStatus')
 			.leftJoinAndSelect('orders.customer', 'customer')
 			.leftJoinAndSelect('orders.detailsMeals', 'orderDetailsMeals')
 			.leftJoinAndSelect('orders.detailsProducts', 'orderDetailsProducts')
