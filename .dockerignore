@@ -1,4 +1,11 @@
 .git
+.github
+.circleci
+.codeclimate
+.database.env.sample
+.env.sample
+apiary.apib
+apiary.apib
 .gitignore
 README.md
 docker-compose.yml

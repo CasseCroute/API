@@ -6,8 +6,11 @@ import {CustomExceptionFilter} from '@letseat/domains/common/exceptions';
 import {Transport} from '@nestjs/microservices';
 import helmet from 'helmet';
 import {LoggerService} from '@letseat/infrastructure/services';
+import {EventEmitter} from 'events';
+import compression from 'compression';
 
 const logger = new LoggerService('Server');
+const emitter = new EventEmitter();
 
 dotenv.config();
 
@@ -25,6 +28,7 @@ async function bootstrap() {
 	});
 
 	app.use(helmet());
+	app.use(compression());
 	app.enableCors();
 
 	app.useGlobalFilters(new CustomExceptionFilter());
@@ -39,5 +43,8 @@ async function bootstrap() {
 }
 
 bootstrap()
-	.then(() => logger.log(`Server running at port ${config.get('app.port')}`))
+	.then(() => {
+		emitter.setMaxListeners(0);
+		return logger.log(`Server running at port ${config.get('app.port')}`);
+	})
 	.catch(err => logger.error('Server crashed !', err));

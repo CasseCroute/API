@@ -6,6 +6,7 @@ import {OrderRepository} from '@letseat/infrastructure/repository/order.reposito
 import {CustomerRepository} from '@letseat/infrastructure/repository/customer.repository';
 import {defer} from 'rxjs';
 import {Customer} from '@letseat/domains/customer/customer.entity';
+import {CartRepository} from '@letseat/infrastructure/repository/cart.repository';
 
 @CommandHandler(CreateOrderCommand)
 export class CreateOrderHandler implements ICommandHandler<CreateOrderCommand> {
@@ -13,7 +14,9 @@ export class CreateOrderHandler implements ICommandHandler<CreateOrderCommand> {
 		@InjectRepository(OrderRepository)
 		private readonly orderRepository: OrderRepository,
 		@InjectRepository(CustomerRepository)
-		private readonly customerRepository: CustomerRepository) {
+		private readonly customerRepository: CustomerRepository,
+		@InjectRepository(CartRepository)
+		private readonly cartRepository: CartRepository) {
 	}
 
 	async execute(command: CreateOrderCommand, resolve: (value?) => void) {
@@ -21,8 +24,12 @@ export class CreateOrderHandler implements ICommandHandler<CreateOrderCommand> {
 			return this.customerRepository.findOneByUuid(command.customerUuid);
 		}).subscribe({
 			next: async (customer: Customer) => {
-				await this.orderRepository.createOrder(customer, command.order as any);
-				resolve();
+				await this.orderRepository.createOrder(customer, command.order as any)
+					.then(async () => {
+						await this.cartRepository.destroyCart(customer.cart);
+						resolve();
+					})
+					.catch(() => new BadRequestException('Cannot place an order'));
 			},
 			error: err => resolve(Promise.reject(new BadRequestException(err.message)))
 		});

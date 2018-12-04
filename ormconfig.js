@@ -11,7 +11,7 @@ module.exports =
 		username: `${config.get('database.username')}`,
 		password: `${config.get('database.password')}`,
 		database: `${config.get('database.name')}`,
-		synchronize: true,
+		synchronize: process.env.NODE_ENV !== 'production',
 		entities: ['src/domains/**/*.entity.ts'],
 		migrations: ['src/migrations/*.ts'],
 		cli: {

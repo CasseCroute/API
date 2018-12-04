@@ -24,6 +24,7 @@ import {AWSService} from '@letseat/infrastructure/services/aws.service';
 import {MulterConfigService} from '@letseat/infrastructure/services/multer.service';
 import {MealRepository} from '@letseat/infrastructure/repository/meal.repository';
 import {ProductRepository} from '@letseat/infrastructure/repository/product.repository';
+import {CartRepository} from '@letseat/infrastructure/repository/cart.repository';
 
 @Module({
 	imports: [
@@ -34,7 +35,8 @@ import {ProductRepository} from '@letseat/infrastructure/repository/product.repo
 			OrderRepository,
 			CustomerRepository,
 			MealRepository,
-			ProductRepository
+			ProductRepository,
+			CartRepository
 		]),
 		CQRSModule,
 		MulterModule.registerAsync({
