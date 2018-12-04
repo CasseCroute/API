@@ -6,7 +6,7 @@
 [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/xojs/xo)
 [![Dependabot](https://badgen.net/badge/Dependabot/enabled/green?icon=dependabot)](https://dependabot.com/)
 
-Made with TypeScript + Nest.js + Mongoose.
+Made with TypeScript + Nest.js.
 
 ---
 
