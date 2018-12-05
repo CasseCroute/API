@@ -7,7 +7,7 @@ type StripeCustomer = Stripe.customers.ICustomer;
 export class PaymentService {
 	private readonly stripe = new Stripe(config.get('stripe.secretKey'));
 
-	public async createCustomer(email: string, source: any) {
+	public async createCustomer(source: any, email?: string) {
 		return this.stripe.customers.create({
 			email,
 			source: source.id

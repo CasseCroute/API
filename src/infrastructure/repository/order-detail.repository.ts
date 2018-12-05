@@ -23,10 +23,13 @@ import {MealSubsectionOption} from '@letseat/domains/meal/meal-subsection-option
 import {AddProductOrMealToCartDto} from '@letseat/domains/cart/dtos';
 import {MealSubsectionOptionIngredient} from '@letseat/domains/meal/meal-subsection-option-ingredient.entity';
 import {MealSubsectionOptionProduct} from '@letseat/domains/meal/meal-subsection-option-product.entity';
+import {Ingredient} from '@letseat/domains/ingredient/ingredient.entity';
+import {IngredientRepository} from '@letseat/infrastructure/repository/ingredient.repository';
 
 @EntityRepository(OrderDetailProduct)
 export class OrderDetailProductRepository extends Repository<OrderDetailProduct> implements ResourceRepository {
 	private readonly logger = new LoggerService(OrderDetailProductRepository.name);
+	private readonly ingredientRepository = getCustomRepository(IngredientRepository);
 
 	public async findOneByUuid(uuid: string) {
 		return this.findOne({where: {uuid}});
@@ -40,8 +43,10 @@ export class OrderDetailProductRepository extends Repository<OrderDetailProduct>
 			orderDetailProduct.instructions = product.instructions;
 			orderDetailProduct.price = product.product.price;
 			orderDetailProduct.order = order;
-			order.totalPaid = (parseFloat(order.totalPaid as any) + parseFloat(product.product.price as any));
-			await getCustomRepository(OrderRepository).save(order);
+			await this.ingredientRepository.decrementProductIngredientQuantityByUuid(
+				product.uuid,
+				product.quantity
+			);
 			await this.save(orderDetailProduct);
 		} catch (err) {
 			this.logger.error(err.message, err.stack);
@@ -56,9 +61,11 @@ export class OrderDetailProductRepository extends Repository<OrderDetailProduct>
 			orderDetailProduct.price = product.price;
 			orderDetailProduct.product = product;
 			orderDetailProduct.order = order;
-			order.totalPaid = (parseFloat(order.totalPaid as any) + parseFloat(product.price as any));
+			await this.ingredientRepository.decrementProductIngredientQuantityByUuid(
+				product.uuid,
+				quantity
+			);
 			await getCustomRepository(OrderRepository).save(order);
-			await this.save(orderDetailProduct);
 		} catch (err) {
 			this.logger.error(err.message, err.stack);
 			throw new BadRequestException();
@@ -69,6 +76,7 @@ export class OrderDetailProductRepository extends Repository<OrderDetailProduct>
 @EntityRepository(OrderDetailMeal)
 export class OrderDetailMealRepository extends Repository<OrderDetailMeal> implements ResourceRepository {
 	private readonly logger = new LoggerService(OrderDetailMealRepository.name);
+	private readonly ingredientRepository = getCustomRepository(IngredientRepository);
 
 	public async findOneByUuid(uuid: string) {
 		return this.findOne({where: {uuid}});
@@ -82,31 +90,31 @@ export class OrderDetailMealRepository extends Repository<OrderDetailMeal> imple
 			orderDetailMeal.instructions = meal.instructions;
 			orderDetailMeal.price = meal.meal.price;
 			orderDetailMeal.order = order;
-			order.totalPaid = (parseFloat(order.totalPaid as any) + parseFloat(meal.meal.price as any));
 
-			await getCustomRepository(OrderRepository).save(order);
 			return this.save(orderDetailMeal).then(res => {
 				if (meal.ingredientOptions && meal.ingredientOptions.length > 0) {
 					meal.ingredientOptions.forEach(async ingredientOption => {
+						await this.ingredientRepository.decrementIngredientQuantityByUuid(
+							ingredientOption.optionIngredient.ingredient.uuid,
+							ingredientOption.optionIngredient.quantity
+						);
 						const mealOptionIngredient = new OrderDetailMealOptionIngredient();
 						mealOptionIngredient.optionIngredient = ingredientOption.optionIngredient;
 						mealOptionIngredient.orderDetailMeal = res;
-
-						order.totalPaid = (parseFloat(order.totalPaid as any) + parseFloat(ingredientOption.optionIngredient.price as any));
 						await getRepository(OrderDetailMealOptionIngredient).save(mealOptionIngredient);
-						await getCustomRepository(OrderRepository).save(order);
 					});
 				}
 
 				if (meal.productOptions && meal.productOptions.length > 0) {
 					meal.productOptions.forEach(async productOption => {
+						await this.ingredientRepository.decrementProductIngredientQuantityByUuid(
+							productOption.optionProduct.product.uuid,
+							productOption.optionProduct.quantity
+						);
 						const mealOptionProduct = new OrderDetailMealOptionProduct();
 						mealOptionProduct.optionProduct = productOption.optionProduct;
-
 						mealOptionProduct.orderDetailMeal = res;
-						order.totalPaid = (parseFloat(order.totalPaid as any) + parseFloat(productOption.optionProduct.price as any));
 						await getRepository(OrderDetailMealOptionProduct).save(mealOptionProduct);
-						await getCustomRepository(OrderRepository).save(order);
 					});
 				}
 			});
@@ -123,9 +131,7 @@ export class OrderDetailMealRepository extends Repository<OrderDetailMeal> imple
 			orderDetailMeal.quantity = quantity;
 			orderDetailMeal.price = meal.price;
 			orderDetailMeal.order = order;
-			order.totalPaid = (parseFloat(order.totalPaid as any) + parseFloat(meal.price as any));
 
-			await getCustomRepository(OrderRepository).save(order);
 			return this.save(orderDetailMeal).then(async res => {
 				if (optionUuids && optionUuids.length > 0) {
 					await this.saveGuestOrderMealOptions(optionUuids, res, order);
@@ -145,12 +151,15 @@ export class OrderDetailMealRepository extends Repository<OrderDetailMeal> imple
 					.where('mealSubsectionOptionIngredient.uuid = :mealOptionUuid', {mealOptionUuid})
 					.getOne();
 				if (subsectionOptionIngredient) {
+					await this.ingredientRepository.decrementIngredientQuantityByUuid(
+						subsectionOptionIngredient.ingredient.uuid,
+						subsectionOptionIngredient.quantity
+					);
+
 					const orderDetailMealOptionIngredient = new OrderDetailMealOptionIngredient();
 					orderDetailMealOptionIngredient.optionIngredient = subsectionOptionIngredient;
 					orderDetailMealOptionIngredient.orderDetailMeal = orderDetailMeal;
-					order.totalPaid = (parseFloat(order.totalPaid as any) + parseFloat(subsectionOptionIngredient.price as any));
 					await getRepository(OrderDetailMealOptionIngredient).save(orderDetailMealOptionIngredient);
-					await getCustomRepository(OrderRepository).save(order);
 				} else {
 					const subsectionOptionProduct = await getRepository(MealSubsectionOptionProduct)
 						.createQueryBuilder('mealSubsectionOptionProduct')
@@ -158,12 +167,15 @@ export class OrderDetailMealRepository extends Repository<OrderDetailMeal> imple
 						.getOne();
 
 					if (subsectionOptionProduct) {
+						await this.ingredientRepository.decrementProductIngredientQuantityByUuid(
+							subsectionOptionProduct.product.uuid,
+							subsectionOptionProduct.quantity
+						);
+
 						const orderDetailMealOptionProduct = new OrderDetailMealOptionProduct();
 						orderDetailMealOptionProduct.optionProduct = subsectionOptionProduct;
 						orderDetailMealOptionProduct.orderDetailMeal = orderDetailMeal;
-						order.totalPaid = (parseFloat(order.totalPaid as any) + parseFloat(orderDetailMealOptionProduct.optionProduct.price as any));
 						await getRepository(OrderDetailMealOptionProduct).save(orderDetailMealOptionProduct);
-						await getCustomRepository(OrderRepository).save(order);
 					}
 				}
 			});

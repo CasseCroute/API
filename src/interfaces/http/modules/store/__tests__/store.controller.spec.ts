@@ -5,6 +5,7 @@ import {CommandBus} from '@nestjs/cqrs';
 import {StoreController} from '@letseat/interfaces/http/modules/store/controllers';
 import {AuthService} from '@letseat/infrastructure/authorization';
 import {Store} from '@letseat/domains/store/store.entity';
+import {AWSService} from '../../../../../infrastructure/services/aws.service';
 
 describe('StoreController', () => {
 	let storeController: StoreController;
@@ -13,7 +14,7 @@ describe('StoreController', () => {
 	beforeAll(async () => {
 		const module = await Test.createTestingModule({
 			controllers: [StoreController],
-			providers: [CommandBus, AuthService,
+			providers: [CommandBus, AuthService, AWSService,
 				{
 					provide: getRepositoryToken(Store),
 					useValue: mocks.storeRepository

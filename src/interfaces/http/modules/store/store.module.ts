@@ -1,4 +1,4 @@
-import {Module, OnModuleInit} from '@nestjs/common';
+import {Module, MulterModule, OnModuleInit} from '@nestjs/common';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import {CommandBus, CQRSModule} from '@nestjs/cqrs';
 import {ModuleRef} from '@nestjs/core';
@@ -23,6 +23,11 @@ import {OrderRepository} from '@letseat/infrastructure/repository/order.reposito
 import {CustomerRepository} from '@letseat/infrastructure/repository/customer.repository';
 import {GeocoderService} from '@letseat/infrastructure/services/geocoder.service';
 import {VoucherRepository} from '@letseat/infrastructure/repository/voucher.repository';
+import {AWSService} from '@letseat/infrastructure/services/aws.service';
+import {MulterConfigService} from '@letseat/infrastructure/services/multer.service';
+import {MealRepository} from '@letseat/infrastructure/repository/meal.repository';
+import {ProductRepository} from '@letseat/infrastructure/repository/product.repository';
+import {CartRepository} from '@letseat/infrastructure/repository/cart.repository';
 
 @Module({
 	imports: [
@@ -32,9 +37,15 @@ import {VoucherRepository} from '@letseat/infrastructure/repository/voucher.repo
 			ProductIngredientRepository,
 			OrderRepository,
 			CustomerRepository,
-			VoucherRepository
+			VoucherRepository,
+			MealRepository,
+			ProductRepository,
+			CartRepository
 		]),
-		CQRSModule
+		CQRSModule,
+		MulterModule.registerAsync({
+			useClass: MulterConfigService
+		}),
 	],
 	providers: [
 		JwtStrategy,
@@ -50,7 +61,8 @@ import {VoucherRepository} from '@letseat/infrastructure/repository/voucher.repo
 		...VoucherCommandHandlers,
 		...VoucherQueryHandlers,
 		GeocoderService,
-		LoggerService
+		LoggerService,
+		AWSService,
 	],
 	controllers: [
 		...StoreControllers

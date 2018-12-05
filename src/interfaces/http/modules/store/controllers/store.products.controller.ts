@@ -1,6 +1,18 @@
 import {
 	BadRequestException,
-	Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Req, UnauthorizedException, UseGuards
+	Body,
+	Controller,
+	Delete,
+	FileInterceptor,
+	Get,
+	HttpCode,
+	Param,
+	Patch,
+	Post,
+	Req,
+	UnauthorizedException, UploadedFile,
+	UseGuards,
+	UseInterceptors
 } from '@nestjs/common';
 import {CommandBus} from '@nestjs/cqrs';
 import {ValidationPipe} from '@letseat/domains/common/pipes/validation.pipe';
@@ -12,17 +24,23 @@ import {
 } from '@letseat/domains/product/pipes/product-validator-pipe-options';
 import {AuthEntities} from '@letseat/infrastructure/authorization/enums/auth.entites';
 import {AuthGuard} from '@letseat/infrastructure/authorization/guards';
-import {CreateProductCommand, UpdateProductCommand, DeleteProductCommand} from '@letseat/application/commands/product';
+import {
+	CreateProductCommand,
+	UpdateProductCommand,
+	DeleteProductCommand,
+	SaveProductPictureUrlCommand
+} from '@letseat/application/commands/product';
 import {
 	GetStoreProductByUuidQuery,
 	GetStoreProductsQuery
 } from '@letseat/application/queries/store';
 import {isUuid} from '@letseat/shared/utils';
 import {UpdateProductDto} from '@letseat/domains/product/dtos/update-product.dto';
+import {AWSService} from '@letseat/infrastructure/services/aws.service';
 
 @Controller('stores/me/products')
 export class CurrentStoreProductsController {
-	constructor(private readonly commandBus: CommandBus) {
+	constructor(private readonly commandBus: CommandBus, private readonly awsService: AWSService) {
 	}
 
 	@Post()
@@ -69,7 +87,7 @@ export class CurrentStoreProductsController {
 		@Body(new ValidationPipe<Product>(updateProductValidatorOptions)) product: UpdateProductDto,
 		@Param('uuid') uuid: string): Promise<any> {
 		return request.user.entity === AuthEntities.Store && isUuid(uuid)
-			? this.commandBus.execute(new UpdateProductCommand(request.user.uuid, uuid , product))
+			? this.commandBus.execute(new UpdateProductCommand(request.user.uuid, uuid, product))
 			: (() => {
 				throw new UnauthorizedException();
 			})();
@@ -86,6 +104,29 @@ export class CurrentStoreProductsController {
 			: (() => {
 				throw new UnauthorizedException();
 			})();
+	}
+
+	@Post(':uuid/picture')
+	@UseInterceptors(FileInterceptor('file'))
+	@UseGuards(AuthGuard('jwt'))
+	public async uploadMealPicture(
+		@Req() request: any,
+		@Param('uuid') uuid: string,
+		@UploadedFile() file) {
+		if (request.user.entity !== AuthEntities.Store) {
+			(() => {
+				throw new UnauthorizedException();
+			})();
+		}
+		if (!file) {
+			(() => {
+				throw new BadRequestException('No file uploaded');
+			})();
+		}
+		const uploadImagePromise = this.awsService.uploadImage(file, `lets-eat-co/stores/${request.user.uuid}`, uuid);
+		return uploadImagePromise.then(async fileData => {
+			return this.commandBus.execute(new SaveProductPictureUrlCommand(request.user.uuid, uuid, fileData.Location));
+		}).catch(err => console.log(err));
 	}
 }
 
@@ -114,4 +155,5 @@ export class StoreProductsController {
 				throw new BadRequestException();
 			})();
 	}
+
 }

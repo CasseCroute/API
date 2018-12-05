@@ -29,7 +29,10 @@ import {BadRequestException} from '@nestjs/common';
 import {CreateStoreDto} from '@letseat/domains/store/dtos';
 import {OrderRepository} from '@letseat/infrastructure/repository/order.repository';
 import {OrderHistory, OrderStatus} from '@letseat/domains/order/order-history.entity';
+
 import {Voucher} from "@letseat/domains/voucher/voucher.entity";
+import {ProductRepository} from '@letseat/infrastructure/repository/product.repository';
+import {SectionRepository} from '@letseat/infrastructure/repository/section.repository';
 
 @EntityRepository(Store)
 export class StoreRepository extends Repository<Store> implements ResourceRepository {
@@ -37,6 +40,8 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 	private readonly orderRepository = getCustomRepository(OrderRepository);
 	private readonly orderStatusRepository = getRepository(OrderStatus);
 	private readonly orderHistoryRepository = getRepository(OrderHistory);
+	private readonly mealRepository = getCustomRepository(MealRepository);
+	private readonly productRepository = getCustomRepository(ProductRepository);
 
 	public async saveStore(store: Store & CreateStoreDto) {
 		const queryRunner = getConnection().createQueryRunner();
@@ -75,6 +80,8 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 	public async findStoreOrders(storeUuid: string) {
 		const store = await this.createQueryBuilder('store')
 			.leftJoinAndSelect('store.orders', 'orders')
+			.leftJoinAndSelect('orders.history', 'history')
+			.leftJoinAndSelect('history.status', 'historyStatus')
 			.leftJoinAndSelect('orders.customer', 'customer')
 			.leftJoinAndSelect('orders.detailsMeals', 'orderDetailsMeals')
 			.leftJoinAndSelect('orders.detailsProducts', 'orderDetailsProducts')
@@ -104,6 +111,7 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 
 	public async findOneByUuid(storeUuid: string): Promise<Store | undefined> {
 		let store = await this.createQueryBuilder('store')
+			.leftJoinAndSelect('store.address', 'address')
 			.leftJoinAndSelect('store.cuisines', 'cuisines')
 			.leftJoinAndSelect('store.sections', 'sections')
 			.leftJoinAndSelect('sections.meals', 'meals')
@@ -237,7 +245,7 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 	public async updateOrderStatus(storeUuid: string, orderUuid: string, orderStatusUuid: string) {
 		try {
 			const history = new OrderHistory();
-			const order = await this.orderRepository.findOneByUuid(orderUuid,['history', 'history.status', 'store']);
+			const order = await this.orderRepository.findOneByUuid(orderUuid, ['history', 'history.status', 'store']);
 			const status = await this.orderStatusRepository.findOneOrFail({uuid: orderStatusUuid});
 
 			if (order && status && order.store.uuid === storeUuid) {
@@ -334,20 +342,16 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 					.findOneOrFail(Store, {where: {uuid: storeUuid}, relations: ['sections']});
 				const newSection = new Section(sectionData);
 				if (section.meals && section.meals.length > 0) {
-					const meals = section.meals.map(async mealUuid => {
-						return getManager().findOneOrFail(Meal, {uuid: mealUuid, store});
-					});
-					await Promise.all(meals).then(res => {
+					const meals = section.meals.map(async mealUuid => this.mealRepository.findOneByUuidAndStore(mealUuid, storeUuid));
+					await Promise.all(meals).then((res: any) => {
 						newSection.meals = res
 					}).catch(() => {
 						reject('Some of Meals sent doesn\'t belongs to your Store');
 					});
 				}
 				if (section.products && section.products.length > 0) {
-					const products = section.meals.map(async mealUuid => {
-						return getManager().findOneOrFail(Product, {uuid: mealUuid, store});
-					});
-					await Promise.all(products).then(res => {
+					const products = section.meals.map(async productUuid => this.productRepository.findOneByUuidAndStore(productUuid, storeUuid));
+					await Promise.all(products).then((res: any) => {
 						newSection.products = res
 					}).catch(() => {
 						reject('Some of Products sent doesn\'t belongs to your Store');
@@ -366,5 +370,11 @@ export class StoreRepository extends Repository<Store> implements ResourceReposi
 				await queryRunner.release();
 			}
 		});
+	}
+
+	public async saveStoreProfilePictureUrl(storeUuid: string, imageUrl: string) {
+		const store = await this.findOneOrFail({where: {uuid: storeUuid}});
+		store.imageUrl = imageUrl;
+		await this.save(store);
 	}
 }

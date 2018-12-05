@@ -46,4 +46,10 @@ export class CreateGuestOrderDto {
 
 	@IsUUID()
 	storeUuid: string;
+
+	@IsDefined()
+	readonly paymentDetails;
+
+	@IsNumber()
+	readonly totalToPay: number;
 }

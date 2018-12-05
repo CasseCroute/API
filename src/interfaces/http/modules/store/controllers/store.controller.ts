@@ -1,6 +1,7 @@
 import {
-	Body, Controller, Delete, Get, HttpCode,
-	NotFoundException, Param, Patch, Post, Req, UnauthorizedException, UseGuards
+	BadRequestException,
+	Body, Controller, Delete, FileInterceptor, Get, HttpCode,
+	NotFoundException, Param, Patch, Post, Req, UnauthorizedException, UploadedFile, UseGuards, UseInterceptors
 } from '@nestjs/common';
 import {CommandBus} from '@nestjs/cqrs';
 import {Search} from '@letseat/application/queries/common/decorators/search.decorator';
@@ -15,16 +16,21 @@ import {
 	GetStoresQuery
 } from '@letseat/application/queries/store';
 import {CreateStoreDto, LoginStoreDto} from '@letseat/domains/store/dtos';
-import {CreateStoreCommand, UpdateStoreByUuidCommand} from '@letseat/application/commands/store';
+import {
+	CreateStoreCommand,
+	SaveStoreProfilePictureUrlCommand,
+	UpdateStoreByUuidCommand
+} from '@letseat/application/commands/store';
 import {AuthGuard} from '@letseat/infrastructure/authorization/guards';
 import {ValidationPipe} from '@letseat/domains/common/pipes/validation.pipe';
 import {AuthEntities} from '@letseat/infrastructure/authorization/enums/auth.entites';
 import {DeleteStoreByUuidCommand} from '@letseat/application/commands/store/delete-store-by-uuid.command';
 import {UpdateStoreDto} from '@letseat/domains/store/dtos/update-store.dto';
+import {AWSService} from '@letseat/infrastructure/services/aws.service';
 
 @Controller('stores')
 export class StoreController {
-	constructor(private readonly commandBus: CommandBus) {
+	constructor(private readonly commandBus: CommandBus, private readonly awsService: AWSService) {
 	}
 
 	@Get()
@@ -61,6 +67,28 @@ export class StoreController {
 			: (() => {
 				throw new UnauthorizedException();
 			})();
+	}
+
+	@Post('/me/picture')
+	@UseInterceptors(FileInterceptor('file'))
+	@UseGuards(AuthGuard('jwt'))
+	public async uploadProfilePicture(
+		@Req() request: any,
+		@UploadedFile() file) {
+		if (request.user.entity !== AuthEntities.Store) {
+			(() => {
+				throw new UnauthorizedException();
+			})();
+		}
+		if (!file) {
+			(() => {
+				throw new BadRequestException('No file uploaded');
+			})();
+		}
+		const uploadImagePromise = this.awsService.uploadImage(file, 'lets-eat-co/stores', request.user.uuid);
+		return uploadImagePromise.then(async fileData => {
+			return this.commandBus.execute(new SaveStoreProfilePictureUrlCommand(request.user.uuid, fileData.Location));
+		}).catch(err => console.log(err));
 	}
 
 	@Post('/login')

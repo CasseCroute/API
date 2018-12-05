@@ -6,9 +6,6 @@ import {
 import {ResourceRepository} from '@letseat/infrastructure/repository/resource.repository';
 import {
 	Order,
-	OrderDetailMeal,
-	OrderDetailMealOptionIngredient, OrderDetailMealOptionProduct,
-	OrderDetailProduct
 } from '@letseat/domains/order/order.entity';
 import {Customer} from '@letseat/domains/customer/customer.entity';
 import {CreateOrderDto} from '@letseat/domains/order/dtos';
@@ -17,14 +14,9 @@ import {
 	OrderDetailMealRepository, OrderDetailProductRepository,
 } from '@letseat/infrastructure/repository/order-detail.repository';
 import {OrderHistory, OrderStatus} from '@letseat/domains/order/order-history.entity';
-import {AddProductOrMealToCartDto} from '@letseat/domains/cart/dtos';
 import {Store} from '@letseat/domains/store/store.entity';
 import {ProductRepository} from '@letseat/infrastructure/repository/product.repository';
-import {Product} from '@letseat/domains/product/product.entity';
 import {MealRepository} from '@letseat/infrastructure/repository/meal.repository';
-import {CartMeal, CartMealOptionIngredient, CartMealOptionProduct} from '@letseat/domains/cart/cart.entity';
-import {MealSubsectionOption} from '@letseat/domains/meal/meal-subsection-option.entity';
-import {LoggerService} from '@letseat/infrastructure/services';
 import {CreateGuestOrderDto} from '@letseat/domains/order/dtos/create-order.dto';
 
 @EntityRepository(Order)
@@ -42,7 +34,7 @@ export class OrderRepository extends Repository<Order> implements ResourceReposi
 		return this.findOne({where: {uuid: mealUuid, store: store}, relations});
 	}
 
-	public async createOrder(customer: Customer, orderDto: any) {
+	public async createOrder(customer: Customer, orderDto: CreateOrderDto) {
 		const order = new Order(orderDto);
 		const history = new OrderHistory();
 		// @TODO: Set Order Status Dynamically (by default an order is Paid)
@@ -58,7 +50,7 @@ export class OrderRepository extends Repository<Order> implements ResourceReposi
 
 		history.status = paidStatus as OrderStatus;
 
-		order.totalPaid = 0;
+		order.totalPaid = orderDto.totalToPay;
 
 		order.reference = cryptoRandomString(6).toUpperCase();
 		return this.save(order).then(async res => {
@@ -91,7 +83,7 @@ export class OrderRepository extends Repository<Order> implements ResourceReposi
 		order.store = store;
 		history.status = paidStatus;
 
-		order.totalPaid = 0;
+		order.totalPaid = guestOrder.totalToPay;
 
 		order.reference = cryptoRandomString(6).toUpperCase();
 		return this.save(order).then(async res => {
@@ -103,7 +95,7 @@ export class OrderRepository extends Repository<Order> implements ResourceReposi
 						.saveGuestOrderDetailMeal(storeMeal, product.quantity, res, product.optionUuids);
 					}
 				} else if (product.productUuid){
-					const storeProduct = await this.productRepository.findOneByUuidAndStore(product.productUuid, store);
+					const storeProduct = await this.productRepository.findOneByUuidAndStore(product.productUuid, store.uuid);
 					if (storeProduct) {
 						await getCustomRepository(OrderDetailProductRepository)
 						.saveGuestOrderDetailProduct(storeProduct, product.quantity, res);
@@ -117,7 +109,6 @@ export class OrderRepository extends Repository<Order> implements ResourceReposi
 			});
 		});
 	}
-
 }
 
 
