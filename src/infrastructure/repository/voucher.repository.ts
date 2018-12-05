@@ -56,7 +56,9 @@ export class VoucherRepository extends Repository<Voucher> implements ResourceRe
 	public async isStillValid(voucherCode: string) {
 		const voucher = await this.findVoucherByCode(voucherCode) as Voucher;
 		const now = new Date();
+		console.log(voucher.expirationDate.getDate());
+		console.log(now.getDate());
 
-		return now.getDate() < voucher.expirationDate.getDate();
+		return now < voucher.expirationDate;
 	}
 }
