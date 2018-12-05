@@ -29,6 +29,8 @@ import {BadRequestException} from '@nestjs/common';
 import {CreateStoreDto} from '@letseat/domains/store/dtos';
 import {OrderRepository} from '@letseat/infrastructure/repository/order.repository';
 import {OrderHistory, OrderStatus} from '@letseat/domains/order/order-history.entity';
+
+import {Voucher} from "@letseat/domains/voucher/voucher.entity";
 import {ProductRepository} from '@letseat/infrastructure/repository/product.repository';
 import {SectionRepository} from '@letseat/infrastructure/repository/section.repository';
 

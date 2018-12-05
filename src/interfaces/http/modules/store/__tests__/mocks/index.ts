@@ -222,6 +222,19 @@ export const sectionRepository = {
 	]
 };
 
+export const voucherRepository = {
+	data: [
+		{
+			id: 1,
+			uuid: '5ea12f95-720e-4e79-8e9d-700fe2ead22a',
+			code: 'BLACKFRIDAY5',
+			reduction: 5,
+			expirationDate: '2018-11-30',
+			idStore: 1
+		}
+	]
+};
+
 export const token = jwt.sign({
 	uuid: storeRepository.data[0].uuid,
 	email: storeRepository.data[0].email,

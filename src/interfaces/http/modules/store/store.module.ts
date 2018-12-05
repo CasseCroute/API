@@ -14,12 +14,15 @@ import {ProductCommandHandlers} from '@letseat/application/commands/product/hand
 import {MealCommandHandlers} from '@letseat/application/commands/meal/handlers';
 import {MealsQueryHandlers} from '@letseat/application/queries/meal/handlers';
 import {SectionCommandHandlers} from '@letseat/application/commands/section/handlers';
+import {VoucherCommandHandlers} from '@letseat/application/commands/voucher/handlers';
+import {VoucherQueryHandlers} from '@letseat/application/queries/voucher/handlers';
 import {ProductIngredientRepository} from '@letseat/infrastructure/repository/product-ingredient.repository';
 import {LoggerService} from '@letseat/infrastructure/services';
 import {OrderCommandHandlers} from '@letseat/application/commands/order/handlers';
 import {OrderRepository} from '@letseat/infrastructure/repository/order.repository';
 import {CustomerRepository} from '@letseat/infrastructure/repository/customer.repository';
 import {GeocoderService} from '@letseat/infrastructure/services/geocoder.service';
+import {VoucherRepository} from '@letseat/infrastructure/repository/voucher.repository';
 import {AWSService} from '@letseat/infrastructure/services/aws.service';
 import {MulterConfigService} from '@letseat/infrastructure/services/multer.service';
 import {MealRepository} from '@letseat/infrastructure/repository/meal.repository';
@@ -34,6 +37,7 @@ import {CartRepository} from '@letseat/infrastructure/repository/cart.repository
 			ProductIngredientRepository,
 			OrderRepository,
 			CustomerRepository,
+			VoucherRepository,
 			MealRepository,
 			ProductRepository,
 			CartRepository
@@ -54,6 +58,8 @@ import {CartRepository} from '@letseat/infrastructure/repository/cart.repository
 		...MealsQueryHandlers,
 		...SectionCommandHandlers,
 		...OrderCommandHandlers,
+		...VoucherCommandHandlers,
+		...VoucherQueryHandlers,
 		GeocoderService,
 		LoggerService,
 		AWSService,
@@ -80,5 +86,7 @@ export class StoreModule implements OnModuleInit {
 		this.command$.register(MealCommandHandlers);
 		this.command$.register(SectionCommandHandlers);
 		this.command$.register(OrderCommandHandlers);
+		this.command$.register(VoucherCommandHandlers);
+		this.command$.register(VoucherQueryHandlers);
 	}
 }

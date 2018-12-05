@@ -8,6 +8,7 @@ import {Meal} from '@letseat/domains/meal/meal.entity';
 import {Section} from '@letseat/domains/section/section.entity';
 import {Cuisine} from '@letseat/domains/cuisine/cuisine.entity';
 import {Order} from '@letseat/domains/order/order.entity';
+import {Voucher} from '@letseat/domains/voucher/voucher.entity';
 
 @Entity()
 @Unique(['email'])
@@ -59,6 +60,9 @@ export class Store extends Resource {
 
 	@OneToMany(() => Order, order => order.store)
 	orders: Order[];
+
+	@OneToMany(() => Voucher, voucher => voucher.store)
+	vouchers: Voucher[];
 
 	public static register(args: any): Store {
 		return new Store(args);
